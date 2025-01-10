@@ -21,7 +21,7 @@ export type TimestampArray = Timestamp[]
 export type TimestampOrNull = Timestamp | null
 
 export type TimestampFormatter = (timestamp: Timestamp, short: boolean) => string;
-export type TimestampFormatOptions = (timestamp: Timestamp, short: boolean) => TimestampFormatter;
+export type TimestampFormatOptions = (timestamp: Timestamp, short: boolean) => Intl.DateTimeFormatOptions;
 export type TimestampMoveOperation = (timestamp: Timestamp) => Timestamp;
 
 export interface TimeObject {

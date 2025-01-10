@@ -1165,7 +1165,7 @@
           "type": "Function",
           "tsType": "TimestampFormatOptions",
           "required": true,
-          "desc": "A function that passes the timestamp and a boolean",
+          "desc": "A function that passes the timestamp and a boolean, and returns an Intl.DateTimeFormatter",
           "__exemption": [ "examples" ],
           "params": {
             "timestamp": {
@@ -1182,7 +1182,7 @@
           },
           "returns": {
             "type": "Object",
-            "tsType": "TimestampFormatter",
+            "tsType": "Intl.DateTimeFormatOptions",
             "desc": "This uses the Intl.DateTimeFormat function of the browser. Options are specified [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat)",
             "examples": [
               "{ timeZone: 'UTC', month: 'long' }",
@@ -1194,9 +1194,27 @@
         }
       },
       "returns": {
-        "type": "String",
-        "desc": "The output of the operation",
+        "type": "Function",
+        "desc": "A function that takes a timestamp and a boolean and returns a formatted string.",
+        "tsType": "TimestampFormatter",
+        "params": {
+          "timestamp": {
+            "type": "Object",
+            "tsType": "Timestamp",
+            "desc": "A timestamp object",
+            "__exemption": [ "examples" ]
+          },
+          "short": {
+            "type": "Boolean",
+            "desc": "if true, specifies to use the short version (ie: 'Monday' to be returns as 'Mon', 'January' to be returned as 'Jan', etc)",
+            "__exemption": [ "examples" ]
+          }
+        },
+        "returns": {
+          "type": "String",
+          "desc": "A string containing the formatted date/time",
         "__exemption": [ "examples" ]
+        }
       },
     "__exemption": [ "examples" ]
     },
@@ -1511,7 +1529,7 @@
           "weekdayFormatter('Sun', 'long', 'de')",
           "weekdayFormatter('Fri', 'short', 'fr')",
           "weekdayFormatter('Sat', 'narrow', 'fi')"
-        ]  
+        ]
       }
     },
     "getWeekdayNames": {
@@ -1583,7 +1601,7 @@
           "monthFormatter('Sun', 'long', 'de')",
           "monthFormatter('Fri', 'short', 'fr')",
           "monthFormatter('Sat', 'narrow', 'fi')"
-        ]  
+        ]
       }
     },
     "getMonthNames": {
