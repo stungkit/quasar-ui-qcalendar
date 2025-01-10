@@ -8,7 +8,7 @@ import QCalendarTask from './components/QCalendarTask.js'
 import { version } from './version'
 
 import {
-  PARSE_REGEX,
+  PARSE_DATETIME,
   PARSE_DATE,
   PARSE_TIME,
   DAYS_IN_MONTH,
@@ -85,13 +85,10 @@ import {
   getWeekdayFormatter,
   getWeekdayNames,
   getMonthFormatter,
-  getMonthNames
+  getMonthNames,
 } from './utils/Timestamp.js'
 
-import {
-  convertToUnit,
-  indexOf
-} from './utils/helpers.js'
+import { convertToUnit, indexOf } from './utils/helpers.js'
 
 export {
   version,
@@ -102,8 +99,7 @@ export {
   QCalendarResource,
   QCalendarScheduler,
   QCalendarTask,
-
-  PARSE_REGEX,
+  PARSE_DATETIME,
   PARSE_DATE,
   PARSE_TIME,
   DAYS_IN_MONTH,
@@ -183,7 +179,7 @@ export {
   getMonthNames,
   // helpers
   convertToUnit,
-  indexOf
+  indexOf,
 }
 
 export default {
@@ -196,7 +192,7 @@ export default {
   QCalendarScheduler,
   QCalendarTask,
 
-  PARSE_REGEX,
+  PARSE_DATETIME,
   PARSE_DATE,
   PARSE_TIME,
   DAYS_IN_MONTH,
@@ -278,7 +274,7 @@ export default {
   convertToUnit,
   indexOf,
 
-  install (app) {
+  install(app) {
     app.component(QCalendar.name, QCalendar)
-  }
+  },
 }

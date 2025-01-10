@@ -8,12 +8,12 @@ module.exports = {
     parser: '@babel/eslint-parser',
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
     sourceType: 'module', // Allows for the use of imports
-    requireConfigFile: false
+    requireConfigFile: false,
   },
 
   env: {
     browser: true,
-    es6: true
+    es6: true,
   },
 
   // Rules order is important, please avoid shuffling them
@@ -27,7 +27,7 @@ module.exports = {
     'plugin:vue/vue3-essential', // Priority A: Essential (Error Prevention)
     // 'plugin:vue/vue3-strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
     // 'plugin:vue/vue3-recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
-    'plugin:promise/recommended'
+    'plugin:promise/recommended',
   ],
 
   plugins: [
@@ -38,7 +38,7 @@ module.exports = {
     'jsdoc',
     'node',
     'promise',
-    'import'
+    'import',
   ],
 
   globals: {
@@ -58,7 +58,7 @@ module.exports = {
 
   // add your custom rules here
   rules: {
-    'brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
+    // 'brace-style': ['error', 'stroustrup', { allowSingleLine: true }],
     'prefer-const': 'error',
     'prefer-promise-reject-errors': 'off',
     'multiline-ternary': 'off',
@@ -70,18 +70,18 @@ module.exports = {
     'one-var': 'off',
     'no-void': 'off',
     'no-lone-blocks': 'error',
-    'no-unused-expressions': [ 'error', { allowTernary: true, "allowShortCircuit": true } ],
+    'no-unused-expressions': ['error', { allowTernary: true, allowShortCircuit: true }],
     'no-useless-concat': 'error',
     'no-useless-return': 'error',
     'no-unneeded-ternary': 'error',
-    'no-confusing-arrow': [ 'error', { allowParens: true } ],
-    'operator-linebreak': [ 'error', 'before' ],
+    'no-confusing-arrow': ['error', { allowParens: true }],
+    // 'operator-linebreak': ['error', 'before'],
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
-    'array-bracket-spacing': [ 'error', 'always', { singleValue: false } ],
-    'object-curly-spacing': [ 'error', 'always' ],
-    'computed-property-spacing': [ 'error', 'always' ],
-    'template-curly-spacing': [ 'error', 'always' ],
+    // 'array-bracket-spacing': [ 'error', 'always', { singleValue: false } ],
+    'object-curly-spacing': ['error', 'always'],
+    // 'computed-property-spacing': ['error', 'always'],
+    // 'template-curly-spacing': ['error', 'always'],
 
     'import/first': 'off',
     'import/named': 'error',
@@ -97,28 +97,8 @@ module.exports = {
     'vue/singleline-html-element-content-newline': 'off',
     'vue/no-multiple-template-root': 'off',
 
-    'jsdoc/check-param-names': 1,
-    'jsdoc/check-tag-names': 1,
-    'jsdoc/check-types': 0,
-    'jsdoc/newline-after-description': 0,
-    'jsdoc/require-description-complete-sentence': 0,
-    'jsdoc/require-example': 0,
-    'jsdoc/require-hyphen-before-param-description': 0,
-    'jsdoc/require-param': 1,
-    'jsdoc/require-param-description': 1,
-    'jsdoc/require-param-name': 1,
-    'jsdoc/require-param-type': 1,
-    'jsdoc/require-returns-description': 1,
-    'jsdoc/require-returns-type': 0,
-
-    'jest/no-disabled-tests': 'warn',
-    'jest/no-focused-tests': 'error',
-    'jest/no-identical-title': 'error',
-    'jest/prefer-to-have-length': 'warn',
-    'jest/valid-expect': 'error',
-
     // allow console.log during production for demo purposes
     // 'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
-    'no-console': 'off'
-  }
+    'no-console': 'off',
+  },
 }
