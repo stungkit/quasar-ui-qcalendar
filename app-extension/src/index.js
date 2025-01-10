@@ -7,10 +7,12 @@
  */
 
 function extendConf(conf, api) {
-  // register our boot file
-  conf.boot.push('~@quasar/quasar-app-extension-qcalendar/src/boot/register.js')
-
-  if (api.hasVite !== true) {
+  if (api.hasVite) {
+    // register the boot file
+    conf.boot.push('~@quasar/quasar-app-extension-qcalendar/src/boot/vite-register.js')
+  } else {
+    // register the boot file
+    conf.boot.push('~@quasar/quasar-app-extension-qcalendar/src/boot/webpack-register.js')
     // make sure app extension files & ui packages get transpiled
     conf.build.webpackTranspileDependencies = conf.build.webpackTranspileDependencies || []
     conf.build.webpackTranspileDependencies.push(/quasar-app-extension-qcalendar[\\/]src/)
