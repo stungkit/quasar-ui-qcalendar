@@ -175,20 +175,20 @@ const developingMenu = {
   ],
 }
 
-const guidesMenu: SiteMenuItem = {
-  name: 'Guides',
-  mq: 1100, // media query breakpoint
-  children: [
-    {
-      name: 'FAQ',
-      path: '/guides/faq',
-    },
-    {
-      name: 'Contributing',
-      path: '/guides/contributing',
-    },
-  ],
-}
+// const guidesMenu: SiteMenuItem = {
+//   name: 'Guides',
+//   mq: 1100, // media query breakpoint
+//   children: [
+//     {
+//       name: 'FAQ',
+//       path: '/guides/faq',
+//     },
+//     {
+//       name: 'Contributing',
+//       path: '/guides/contributing',
+//     },
+//   ],
+// }
 
 const otherMenu: SiteMenuItem = {
   name: 'Other',
@@ -208,14 +208,19 @@ const processedDevelopingMenu = {
   children: developingMenu.children ? developingMenu.children.map(processMenuItem) : [],
 }
 
-const processedGuidesMenu = {
-  name: guidesMenu.name,
-  path: slugify(guidesMenu.name),
-  expanded: false,
-  children: guidesMenu.children ? guidesMenu.children.map(processMenuItem) : [],
-}
+// const processedGuidesMenu = {
+//   name: guidesMenu.name,
+//   path: slugify(guidesMenu.name),
+//   expanded: false,
+//   children: guidesMenu.children ? guidesMenu.children.map(processMenuItem) : [],
+// }
 
-const secondaryToolbarLinks = [gettingStartedMenu, developingMenu, guidesMenu, otherMenu]
+const secondaryToolbarLinks = [
+  gettingStartedMenu,
+  developingMenu,
+  // guidesMenu,
+  otherMenu,
+]
 
 export const moreLinks: SiteMenuItem[] = [
   {
@@ -238,7 +243,7 @@ export const sidebar = [
       : [],
   },
   processedDevelopingMenu,
-  processedGuidesMenu,
+  // processedGuidesMenu,
 ]
 
 const config = {
