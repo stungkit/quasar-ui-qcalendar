@@ -1,22 +1,10 @@
 <template>
-  <q-dialog
-    ref="borderEditor"
-    v-model="openEditor"
-    position="right"
-  >
-    <div
-      :class="classes"
-      style="max-width: 360px"
-    >
-      <div class="text-title">
-        Theme Styles Picker
-      </div>
+  <q-dialog ref="borderEditor" v-model="openEditor" position="right">
+    <div :class="classes" style="max-width: 360px">
+      <div class="text-title">Theme Styles Picker</div>
       <q-separator class="q-mb-md full-width" />
 
-      <div
-        v-if="currentBorderSize !== void 0"
-        class="full-width"
-      >
+      <div v-if="currentBorderSize !== void 0" class="full-width">
         <div class="full-width text-caption q-pb-lg">
           <strong>Border Width</strong>
         </div>
@@ -27,15 +15,16 @@
           label
           label-always
           class="fill-width"
-          @change="val => { editorSize = val }"
+          @change="
+            (val) => {
+              editorSize = val
+            }
+          "
         />
         <q-separator class="q-mb-sm" />
       </div>
 
-      <div
-        v-if="currentBorderType !== void 0"
-        class="full-width row justify-center"
-      >
+      <div v-if="currentBorderType !== void 0" class="full-width row justify-center">
         <div class="full-width text-caption">
           <strong>Border Style</strong>
         </div>
@@ -43,27 +32,36 @@
           :model-value="editorType"
           val="solid"
           label="Solid"
-          @update:model-value="val => { editorType = val }"
+          @update:model-value="
+            (val) => {
+              editorType = val
+            }
+          "
         />
         <q-radio
           :model-value="editorType"
           val="dashed"
           label="Dashed"
-          @update:model-value="val => { editorType = val }"
+          @update:model-value="
+            (val) => {
+              editorType = val
+            }
+          "
         />
         <q-radio
           :model-value="editorType"
           val="dotted"
           label="Dotted"
-          @update:model-value="val => { editorType = val }"
+          @update:model-value="
+            (val) => {
+              editorType = val
+            }
+          "
         />
         <q-separator class="q-mb-sm full-width" />
       </div>
 
-      <div
-        v-if="currentColor !== void 0"
-        class="row justify-center"
-      >
+      <div v-if="currentColor !== void 0" class="row justify-center">
         <div class="full-width text-caption">
           <strong>Color</strong>
         </div>
@@ -74,18 +72,18 @@
           :palette="colorPalette"
           format-model="hexa"
           style="max-width: 200px"
-          @change="val => { editorColor = val }"
+          @change="
+            (val) => {
+              editorColor = val
+            }
+          "
         />
         <p>Hint: current color schema is on the Palette tab</p>
         <q-separator class="q-mb-sm full-width" />
       </div>
 
       <div class="row justify-center">
-        <q-input
-          v-if="isValue === true"
-          v-model="editorValue"
-          label="Edit css value"
-        />
+        <q-input v-if="isValue === true" v-model="editorValue" label="Edit css value" />
       </div>
 
       <div class="row justify-center">
@@ -120,15 +118,12 @@ export default {
     modelValue: Boolean,
     itemName: String,
     itemStyle: String,
-    styleObject: Object
+    styleObject: Object,
   },
 
-  emits: [
-    'update:model-value',
-    'style'
-  ],
+  emits: ['update:model-value', 'style'],
 
-  data () {
+  data() {
     return {
       openEditor: false,
       editorSize: void 0,
@@ -138,36 +133,35 @@ export default {
       itemNameOrig: '',
       itemStyleOrig: '',
       styleCopy: {},
-      store: useThemeBuilderStore()
+      store: useThemeBuilderStore(),
     }
   },
 
   computed: {
-    hints () {
+    hints() {
       return this.store.hints
     },
 
-    hint () {
+    hint() {
       if (this.itemName) {
-        return this.hints[ this.itemName ]
+        return this.hints[this.itemName]
       }
       return ''
     },
 
-    classes () {
+    classes() {
       return {
         'column items-center q-pa-md': true,
         'bg-grey-11': this.$q.dark.isActive === false,
-        'bg-grey-9': this.$q.dark.isActive === true
+        'bg-grey-9': this.$q.dark.isActive === true,
       }
     },
 
-    currentStyle () {
+    currentStyle() {
       let style = ''
       if (this.editorValue !== void 0) {
         style += this.editorValue
-      }
-      else {
+      } else {
         if (this.editorColor !== void 0) {
           style += this.editorColor
         }
@@ -181,31 +175,30 @@ export default {
       return style
     },
 
-    hasBorder () {
+    hasBorder() {
       return this.itemName && this.currentBorderType !== void 0
     },
 
-    hasColor () {
+    hasColor() {
       return this.itemName && this.currentColor !== void 0
     },
 
-    hasUnset () {
+    hasUnset() {
       return this.itemName && this.itemStyle === 'unset'
     },
 
-    isValue () {
-      return this.itemName
-        && this.hasBorder !== true
-        && this.hasColor !== true
-        && this.hasUnset !== true
+    isValue() {
+      return (
+        this.itemName && this.hasBorder !== true && this.hasColor !== true && this.hasUnset !== true
+      )
     },
 
-    currentColor () {
+    currentColor() {
       if (!this.itemName) return
       let color
       if (this.itemStyle) {
         const parts = this.itemStyle.split(' ')
-        parts.forEach(part => {
+        parts.forEach((part) => {
           if (part.match(/^(#|(rgb|hsl)a?\()/)) {
             color = part
           }
@@ -215,12 +208,12 @@ export default {
       return color
     },
 
-    currentBorderType () {
+    currentBorderType() {
       if (!this.itemName) return
       let type
       if (this.itemStyle) {
         const parts = this.itemStyle.split(' ')
-        parts.forEach(part => {
+        parts.forEach((part) => {
           if (part === 'solid' || part === 'dashed' || part === 'dotted') {
             type = part
           }
@@ -229,13 +222,18 @@ export default {
       return type
     },
 
-    currentBorderSize () {
+    currentBorderSize() {
       if (!this.itemName) return
       let size
       if (this.itemStyle && this.itemName && this.itemName.indexOf('border') > -1) {
         const parts = this.itemStyle.split(' ')
-        parts.forEach(part => {
-          if (!part.match(/^(#|(rgb|hsl)a?\()/) && part !== 'solid' && part !== 'dashed' && part !== 'dotted') {
+        parts.forEach((part) => {
+          if (
+            !part.match(/^(#|(rgb|hsl)a?\()/) &&
+            part !== 'solid' &&
+            part !== 'dashed' &&
+            part !== 'dotted'
+          ) {
             size = parseInt(part, 10)
           }
         })
@@ -243,10 +241,14 @@ export default {
       return size
     },
 
-    currentValue () {
+    currentValue() {
       if (!this.itemName) return
       let value
-      if (this.itemStyle && this.itemName && (this.itemName.indexOf('width') > -1 || this.itemName.indexOf('font') > -1)) {
+      if (
+        this.itemStyle &&
+        this.itemName &&
+        (this.itemName.indexOf('width') > -1 || this.itemName.indexOf('font') > -1)
+      ) {
         value = this.itemStyle
       }
       return value
@@ -254,27 +256,26 @@ export default {
 
     // creates a palette of unique colors for user selection
     // note: all colors need to be lowercase to prevent dupes
-    colorPalette () {
+    colorPalette() {
       let colors = new Set()
-      Object.keys(this.styleCopy).forEach(name => {
-        const value = this.styleCopy[ name ]
+      Object.keys(this.styleCopy).forEach((name) => {
+        const value = this.styleCopy[name]
         // has color
         if (
-          value !== 'unset' && (
-            value.match(/^(#|(rgb|hsl)a?\()/)
-            || name.indexOf('color') > -1
-            || name.indexOf('background') > -1
-            || name.indexOf('border') > -1)
+          value !== 'unset' &&
+          (value.match(/^(#|(rgb|hsl)a?\()/) ||
+            name.indexOf('color') > -1 ||
+            name.indexOf('background') > -1 ||
+            name.indexOf('border') > -1)
         ) {
           if (name.indexOf('border') > -1) {
             const parts = value.split(' ')
-            parts.forEach(part => {
+            parts.forEach((part) => {
               if (part.match(/^(#|(rgb|hsl)a?\()/)) {
                 colors.add(part.toLowerCase())
               }
             })
-          }
-          else {
+          } else {
             colors.add(value.toLowerCase())
           }
         }
@@ -293,31 +294,31 @@ export default {
       })
 
       return colors
-    }
+    },
   },
 
   watch: {
-    modelValue (val) {
+    modelValue(/*val*/) {
       this.openEditor = this.modelValue
     },
-    openEditor (val) {
+    openEditor(val) {
       this.$emit('update:model-value', val)
     },
-    itemStyle (val) {
+    itemStyle(/*val*/) {
       this.updateEditor()
     },
-    currentStyle (val) {
+    currentStyle(val) {
       this.$emit('style', val)
-    }
+    },
   },
 
-  beforeMount () {
+  beforeMount() {
     this.openEditor = this.modelValue
     this.updateEditor()
   },
 
   methods: {
-    updateEditor () {
+    updateEditor() {
       this.editorSize = this.currentBorderSize
       this.editorType = this.currentBorderType
       this.editorColor = this.currentColor
@@ -332,15 +333,14 @@ export default {
         this.styleCopy = JSON.parse(JSON.stringify(this.styleObject))
       }
     },
-    onValueChanged () {
-    },
-    onRevert () {
+    onValueChanged() {},
+    onRevert() {
       this.$emit('style', this.itemStyleOrig)
     },
-    onUnset () {
+    onUnset() {
       //
-    }
-  }
+    },
+  },
 }
 </script>
 

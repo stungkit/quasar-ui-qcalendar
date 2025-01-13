@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, defineEmits } from 'vue'
+import { computed } from 'vue'
 import Checkbox from '@carbon/icons-vue/es/checkbox/16'
 import CheckboxChecked from '@carbon/icons-vue/es/checkbox--checked/16'
 import Location from '@carbon/icons-vue/es/location/16'
