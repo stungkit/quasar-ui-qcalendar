@@ -1,12 +1,6 @@
 ---
 title: Release Notes
-desc: The changelog for MD-Plugins packages.
+desc: The changelog for QCalendar packages.
 ---
 
-Release notes (with changelog) for MD-Plugins packages are available on [GitHub Releases](https://github.com/md-plugins/md-plugins/releases).
-
-<!-- <script import>
-import PublicReleases from 'components/Releases/PublicReleases.vue'
-</script>
-
-<PublicReleases /> -->
+Release notes (with changelog) for QCalendar is available on [GitHub Releases](https://github.com/quasarframework/quasar-ui-qcalendar/releases).
