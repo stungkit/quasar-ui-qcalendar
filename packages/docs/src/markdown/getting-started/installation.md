@@ -2,10 +2,6 @@
 title: Installation Types
 desc: How to install QCalendar
 keys: All about QCalendar
-related:
-  - /all-about-qcalendar/what-is-qcalendar
-  - /contributing/bugs-and-feature-requests
-  - /contributing/sponsor
 ---
 
 First off, it's important to know that QCalendar has many modular components that make up it's entirety. Installing as QCalendar **will install all these components**. However, you may want to install them individually.

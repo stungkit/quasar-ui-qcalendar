@@ -2,10 +2,6 @@
 title: Anatomy of a Calendar
 desc: Identify the parts of a Calendar
 keys: All about QCalendar
-related:
-  - /all-about-qcalendar/what-is-qcalendar
-  - /designing-with-qcalendar/getting-started
-  - /designing-with-qcalendar/themes
 ---
 
 Make a selection on the left of a calendar to see the result on the right.
