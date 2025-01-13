@@ -12,7 +12,7 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar build",
-    "postinstall:old": "quasar prepare"
+    "postinstall": "quasar prepare"
   },
   "dependencies": {
     "@carbon/icons-vue": "^10.99.1",
