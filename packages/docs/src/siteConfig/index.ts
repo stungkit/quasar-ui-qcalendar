@@ -171,7 +171,7 @@ const developingMenu = {
     { name: 'QCalendarResource', path: '/developing/qcalendarresource' },
     { name: 'QCalendarScheduler', path: '/developing/qcalendarscheduler' },
     { name: 'QCalendarTask', path: '/developing/qcalendartask' },
-    // { name: 'Timestamp', path: '/developing/timestamp' },
+    { name: 'Timestamp', path: '/developing/timestamp' },
   ],
 }
 
