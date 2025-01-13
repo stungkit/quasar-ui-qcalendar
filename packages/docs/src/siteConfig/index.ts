@@ -77,7 +77,7 @@ export interface SiteConfig {
   theme: string
   version: string
   copyright: CopyrightConfig
-  githubEditRoot: string
+  githubEditRootSrc: string
   license: LicenseConfig
   privacy: PrivacyConfig
   logoConfig: LogoConfig
@@ -103,13 +103,13 @@ const socialLinks = {
     {
       name: 'GitHub',
       icon: fabGithub,
-      path: 'https://github.com/md-plugins/md-plugins/tree/dev',
+      path: 'https://github.com/quasarframework/quasar-ui-qcalendar/tree/next',
       external: true,
     },
     {
       name: 'X (Twitter)',
       icon: fabXTwitter,
-      path: 'https://twitter.com/md_plugins',
+      path: 'https://twitter.com/jgalbraith64',
       external: true,
     },
   ],
@@ -171,7 +171,7 @@ const developingMenu = {
     { name: 'QCalendarResource', path: '/developing/qcalendarresource' },
     { name: 'QCalendarScheduler', path: '/developing/qcalendarscheduler' },
     { name: 'QCalendarTask', path: '/developing/qcalendartask' },
-    { name: 'Timestamp', path: '/developing/timestamp' },
+    // { name: 'Timestamp', path: '/developing/timestamp' },
   ],
 }
 
@@ -244,18 +244,18 @@ export const sidebar = [
 const config = {
   lang: 'en-US',
   title: productName,
-  description:
-    'MD-Plugins is a collection of Markdown and Vite plugins that make it easy to build markdown user interfaces in Vue and Quasar applications.',
+  description: 'Build Beautiful, Responsive Calendars for Vue and Quasar',
   theme: 'doc',
   version: version,
   copyright: {
-    line1: `Copyright © 2024-${new Date().getFullYear()} MD-PLUGINS`,
+    line1: `Copyright © 2024-${new Date().getFullYear()} Jeff Galbraith`,
     line2: '',
   } as CopyrightConfig,
-  githubEditRoot: 'https://github.com/md-plugins/md-plugins/edit/dev/packages/docs/src/markdown/',
+  githubEditRootSrc:
+    'https://github.com/quasarframework/quasar-ui-qcalendar/tree/next/edit/packages/docs/src/markdown/',
   license: {
     label: 'MIT License',
-    link: 'https://github.com/md-plugins/md-plugins/blob/dev/LICENSE.md',
+    link: 'https://github.com/quasarframework/quasar-ui-qcalendar/blob/next/LICENSE.md',
   } as LicenseConfig,
   privacy: {
     label: 'Privacy Policy',
@@ -263,11 +263,9 @@ const config = {
   } as PrivacyConfig,
   logoConfig: {
     showLogo: true,
-    logoLight:
-      'https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-1024x1024.png',
-    logoDark:
-      'https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-1024x1024.png',
-    logoAlt: '@md-plugins',
+    logoLight: '/qcalendar-logo.png',
+    logoDark: '/qcalendar-logo.png',
+    logoAlt: 'QCalendar Logo',
   } as LogoConfig,
   versionConfig: {
     showTitle: true,
