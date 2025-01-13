@@ -8,7 +8,8 @@
   "packageManager": "pnpm@9.15.3",
   "scripts": {
     "clean": "rm -rf node_modules pnpm-lock.yaml packages/ui/node_modules packages/docs/node_modules",
-    "build": "cd packages/ui && pnpm build && cd ../docs && quasar build"
+    "build": "cd packages/ui && pnpm build && cd ../docs && quasar build",
+    "ci:publish": "pnpm -r publish --access public --publish-branch dev"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
