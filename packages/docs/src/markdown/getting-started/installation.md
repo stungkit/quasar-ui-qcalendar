@@ -74,7 +74,7 @@ Then
 ```js
 import { boot } from 'quasar/wrappers'
 import Plugin from '@quasar/quasar-ui-qcalendar/src/QCalendarDay.js'
-import '@quasar/quasar-ui-qcalendar/src/css/calendar-day.sass'
+import '@quasar/quasar-ui-qcalendar/src/css/calendar-day.scss'
 
 export default boot(({ app }) => {
   app.use(Plugin)
@@ -88,8 +88,8 @@ In `quasar.conf.js` update the following:
 ```js
 // Note: using ~ tells Quasar the file resides in node_modules
 css: [
-  'app.sass',
-  '~quasar-ui-qcalendar/src/css/calendar-day.sass'
+  'app.scss',
+  '~quasar-ui-qcalendar/src/css/calendar-day.scss'
 ],
 
 build: {
@@ -126,7 +126,7 @@ There are several variants for each calendar component, including common, es (mo
 
 ```js
 import Plugin from '@quasar/quasar-ui-qcalendar/src/QCalendarDay.js'
-import '@quasar/quasar-ui-qcalendar/src/css/calendar-day.sass'
+import '@quasar/quasar-ui-qcalendar/src/css/calendar-day.scss'
 import App from './App.vue'
 
 const app = createApp(App).use(Plugin)

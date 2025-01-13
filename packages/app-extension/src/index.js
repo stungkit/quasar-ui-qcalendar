@@ -20,7 +20,7 @@ function extendConf(conf, api) {
   }
 
   // make sure the stylesheet goes through webpack to avoid SSR issues
-  conf.css.push('~@quasar/quasar-ui-qcalendar/src/index.sass')
+  conf.css.push('~@quasar/quasar-ui-qcalendar/src/index.scss')
 }
 
 module.exports = function (api) {
