@@ -7,7 +7,8 @@ related:
   - /contributing/bugs-and-feature-requests
   - /contributing/sponsor
 ---
-First off, it's important to know that QCalendar has many modular components that make up it's entirety. Installing as QCalendar __will install all these components__. However, you may want to install them individually.
+
+First off, it's important to know that QCalendar has many modular components that make up it's entirety. Installing as QCalendar **will install all these components**. However, you may want to install them individually.
 
 The components are:
 
@@ -33,20 +34,22 @@ By using the app extension, you will get **all** QCalendar components installed 
 #### Install
 
 To add as an App Extension to your Quasar application, run the following (in your Quasar app folder):
+
 ```
-$ quasar ext add @quasar/qcalendar@next
+$ quasar ext add @quasar/qcalendar
 ```
 
 #### Uninstall
 
 To remove as an App Extension from your Quasar application, run the following (in your Quasar app folder):
+
 ```
 $ quasar ext remove @quasar/qcalendar
 ```
 
 #### Describe
-When installed as an App Extension, you can use `quasar describe QCalendar`. You can replace `QCalendar` with any of the calendar types (ex: `quasar describe QCalendarDay`).
 
+When installed as an App Extension, you can use `quasar describe QCalendar`. You can replace `QCalendar` with any of the calendar types (ex: `quasar describe QCalendarDay`).
 
 ### Or Create and register a boot file
 
@@ -59,9 +62,11 @@ If you plan on importing from `src/` directly, please read the [Migration Guide]
 :::
 
 ```
-$ yarn add @quasar/quasar-ui-qcalendar@next
+$ pnpm add @quasar/quasar-ui-qcalendar
 # or
-$ npm install @quasar/quasar-ui-qcalendar@next
+$ yarn add @quasar/quasar-ui-qcalendar
+# or
+$ npm install @quasar/quasar-ui-qcalendar
 ```
 
 Then
@@ -75,9 +80,11 @@ export default boot(({ app }) => {
   app.use(Plugin)
 })
 ```
+
 Additionally, because you are accessing the sources this way, you will need to make sure your project will transpile the code.
 
 In `quasar.conf.js` update the following:
+
 ```js
 // Note: using ~ tells Quasar the file resides in node_modules
 css: [
@@ -103,13 +110,13 @@ There are several variants for each calendar component, including common, es (mo
 <style src="@quasar/quasar-ui-qcalendar/dist/QCalendarDay.min.css"></style>
 
 <script>
-import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/QCalendarDay.esm.js'
+  import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/QCalendarDay.esm.js'
 
-export default {
-  components: {
-    QCalendarDay
+  export default {
+    components: {
+      QCalendarDay,
+    },
   }
-}
 </script>
 ```
 
@@ -122,8 +129,7 @@ import Plugin from '@quasar/quasar-ui-qcalendar/src/QCalendarDay.js'
 import '@quasar/quasar-ui-qcalendar/src/css/calendar-day.sass'
 import App from './App.vue'
 
-const app = createApp(App)
-  .use(Plugin)
+const app = createApp(App).use(Plugin)
 ```
 
 ### Vue project from dist
@@ -133,8 +139,7 @@ import Plugin from '@quasar/quasar-ui-qcalendar/dist/QCalendarDay.esm.js'
 import '@quasar/quasar-ui-qcalendar/dist/QCalendarDay.min.css'
 import App from './App.vue'
 
-const app = createApp(App)
-  .use(Plugin)
+const app = createApp(App).use(Plugin)
 ```
 
 ### Or component import
@@ -143,13 +148,13 @@ const app = createApp(App)
 <style src="@quasar/quasar-ui-qcalendar/dist/QCalendarDay.min.css"></style>
 
 <script>
-import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/QCalendarDay.esm.js'
+  import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/QCalendarDay.esm.js'
 
-export default {
-  components: {
-    QCalendarDay
+  export default {
+    components: {
+      QCalendarDay,
+    },
   }
-}
 </script>
 ```
 
@@ -164,42 +169,58 @@ Add the following tag(s) after the Quasar ones:
 ```html
 <head>
   <!-- AFTER the Quasar stylesheet tags: -->
-  <link href="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar@next/dist/QCalendarMonth.min.css" rel="stylesheet" type="text/css">
+  <link
+    href="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar/dist/QCalendarMonth.min.css"
+    rel="stylesheet"
+    type="text/css"
+  />
 </head>
 <body>
   <!-- at end of body, AFTER Quasar script(s): -->
-  <script src="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar@next/dist/QCalendarMonth.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar/dist/QCalendarMonth.umd.min.js"></script>
 
   <!-- If you need Timestamp functions: -->
-  <script src="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar@next/dist/Timestamp.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar/dist/Timestamp.umd.min.js"></script>
 </body>
 ```
 
 If you need the RTL variant of the CSS, then go for the following (instead of the above stylesheet link):
 
 ```html
-<link href="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar@next/dist/QCalendarMonth.rtl.min.css" rel="stylesheet" type="text/css">
+<link
+  href="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar/dist/QCalendarMonth.rtl.min.css"
+  rel="stylesheet"
+  type="text/css"
+/>
 ```
 
 ### Vue install
 
 ```html
 <head>
-  <link href="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar@next/dist/QCalendarMonth.min.css" rel="stylesheet" type="text/css">
+  <link
+    href="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar/dist/QCalendarMonth.min.css"
+    rel="stylesheet"
+    type="text/css"
+  />
 </head>
 <body>
   <!-- at end of body: -->
-  <script src="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar@next/dist/QCalendarMonth.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar/dist/QCalendarMonth.umd.min.js"></script>
 
   <!-- If you need Timestamp functions: -->
-  <script src="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar@next/dist/Timestamp.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar/dist/Timestamp.umd.min.js"></script>
 </body>
 ```
 
 If you need the RTL variant of the CSS, then go for the following (instead of the above stylesheet link):
 
 ```html
-<link href="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar@next/dist/QCalendarMonth.rtl.min.css" rel="stylesheet" type="text/css">
+<link
+  href="https://cdn.jsdelivr.net/npm/@quasar/quasar-ui-qcalendar/dist/QCalendarMonth.rtl.min.css"
+  rel="stylesheet"
+  type="text/css"
+/>
 ```
 
 Your Vue source:
@@ -208,13 +229,12 @@ Your Vue source:
 const app = Vue.createApp({
   setup() {
     // ...your set up methods
-  }
-});
+  },
+})
 
-app.component("QCalendarDay", QCalendarDay.QCalendarDay);
-app.mount("#app");
+app.component('QCalendarDay', QCalendarDay.QCalendarDay)
+app.mount('#app')
 ```
-
 
 ## Testing on Codepen
 
@@ -238,6 +258,6 @@ or
 
 [QCalendarTask UMD Example on Codepen](https://codepen.io/Hawkeye64/pen/RwwwKQL)
 
-
 # Project source
-Can be found [here](https://github.com/quasarframework/quasar-ui-qcalendar/tree/next).
+
+Can be found [here](https://github.com/quasarframework/quasar-ui-qcalendar/tree).

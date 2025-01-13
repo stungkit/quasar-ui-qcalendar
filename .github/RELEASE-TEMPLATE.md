@@ -1,4 +1,4 @@
-# QCalendar v4.x.x-beta.x
+# QCalendar v4.x.x
 
 ## What's Changed
 
@@ -10,12 +10,12 @@
 
 ## Installing
 
-Use the `next` tag whenever you'd install it normally.
-
 ```
-$ yarn add @quasar/quasar-ui-qcalendar@next
+$ pnpm add @quasar/quasar-ui-qcalendar
 # or
-$ quasar ext add @quasar/qcalendar@next
+$ yarn add @quasar/quasar-ui-qcalendar
+# or
+$ quasar ext add @quasar/qcalendar
 ```
 
 ## Documentation

@@ -1,7 +1,7 @@
 # QCalendar (Vue Plugin, UMD and Quasar App Extension)
 
-![@quasar/quasar-ui-qcalendar](https://img.shields.io/npm/v/@quasar/quasar-ui-qcalendar/next?label=@quasar/quasar-ui-qcalendar@next)
-![@quasar/quasar-app-extension-qcalendar](https://img.shields.io/npm/v/@quasar/quasar-app-extension-qcalendar/next?label=@quasar/quasar-app-extension-qcalendar@next)
+![@quasar/quasar-ui-qcalendar](https://img.shields.io/npm/v/@quasar/quasar-ui-qcalendar?label=@quasar/quasar-ui-qcalendar)
+![@quasar/quasar-app-extension-qcalendar](https://img.shields.io/npm/v/@quasar/quasar-app-extension-qcalendar?label=@quasar/quasar-app-extension-qcalendar)
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/quasarframework/quasar-ui-qcalendar)]()
 [![GitHub repo size in bytes](https://img.shields.io/github/repo-size/quasarframework/quasar-ui-qcalendar)]()
 [![npm](https://img.shields.io/npm/dt/@quasar/quasar-app-extension-qcalendar)](https://www.npmjs.com/package/@quasar/quasar-app-extension-qcalendar)
@@ -21,7 +21,6 @@ QCalendar allows for viewing of **day** (1-6 days), **week**, **monthly**, **sch
 
 v4.0.0
 
-- QCalendar v4.x (alpha/beta) lives in the **next** branch. This will change at some point in the future when v4.0.0 release is available.
 - Be sure to read the [documentation](https://qcalendar.netlify.app/)
 
 ---
@@ -34,39 +33,39 @@ v4.0.0
 
 **Month view with events**
 
-![QCalendar example month view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/next/packages/docs/public/qcalendarmonth-event-slots.png)
+![QCalendar example month view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendarmonth-event-slots.png)
 
 **Planner example**
 
-![QCalendar example agenda view - planner](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/next/packages/docs/public/qcalendaragenda-planner.png)
+![QCalendar example agenda view - planner](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendaragenda-planner.png)
 
 **Monthly Mini-mode**
 
-![QCalendar example mini-mode selection](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/next/packages/docs/public/qcalendarmonth-minimode-range-selection.png)
+![QCalendar example mini-mode selection](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendarmonth-minimode-range-selection.png)
 
 **Multi-month selector (mini-mode)**
 
-![QCalendar example multi-month selection](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/next/packages/docs/public/qcalendar-month-view-mini-mode-multi-month-selection.png)
+![QCalendar example multi-month selection](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendar-month-view-mini-mode-multi-month-selection.png)
 
 **Agenda view with custom content**
 
-![QCalendar example agenda view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/next/packages/docs/public/qcalendar-agenda-view.png)
+![QCalendar example agenda view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendar-agenda-view.png)
 
 **Day view with events**
 
-![QCalendar example day view - events](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/next/packages/docs/public/qcalendar-day-view.png)
+![QCalendar example day view - events](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendar-day-view.png)
 
 **Resource view with events**
 
-![QCalendar example resource view - events](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/next/packages/docs/public/qcalendar-resource-view.png)
+![QCalendar example resource view - events](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendar-resource-view.png)
 
 **Scheduler view**
 
-![QCalendar example scheduler view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/next/packages/docs/public/qcalendar-scheduler-view.png)
+![QCalendar example scheduler view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendar-scheduler-view.png)
 
 **Task view**
 
-![QCalendar task view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/next/packages/docs/public/QCalendarTask.png)
+![QCalendar task view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/QCalendarTask.png)
 
 Including support for locales, optional theming, 1st day Monday, 5-day work weeks, work week numbers, selected days, disabled days, day of year...
 
