@@ -11,4 +11,5 @@ import QCalendarDayApi from '@quasar/quasar-ui-qcalendar/dist/api/QCalendarDay.j
 <MarkdownApi :api="QCalendarDayApi" name="QCalendarDay"/>
 
 <MarkdownExample title="Month Cell Width" file="IntervalsMonthCellWidth" no-github no-edit/>
+
 <MarkdownExample title="Month Navigation" file="IntervalsMonthNavigation" no-github no-edit/>
