@@ -336,19 +336,6 @@
         <p>Available for Quasar Framework CLI, Vue CLI and UMD</p>
       </div>
 
-      <!-- <main class="content grid-container">
-      <div
-        v-for="plugin in mdPlugins"
-        :key="plugin.name"
-        class="section grid-item"
-        @click="navigate(plugin.path)"
-      >
-        <q-card flat style="background: transparent">
-          <h2>{{ plugin.name }}</h2>
-          <p>{{ plugin.desc }}</p>
-        </q-card>
-      </div>
-    </main> -->
       <q-separator />
       <div class="byline">
         <p>
@@ -376,7 +363,6 @@ import { computed } from 'vue'
 import { useQuasar } from 'quasar'
 import { QIcon } from 'quasar'
 import { fabGithub } from '@quasar/extras/fontawesome-v6'
-// import { useRouter } from 'vue-router'
 import siteConfig from '../../siteConfig'
 import { biArrowRightCircle } from '@quasar/extras/bootstrap-icons'
 
@@ -385,25 +371,6 @@ const $q = useQuasar()
 const layout = computed(() => {
   return $q.screen.lt.sm ? 'dense' : $q.screen.lt.md ? 'comfortable' : 'loose'
 })
-
-// const router = useRouter()
-
-// const appExtensions = [
-//   {
-//     name: 'viteMdPluginAppExt',
-//     desc: 'Adds support for creating Vue SFCs from Markdown files.',
-//     path: '/quasar-app-extensions/vitemdpluginappext/overview',
-//   },
-//   {
-//     name: 'Q-Press (app-ext)',
-//     desc: 'Create beautiful documentation sites with Q-Press.',
-//     path: '/quasar-app-extensions/qpress/overview',
-//   },
-// ]
-
-// function navigate(path: string) {
-//   router.push(path)
-// }
 </script>
 
 <style lang="scss" scoped>
