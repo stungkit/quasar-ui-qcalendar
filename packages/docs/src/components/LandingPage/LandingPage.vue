@@ -1,13 +1,9 @@
 <template>
   <div class="landing-page markdown-brand">
     <header class="hero">
-      <img
-        src="https://raw.githubusercontent.com/md-plugins/md-plugins/refs/heads/main/media/markdown-1024x1024.png"
-        alt="Markdown Plugins Logo"
-        class="hero-logo"
-      />
-      <h1 class="hero-title">Markdown Plugins</h1>
-      <h2 class="hero-subtitle">(@md-plugins)</h2>
+      <img src="/qcalendar-logo.png" alt="QCalendar Logo" class="hero-logo" />
+      <h1 class="hero-title">QCalendar</h1>
+      <h2 class="hero-subtitle"></h2>
       <div class="row justify-center">
         <p class="hero-subtitle2" style="max-width: 660px">
           {{ siteConfig.description }}
@@ -19,36 +15,328 @@
           to="/getting-started/introduction"
           class="hero-button q-btn q-btn-item non-selectable no-outline q-btn--standard q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase q-btn--rounded q-btn--dense"
         >
-          <span
-            class="q-btn__content text-center col items-center q-anchor--skip justify-center row"
+          <div
+            class="row justify-around items-center q-btn__content text-center col items-center q-anchor--skip"
+            style="width: 120px"
           >
-            Get Started
-          </span>
+            <div>Get Started</div>
+            <q-icon :name="biArrowRightCircle" />
+          </div>
         </router-link>
         <a
-          href="https://github.com/md-plugins/md-plugins"
+          href="https://github.com/quasarframework/quasar-ui-qcalendar/tree/next"
           target="_blank"
           class="hero-button q-btn q-btn-item non-selectable no-outline q-btn--standard q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase q-btn--rounded q-btn--dense"
         >
-          <span
-            class="q-btn__content text-center col items-center q-anchor--skip justify-center row"
+          <div
+            class="row justify-around items-center q-btn__content text-center col items-center q-anchor--skip"
+            style="width: 120px"
           >
             <q-icon :name="fabGithub" class="q-mr-sm" />
             GitHub Repo
-          </span>
+          </div>
         </a>
       </div>
     </header>
     <div class="byline">
       <p>
-        Markdown Plugins go beyond the standard Markdown syntax.<br />Discover the power of Markdown
-        Plugins and enhance your documentation experience!
+        QCalendar is your all-in-one calendar solution for Vue and Quasar.<br />Discover the power
+        of QCalendar and enhance your calendar experience!
       </p>
     </div>
     <div class="row justify-center hero">
-      <div class="hero-title">Markdown-It! Plugins</div>
+      <div class="hero-title">QCalendar Features</div>
     </div>
-    <main class="content grid-container">
+    <div class="q-px-lg q-pb-xl">
+      <q-timeline :layout="layout" color="primary q-mb-xl">
+        <q-timeline-entry heading>
+          <div style="font-size: 32px; font-weight: 600">QCalendar</div>
+          <div style="font-size: 22px; font-weight: 600" class="text-grey">
+            A Vue Calendar that has everything you need
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry title="QCalendarDay" subtitle="Show as many days as needed" side="left">
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\QCalendarDay.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry
+          title="QCalendarMonth"
+          subtitle="Keep track of events, reminders and tasks"
+          side="right"
+        >
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\QCalendarMonth.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry
+          title="QCalendarMonth (mini-mode)"
+          subtitle="Create popups with multi-range selection"
+          side="left"
+        >
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\QCalendarMonth--mini-mode.png"
+                spinner-color="white"
+                style="max-width: 200px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry title="QCalendarAgenda" subtitle="Add the content you want" side="right">
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\QCalendarAgenda.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry title="QCalendarResource" subtitle="Manage resources by time" side="left">
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\QCalendarResource.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry title="QCalendarScheduler" subtitle="Manage resources daily" side="right">
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\QCalendarScheduler.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry
+          title="QCalendarTask"
+          subtitle="Create timesheet and Gantt charts"
+          side="left"
+        >
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\QCalendarTask.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry heading>
+          <div style="font-size: 32px; font-weight: 600">Configurable</div>
+        </q-timeline-entry>
+
+        <q-timeline-entry title="Events" subtitle="Slots lets you render events" side="left">
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\qcalendarmonth-event-slots.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry
+          title="Planner"
+          subtitle="Add extra columns with Agenda Calendar"
+          side="right"
+        >
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\qcalendaragenda-planner.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry
+          title="Timesheets"
+          subtitle="Use a Footer summary with Task Calendar"
+          side="left"
+        >
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\QCalendarTask.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry heading>
+          <div style="font-size: 32px; font-weight: 600">User-defined Themes</div>
+        </q-timeline-entry>
+
+        <q-timeline-entry
+          title="Blue"
+          side="left"
+          color="blue"
+          subtitle="Change your calendar with CSS vars"
+        >
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\qcalendarweek-blue-theme.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry
+          title="Indigo"
+          side="right"
+          color="indigo"
+          subtitle="Use our Theme Builder to create themes"
+        >
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\qcalendarmonth-indigo-theme.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry
+          title="Deep Purple"
+          side="left"
+          color="deep-purple"
+          subtitle="Create stunning calendars"
+        >
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\qcalendarmonth-minimode-deep-purple-theme.png"
+                spinner-color="white"
+                style="max-width: 240px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry title="Brown" side="right" color="brown" subtitle="Be bold!">
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\qcalendarscheduler-brown-theme.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry title="Teal" side="left" color="teal" subtitle="Be creative!">
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\qcalendartask-teal-theme.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry
+          title="Dark"
+          subtitle="Automatic dark mode when used with Quasar Framework"
+          side="right"
+          color="black"
+        >
+          <div>
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\qcalendarweek-dark-mode.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+
+        <q-timeline-entry
+          title="Interactive Theme Builder"
+          subtitle="Create your own themes with Theme Builder"
+          side="left"
+          color="orange-8"
+        >
+          <div class="q-mb-xl">
+            <q-intersection transition="scale" once>
+              <q-img
+                src="\theme-builder.png"
+                spinner-color="white"
+                style="max-width: 350px"
+                class="shadow-12 rounded-borders"
+              />
+            </q-intersection>
+          </div>
+        </q-timeline-entry>
+      </q-timeline>
+
+      <div class="full-width column justify-center items-center text-h5">
+        <p>No dependencies other than Vue</p>
+        <p>Available for Quasar Framework CLI, Vue CLI and UMD</p>
+      </div>
+
+      <!-- <main class="content grid-container">
       <div
         v-for="plugin in mdPlugins"
         :key="plugin.name"
@@ -60,152 +348,62 @@
           <p>{{ plugin.desc }}</p>
         </q-card>
       </div>
-    </main>
-    <div class="row justify-center hero">
-      <div class="hero-title">Vite Plugins</div>
-    </div>
-    <main class="content grid-container">
-      <div
-        v-for="plugin in vitePlugins"
-        :key="plugin.name"
-        class="section grid-item"
-        @click="navigate(plugin.path)"
-      >
-        <h2>{{ plugin.name }}</h2>
-        <p>{{ plugin.desc }}</p>
+    </main> -->
+      <q-separator />
+      <div class="byline">
+        <p>
+          Don't forget to check out the Q-Press app extension for Quasar to create beautiful
+          documentation sites.
+        </p>
+        <p>
+          This site is built with Q-Press! Install it, set it up, choose a theme and start your own
+          site!
+        </p>
       </div>
-    </main>
-    <div class="row justify-center hero">
-      <div class="hero-title">Quasar App Extensions</div>
-    </div>
-    <main class="content grid-container">
-      <div
-        v-for="ext in appExtensions"
-        :key="ext.name"
-        class="section grid-item"
-        @click="navigate(ext.path)"
-      >
-        <h2>{{ ext.name }}</h2>
-        <p>{{ ext.desc }}</p>
+      <q-separator />
+      <div class="byline">
+        <p>
+          We hope you find this documentation helpful. If you have any questions or need further
+          assistance, please don't hesitate to reach out to our support team.
+        </p>
       </div>
-    </main>
-    <q-separator />
-    <div class="byline">
-      <p>
-        Don't forget to check out the Q-Press app extension for Quasar to create beautiful
-        documentation sites.
-      </p>
-      <p>
-        This site is built with Q-Press! Install it, set it up, choose a theme and start your own
-        site!
-      </p>
-    </div>
-    <q-separator />
-    <div class="byline">
-      <p>
-        We hope you find this documentation helpful. If you have any questions or need further
-        assistance, please don't hesitate to reach out to our support team.
-      </p>
-      <p>Happy coding!</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useQuasar } from 'quasar'
 import { QIcon } from 'quasar'
 import { fabGithub } from '@quasar/extras/fontawesome-v6'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import siteConfig from '../../siteConfig'
+import { biArrowRightCircle } from '@quasar/extras/bootstrap-icons'
 
-const router = useRouter()
+const $q = useQuasar()
 
-const mdPlugins = [
-  {
-    name: 'Blockquote Plugin',
-    desc: 'Adds support for creating Markdown blockquotes.',
-    path: '/md-plugins/blockquote/overview',
-  },
-  {
-    name: 'Codeblocks Plugin',
-    desc: 'Adds support for creating Markdown code blocks.',
-    path: '/md-plugins/codeblocks/overview',
-  },
-  {
-    name: 'Container Plugin',
-    desc: 'Adds support for creating Markdown containers.',
-    path: '/md-plugins/containers/overview',
-  },
-  {
-    name: 'Frontmatter Plugin',
-    desc: 'Adds support for getting frontmatter data into your Markdown.',
-    path: '/md-plugins/frontmatter/overview',
-  },
-  {
-    name: 'Headers Plugin',
-    desc: "Adds support for creating ToC's inMarkdown.",
-    path: '/md-plugins/headers/overview',
-  },
-  {
-    name: 'Image Plugin',
-    desc: 'Adds support for creating Markdown images.',
-    path: '/md-plugins/image/overview',
-  },
-  {
-    name: 'Imports Plugin',
-    desc: 'Adds support for creating custom imports for your Markdown.',
-    path: '/md-plugins/imports/overview',
-  },
-  {
-    name: 'Inlinecode Plugin',
-    desc: 'Adds support for creating Markdown inline code.',
-    path: '/md-plugins/inline-code/overview',
-  },
-  {
-    name: 'Link Plugin',
-    desc: 'Adds support for creating Markdown links.',
-    path: '/md-plugins/link/overview',
-  },
-  {
-    name: 'Table Plugin',
-    desc: 'Adds support for creating Markdown tables.',
-    path: '/md-plugins/table/overview',
-  },
-  {
-    name: 'Title Plugin',
-    desc: 'Adds support for creating Markdown titles.',
-    path: '/md-plugins/title/overview',
-  },
-]
+const layout = computed(() => {
+  return $q.screen.lt.sm ? 'dense' : $q.screen.lt.md ? 'comfortable' : 'loose'
+})
 
-const vitePlugins = [
-  {
-    name: 'Vite MD Plugin',
-    desc: 'Adds support for creating Vue SFCs from Markdown files.',
-    path: '/vite-plugins/vitemdplugin/overview',
-  },
-  {
-    name: 'Vite Examples Plugin',
-    desc: 'Adds support for importing Vue files as raw source.',
-    path: '/vite-plugins/viteexamplesplugin/overview',
-  },
-]
+// const router = useRouter()
 
-const appExtensions = [
-  {
-    name: 'viteMdPluginAppExt',
-    desc: 'Adds support for creating Vue SFCs from Markdown files.',
-    path: '/quasar-app-extensions/vitemdpluginappext/overview',
-  },
-  {
-    name: 'Q-Press (app-ext)',
-    desc: 'Create beautiful documentation sites with Q-Press.',
-    path: '/quasar-app-extensions/qpress/overview',
-  },
-]
+// const appExtensions = [
+//   {
+//     name: 'viteMdPluginAppExt',
+//     desc: 'Adds support for creating Vue SFCs from Markdown files.',
+//     path: '/quasar-app-extensions/vitemdpluginappext/overview',
+//   },
+//   {
+//     name: 'Q-Press (app-ext)',
+//     desc: 'Create beautiful documentation sites with Q-Press.',
+//     path: '/quasar-app-extensions/qpress/overview',
+//   },
+// ]
 
-function navigate(path: string) {
-  router.push(path)
-}
+// function navigate(path: string) {
+//   router.push(path)
+// }
 </script>
 
 <style lang="scss" scoped>
@@ -245,6 +443,8 @@ function navigate(path: string) {
 .hero-subtitle2 {
   font-size: 1.2em;
   line-height: 1.2em;
+  font-weight: 700;
+  text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 .hero-buttons {
