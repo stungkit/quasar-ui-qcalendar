@@ -116,7 +116,7 @@ export default defineComponent({
       }
     }
 
-    function onMouseMoveDay({ scope, event }) {
+    function onMouseMoveDay({ scope /*, event*/ }) {
       if (mouseDown.value === true && scope.outside !== true) {
         otherTimestamp.value = scope.timestamp
       }

@@ -96,7 +96,7 @@ export default defineComponent({
           month: 'long',
           timeZone: 'UTC',
         })
-      } catch (e) {
+      } catch {
         //
       }
     }

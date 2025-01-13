@@ -88,7 +88,7 @@ export default defineComponent({
     QCalendarMonth,
   },
 
-  setup(props, { slots, emit }) {
+  setup() {
     const countries = new Holidays().getCountries()
     const selectedDate = ref(today()),
       selectedMonth = reactive([]),
@@ -272,7 +272,7 @@ export default defineComponent({
           month: 'long',
           timeZone: 'UTC',
         })
-      } catch (e) {
+      } catch {
         //
       }
     }
@@ -341,14 +341,14 @@ export default defineComponent({
       return map
     })
 
-    function badgeClasses(event, type) {
+    function badgeClasses(event /*, type*/) {
       return {
         [`text-white bg-${event.bgcolor}`]: true,
         'rounded-border': true,
       }
     }
 
-    function badgeStyles(day, event) {
+    function badgeStyles(/*day, event*/) {
       const s = {}
       // s.left = day.weekday === 0 ? 0 : (day.weekday * parsedCellWidth) + '%'
       // s.top = 0

@@ -120,7 +120,7 @@ export default defineComponent({
       }
     }
 
-    function onMouseMoveTime({ scope, event }) {
+    function onMouseMoveTime({ scope /*, event*/ }) {
       if (mobile.value !== true && mouseDown.value === true) {
         otherTimestamp.value = scope.timestamp
       }

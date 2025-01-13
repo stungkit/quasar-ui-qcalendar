@@ -186,7 +186,7 @@ export default defineComponent({
     }
   },
   methods: {
-    getWeekEvents(week, weekdays) {
+    getWeekEvents(week /*, weekdays*/) {
       const firstDay = parsed(week[0].date + ' 00:00')
       const lastDay = parsed(week[week.length - 1].date + ' 23:59')
 

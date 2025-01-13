@@ -194,7 +194,7 @@ export default defineComponent({
       e.dataTransfer.setData('ID', item.id)
     },
 
-    onDragEnter(e, type, scope) {
+    onDragEnter(e, type /*, scope*/) {
       console.log('onDragEnter')
       if (type === 'day' || type === 'head-day') {
         e.preventDefault()
@@ -202,7 +202,7 @@ export default defineComponent({
       }
     },
 
-    onDragOver(e, type, scope) {
+    onDragOver(e, type /*, scope*/) {
       console.log('onDragOver')
       if (type === 'day' || type === 'head-day') {
         e.preventDefault()
@@ -210,7 +210,7 @@ export default defineComponent({
       }
     },
 
-    onDragLeave(e, type, scope) {
+    onDragLeave(e, type /*, scope*/) {
       console.log('onDragLeave')
       if (type === 'day' || type === 'head-day') {
         return false

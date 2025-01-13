@@ -95,7 +95,7 @@ export default defineComponent({
           year: 'numeric',
           timeZone: 'UTC',
         })
-      } catch (e) {
+      } catch {
         //
       }
     },

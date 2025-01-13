@@ -327,19 +327,19 @@ export default defineComponent({
       return tasks
     },
 
-    weekdayClass(data) {
+    weekdayClass(/*data*/) {
       return {
         'task__weekday--style': true,
       }
     },
 
-    dayClass(data) {
+    dayClass(/*data*/) {
       return {
         'task__day--style': true,
       }
     },
 
-    footerDayClass(data) {
+    footerDayClass(/*data*/) {
       return {
         'task__footer--day__style': true,
       }

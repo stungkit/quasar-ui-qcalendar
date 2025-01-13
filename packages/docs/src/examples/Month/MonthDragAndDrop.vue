@@ -163,19 +163,19 @@ export default defineComponent({
       e.dataTransfer.setData('ID', item.id)
     },
 
-    onDragEnter(e, type, scope) {
+    onDragEnter(e /*, type, scope*/) {
       console.log('onDragEnter')
       e.preventDefault()
       return true
     },
 
-    onDragOver(e, type, scope) {
+    onDragOver(e /*, type, scope*/) {
       console.log('onDragOver')
       e.preventDefault()
       return true
     },
 
-    onDragLeave(e, type, scope) {
+    onDragLeave(/*e, type, scope*/) {
       console.log('onDragLeave')
       return false
     },

@@ -198,14 +198,14 @@ export default defineComponent({
     },
   },
   methods: {
-    badgeClasses(event, type) {
+    badgeClasses(event /*, type*/) {
       return {
         [`text-white bg-${event.bgcolor}`]: true,
         'rounded-border': true,
       }
     },
 
-    badgeStyles(day, event) {
+    badgeStyles(/*day, event*/) {
       const s = {}
       // s.left = day.weekday === 0 ? 0 : (day.weekday * this.parsedCellWidth) + '%'
       // s.top = 0
