@@ -1,3 +1,4 @@
+/*global console process __dirname */
 /* eslint-disable array-bracket-spacing */
 const path = require('path')
 const sass = require('sass-embedded')
@@ -6,8 +7,8 @@ const cssnano = require('cssnano')
 const rtl = require('rtlcss')
 const autoprefixer = require('autoprefixer')
 
-const buildConf = require('./config')
-const buildUtils = require('./utils')
+const buildConf = require('./config.cjs')
+const buildUtils = require('./utils.cjs')
 
 const postCssCompiler = postcss([autoprefixer])
 const postCssRtlCompiler = postcss([rtl({})])
@@ -27,16 +28,16 @@ const nano = postcss([
 ])
 
 Promise.all([
-  generate('src/index.sass', 'dist/index'),
-  generate('src/QCalendar.sass', 'dist/QCalendar'),
-  generate('src/QCalendarAgenda.sass', 'dist/QCalendarAgenda'),
-  generate('src/QCalendarDay.sass', 'dist/QCalendarDay'),
-  generate('src/QCalendarMonth.sass', 'dist/QCalendarMonth'),
-  generate('src/QCalendarResource.sass', 'dist/QCalendarResource'),
-  generate('src/QCalendarScheduler.sass', 'dist/QCalendarScheduler'),
-  generate('src/QCalendarTask.sass', 'dist/QCalendarTask'),
-  generate('src/QCalendarTransitions.sass', 'dist/QCalendarTransitions'),
-  generate('src/QCalendarVariables.sass', 'dist/QCalendarVariables'),
+  generate('src/index.scss', 'dist/index'),
+  generate('src/QCalendar.scss', 'dist/QCalendar'),
+  generate('src/QCalendarAgenda.scss', 'dist/QCalendarAgenda'),
+  generate('src/QCalendarDay.scss', 'dist/QCalendarDay'),
+  generate('src/QCalendarMonth.scss', 'dist/QCalendarMonth'),
+  generate('src/QCalendarResource.scss', 'dist/QCalendarResource'),
+  generate('src/QCalendarScheduler.scss', 'dist/QCalendarScheduler'),
+  generate('src/QCalendarTask.scss', 'dist/QCalendarTask'),
+  generate('src/QCalendarTransitions.scss', 'dist/QCalendarTransitions'),
+  generate('src/QCalendarVariables.scss', 'dist/QCalendarVariables'),
 ]).catch((e) => {
   console.error(e)
   process.exit(1)
@@ -75,9 +76,10 @@ function generate(src, dest) {
     .then((code) =>
       Promise.all([
         generateUMD(dest, code),
-        // eslint-disable-next-line promise/no-nesting
-        postCssRtlCompiler.process(code, { from: void 0 }).then((code) => generateUMD(dest, code.css, '.rtl')),
-      ])
+        postCssRtlCompiler
+          .process(code, { from: void 0 })
+          .then((code) => generateUMD(dest, code.css, '.rtl')),
+      ]),
     )
 }
 

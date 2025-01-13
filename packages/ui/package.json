@@ -4,6 +4,7 @@
   "author": "Jeff Galbraith <jeff@quasar.dev>",
   "description": "QCalendar - Day/Month/Week Calendars, Popups, Date Pickers, Schedules, Agendas, Planners and Tasks for your Vue Apps",
   "license": "MIT",
+  "type": "commonjs",
   "module": "dist/index.esm.js",
   "main": "dist/index.cjs.js",
   "typings": "dist/types/index.d.ts",
@@ -12,18 +13,18 @@
     "src"
   ],
   "scripts": {
-    "lint": "eslint --ext .js,.vue src",
-    "lint-fix": "eslint --ext .js,.vue src --fix",
+    "lint": "eslint --ext .cjs,.js,.vue src",
+    "lint-fix": "eslint --ext .cjs,.js,.vue src --fix",
     "dev": "cd dev && pnpm run dev && cd ..",
-    "dev:umd": "pnpm run build && node build/script.open-umd.js",
+    "dev:umd": "pnpm run build && node build/script.open-umd.cjs",
     "dev:ssr": "cd dev && pnpm run 'dev:ssr' && cd ..",
     "dev:ios": "cd dev && pnpm run 'dev:ios' && cd ..",
     "dev:android": "cd dev && pnpm run 'dev:android' && cd ..",
     "dev:electron": "cd dev && pnpm run 'dev:electron' && cd ..",
-    "build": "node build/index.js",
-    "build:js": "node build/script.javascript.js",
-    "build:css": "node build/script.css.js",
-    "build:api": "node build/build.api.js",
+    "build": "node build/index.cjs",
+    "build:js": "node build/script.javascript.cjs",
+    "build:css": "node build/script.css.cjs",
+    "build:api": "node build/build.api.cjs",
     "test": "jest --runInBand --no-cache"
   },
   "funding": {
