@@ -25,7 +25,7 @@
 
 <script>
 import { QCalendarMonth, today } from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/index.sass'
+import '@quasar/quasar-ui-qcalendar/src/index.scss'
 
 import { defineComponent } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'

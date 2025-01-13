@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import { ref, reactive, watch, onMounted } from 'vue'
 import { QCalendarMonth } from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/index.sass'
+import '@quasar/quasar-ui-qcalendar/src/index.scss'
 
 interface Type {
   name: string

@@ -82,7 +82,7 @@ import {
   getDateTime,
   copyTimestamp,
 } from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/index.sass'
+import '@quasar/quasar-ui-qcalendar/src/index.scss'
 
 function leftClick(e) {
   return e.button === 0

@@ -57,75 +57,75 @@
 </template>
 
 <script>
-  import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/src'
-  import '@quasar/quasar-ui-qcalendar/src/index.sass'
+import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/src'
+import '@quasar/quasar-ui-qcalendar/src/index.scss'
 
-  export default {
-    name: 'ThemeBuilderDay',
-    components: {
-      QCalendarDay,
+export default {
+  name: 'ThemeBuilderDay',
+  components: {
+    QCalendarDay,
+  },
+  props: {
+    modelValue: String,
+    styles: Object,
+  },
+  data() {
+    return {
+      selectedDate: '',
+      noActiveDate: false,
+      intervalRange: { min: 0, max: 24 },
+      intervalRangeStep: 1,
+      intervalHeight: 20,
+    }
+  },
+  computed: {
+    leftLabelRange() {
+      const a = Math.floor(this.intervalRange.min)
+      const b = Number((this.intervalRange.min % 1).toFixed(2))
+      const c = 60 * b
+      return a + ':' + (c < 10 ? c + '0' : c)
     },
-    props: {
-      modelValue: String,
-      styles: Object,
+    rightLabelRange() {
+      const a = Math.floor(this.intervalRange.max)
+      const b = Number((this.intervalRange.max % 1).toFixed(2))
+      const c = 60 * b
+      return a + ':' + (c < 10 ? c + '0' : c)
     },
-    data() {
-      return {
-        selectedDate: '',
-        noActiveDate: false,
-        intervalRange: { min: 0, max: 24 },
-        intervalRangeStep: 1,
-        intervalHeight: 20,
+    intervalStart() {
+      return this.intervalRange.min * (1 / this.intervalRangeStep)
+    },
+    intervalCount() {
+      return (this.intervalRange.max - this.intervalRange.min) * (1 / this.intervalRangeStep)
+    },
+  },
+  watch: {
+    modelValue(val) {
+      this.selectedDate = val
+    },
+    intervalRangeStep(val) {
+      // normalize min/max values according to the step value
+      const calcMin = (range) => {
+        const b = Number((range % 1).toFixed(2))
+        const c = b % val
+        if (c > 0) {
+          return range + c
+        }
+        return range
       }
-    },
-    computed: {
-      leftLabelRange() {
-        const a = Math.floor(this.intervalRange.min)
-        const b = Number((this.intervalRange.min % 1).toFixed(2))
-        const c = 60 * b
-        return a + ':' + (c < 10 ? c + '0' : c)
-      },
-      rightLabelRange() {
-        const a = Math.floor(this.intervalRange.max)
-        const b = Number((this.intervalRange.max % 1).toFixed(2))
-        const c = 60 * b
-        return a + ':' + (c < 10 ? c + '0' : c)
-      },
-      intervalStart() {
-        return this.intervalRange.min * (1 / this.intervalRangeStep)
-      },
-      intervalCount() {
-        return (this.intervalRange.max - this.intervalRange.min) * (1 / this.intervalRangeStep)
-      },
-    },
-    watch: {
-      modelValue(val) {
-        this.selectedDate = val
-      },
-      intervalRangeStep(val) {
-        // normalize min/max values according to the step value
-        const calcMin = (range) => {
-          const b = Number((range % 1).toFixed(2))
-          const c = b % val
-          if (c > 0) {
-            return range + c
-          }
-          return range
+      const calcMax = (range) => {
+        const b = Number((range % 1).toFixed(2))
+        const c = b % val
+        if (c > 0) {
+          return range - c
         }
-        const calcMax = (range) => {
-          const b = Number((range % 1).toFixed(2))
-          const c = b % val
-          if (c > 0) {
-            return range - c
-          }
-          return range
-        }
-        this.intervalRange.min = calcMin(this.intervalRange.min)
-        this.intervalRange.max = calcMax(this.intervalRange.max)
-      },
+        return range
+      }
+      this.intervalRange.min = calcMin(this.intervalRange.min)
+      this.intervalRange.max = calcMax(this.intervalRange.max)
     },
-    beforeMount() {
-      this.selectedDate = this.modelValue
-    },
-  }
+  },
+  beforeMount() {
+    this.selectedDate = this.modelValue
+  },
+}
 </script>
