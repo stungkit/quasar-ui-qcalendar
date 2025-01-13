@@ -103,6 +103,9 @@ importers:
       '@md-plugins/quasar-app-extension-q-press':
         specifier: 0.1.0-alpha.16
         version: 0.1.0-alpha.16(gray-matter@4.0.3)(markdown-it-container@4.0.0)(markdown-it@14.1.0)(prismjs@1.29.0)
+      '@md-plugins/shared':
+        specifier: 0.1.0-alpha.17
+        version: 0.1.0-alpha.17(markdown-it@14.1.0)
       '@md-plugins/vite-examples-plugin':
         specifier: 0.1.0-alpha.16
         version: 0.1.0-alpha.16
@@ -1390,6 +1393,11 @@ packages:
 
   '@md-plugins/shared@0.1.0-alpha.16':
     resolution: {integrity: sha512-WK/GDeXF7vugQvd7l5CnvfwXyg6nlrFEBYccStMp7KdCt2K07Qb+ZmtyzUN+ZS4ZXZEUgYfwJhMOvIDAF36/ig==}
+    peerDependencies:
+      markdown-it: ^14.1.0
+
+  '@md-plugins/shared@0.1.0-alpha.17':
+    resolution: {integrity: sha512-D4yNXk7Ahp4hCxdpmy6zrBLZTU5YTibxlBAUk892efMLDAuk607/nw2YrP9Rz1dvSGBDPLKwViK7jf+WCxK1mg==}
     peerDependencies:
       markdown-it: ^14.1.0
 
@@ -7285,6 +7293,10 @@ snapshots:
       - prismjs
 
   '@md-plugins/shared@0.1.0-alpha.16(markdown-it@14.1.0)':
+    dependencies:
+      markdown-it: 14.1.0
+
+  '@md-plugins/shared@0.1.0-alpha.17(markdown-it@14.1.0)':
     dependencies:
       markdown-it: 14.1.0
 
