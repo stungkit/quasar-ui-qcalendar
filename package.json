@@ -2,15 +2,25 @@
   "name": "qcalendar",
   "version": "1.0.0",
   "description": "QCalendar mono-repo",
-  "workspaces": [
-    "ui",
-    "docs"
-  ],
   "author": "Jeff Galbraith <jeff@quasar.dev>",
   "license": "MIT",
   "private": true,
+  "packageManager": "pnpm@9.15.3",
   "scripts": {
-    "clean": "rm -rf node_modules yarn.lock ui/node_modules docs/node_modules",
-    "build:all": "yarn && cd ./ui && yarn build && cd ../docs && quasar build"
+    "clean": "rm -rf node_modules pnpm-lock.yaml packages/ui/node_modules packages/docs/node_modules",
+    "build": "cd packages/ui && pnpm build && cd ../docs && quasar build",
+    "ci:publish": "pnpm -r publish --access public --publish-branch dev"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@types/node": "^22.10.6",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@vitest/coverage-istanbul": "^2.1.8",
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "typescript": "~5.7.3",
+    "unbuild": "^3.3.1",
+    "vitest": "^2.1.8"
   }
 }
