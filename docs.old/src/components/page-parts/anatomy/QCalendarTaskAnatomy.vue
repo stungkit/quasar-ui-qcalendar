@@ -431,19 +431,19 @@
         return t
       }
 
-      function weekdayClass(data) {
+      function weekdayClass(/*data*/) {
         return {
           'task__weekday--style': true,
         }
       }
 
-      function dayClass(data) {
+      function dayClass(/*data*/) {
         return {
           'task__day--style': true,
         }
       }
 
-      function footerDayClass(data) {
+      function footerDayClass(/*data*/) {
         return {
           'task__footer--day__style': true,
         }

@@ -308,7 +308,7 @@
         return tasks
       },
 
-      weekdayClass(data) {
+      weekdayClass(/*data*/) {
         const timestamp = data.scope.timestamp
         return {
           'task__weekday--style': true,
@@ -316,7 +316,7 @@
         }
       },
 
-      dayClass(data) {
+      dayClass(/*data*/) {
         const timestamp = data.scope.timestamp
         return {
           'task__day--style': true,
@@ -324,7 +324,7 @@
         }
       },
 
-      footerDayClass(data) {
+      footerDayClass(/*data*/) {
         const timestamp = data.scope.timestamp
         return {
           'task__footer--day__style': true,
