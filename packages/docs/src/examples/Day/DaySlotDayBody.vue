@@ -90,9 +90,9 @@ import {
   parsed,
   parseTime,
 } from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.sass'
+import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
+import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
+import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.scss'
 
 import { defineComponent } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'

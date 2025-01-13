@@ -143,9 +143,9 @@ import {
   isBetweenDates,
   parsed,
 } from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendar.sass'
+import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
+import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
+import '@quasar/quasar-ui-qcalendar/src/QCalendar.scss'
 
 import NavigationBar from 'components/NavigationBar.vue'
 

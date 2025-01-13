@@ -73,9 +73,9 @@ import {
   today,
   isBetweenDates,
 } from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
+import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
+import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
+import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.scss'
 
 import { defineComponent, ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'

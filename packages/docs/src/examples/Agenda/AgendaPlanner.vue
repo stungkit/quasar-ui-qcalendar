@@ -267,9 +267,9 @@ import {
   daysBetween,
   createNativeLocaleFormatter,
 } from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarAgenda.sass'
+import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
+import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
+import '@quasar/quasar-ui-qcalendar/src/QCalendarAgenda.scss'
 
 import Checkbox from '@carbon/icons-vue/es/checkbox/24'
 import CheckboxChecked from '@carbon/icons-vue/es/checkbox--checked/24'
