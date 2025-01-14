@@ -2,12 +2,10 @@
   <div class="q-mr-xs q-mb-xs q-px-sm planner-item">
     <div style="display: flex; align-items: center; justify-content: start; flex-wrap: nowrap">
       <div style="max-width: 25px; min-width: 25px">
-        <CheckboxChecked
-          v-if="modelValue === true"
-          :style="userIconStyle"
-          @clicked.stop.prevent="onClicked"
-        />
-        <Checkbox v-else :style="userIconStyle" @clicked.stop.prevent="onClicked" />
+        <div :style="userIconStyle">
+          <CheckboxChecked v-if="modelValue === true" @clicked.stop.prevent="onClicked" />
+          <Checkbox v-else @clicked.stop.prevent="onClicked" />
+        </div>
       </div>
       <div class="ellipsis" :style="userStyle">
         {{ name }}
@@ -67,6 +65,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useQuasar } from 'quasar'
 import Checkbox from '@carbon/icons-vue/es/checkbox/16'
 import CheckboxChecked from '@carbon/icons-vue/es/checkbox--checked/16'
 import Location from '@carbon/icons-vue/es/location/16'
@@ -78,7 +77,6 @@ import CurrencyDollar from '@carbon/icons-vue/es/currency--dollar/16'
 import Alarm from '@carbon/icons-vue/es/alarm/16'
 
 const props = defineProps({
-  modelValue: Boolean,
   name: String,
   address: String,
   email: String,
@@ -89,29 +87,44 @@ const props = defineProps({
   daysOver: Number,
 })
 
-const emit = defineEmits(['update:model-value'])
+const modelValue = defineModel()
+
+const $q = useQuasar()
 
 const overdueIconStyle = computed(() => ({
-  color: props.daysOver === 0 ? 'inherit' : 'red',
+  color: props.daysOver === 0 ? 'inherit' : userRedStyle.value,
   'max-width': '25px',
   'min-width': '25px',
 }))
 
+const userRedStyle = computed(() => ($q.dark.isActive ? '#ff8a80' : 'red'))
+
+const userBlueStyle = computed(() => ($q.dark.isActive ? '#82b1ff' : 'blue'))
+
 const overdueStyle = computed(() => ({
-  color: props.daysOver === 0 ? 'inherit' : 'red',
+  color: props.daysOver === 0 ? 'inherit' : userRedStyle.value,
 }))
 
-const userIconStyle = computed(() => ({
-  color: props.modelValue ? 'red' : 'blue',
-  cursor: 'pointer',
-}))
+const userIconStyle = computed(() => {
+  const x = {
+    color: modelValue.value ? userRedStyle.value : userBlueStyle.value,
+    cursor: 'pointer',
+  }
+  console.log('userIconStyle', x)
+  return x
+})
 
-const userStyle = computed(() => ({
-  color: props.modelValue ? 'red' : 'blue',
-}))
+const userStyle = computed(() => {
+  const y = {
+    color: modelValue.value ? userRedStyle.value : userBlueStyle.value,
+  }
+  console.log('userStyle:', y)
+  return y
+})
 
 function onClicked() {
-  emit('update:model-value', !props.modelValue)
+  console.log('onClicked')
+  modelValue.value = !modelValue.value
 }
 </script>
 
@@ -124,7 +137,6 @@ function onClicked() {
     0 3px 1px -2px rgb(0 0 0 / 12%);
   border-radius: 4px;
   vertical-align: top;
-  background: #fff;
   padding: 2px;
   margin: 2px;
   margin-bottom: 4px;
@@ -132,6 +144,15 @@ function onClicked() {
 
   &:hover {
     border: 1px solid rgba(0, 140, 200, 0.8);
+  }
+}
+
+body.body--dark {
+  .planner-item {
+    box-shadow:
+      0 1px 5px rgb(255 255 255 / 20%),
+      0 2px 2px rgb(255 255 255 / 14%),
+      0 3px 1px -2px rgb(255 255 255 / 12%);
   }
 }
 </style>
