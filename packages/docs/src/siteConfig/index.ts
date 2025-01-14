@@ -153,7 +153,9 @@ const gettingStartedMenu: SiteMenuItem = {
   children: [
     { name: 'Introduction', path: '/getting-started/introduction' },
     { name: 'Installation', path: '/getting-started/installation' },
+    { name: 'Quick Start', path: '/getting-started/quickstart' },
     { name: 'Anatomy of a Calendar', path: '/getting-started/anatomy-of-a-calendar' },
+    { name: 'Transitions', path: '/getting-started/transitions' },
     { name: 'Themes', path: '/getting-started/themes' },
   ],
 }
