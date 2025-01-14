@@ -68,16 +68,16 @@ $ npm install @quasar/quasar-ui-qcalendar
 Then
 
 ```js
-import { boot } from 'quasar/wrappers'
-import Plugin from '@quasar/quasar-ui-qcalendar/src/QCalendarDay.js'
+import { defineBoot } from '#q-app/wrappers'
+import VuePlugin from '@quasar/quasar-ui-qcalendar/src/QCalendarDay'
 import '@quasar/quasar-ui-qcalendar/src/css/calendar-day.scss'
 
-export default boot(({ app }) => {
-  app.use(Plugin)
+export default defineBoot(({ app }) => {
+  app.use(VuePlugin)
 })
 ```
 
-Additionally, because you are accessing the sources this way, you will need to make sure your project will transpile the code.
+Additionally, because you are accessing the sources this way, if you are using webpack, you will need to make sure your project will transpile the code.
 
 In `quasar.conf.js` update the following:
 
@@ -89,8 +89,8 @@ css: [
 ],
 
 build: {
-  transpile: true,
-  transpileDependencies: [
+  webpackTranspile: true,
+  webpackTranspileDependencies: [
     /quasar-ui-qcalendar[\\/]src/
   ]
 }
@@ -108,6 +108,7 @@ There are several variants for each calendar component, including common, es (mo
 <script>
   import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/QCalendarDay.esm.js'
 
+  // add this if not using <script setup>
   export default {
     components: {
       QCalendarDay,
@@ -146,6 +147,7 @@ const app = createApp(App).use(Plugin)
 <script>
   import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/QCalendarDay.esm.js'
 
+  // add this if not using <script setup>
   export default {
     components: {
       QCalendarDay,
