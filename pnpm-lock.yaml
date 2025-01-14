@@ -42,8 +42,8 @@ importers:
   packages/app-extension:
     dependencies:
       '@quasar/quasar-ui-qcalendar':
-        specifier: ^4.0.0-beta.23
-        version: 4.0.0-beta.23
+        specifier: ^4.0.0
+        version: link:../ui
     devDependencies:
       '@babel/core':
         specifier: ^7.17.8
@@ -1499,9 +1499,6 @@ packages:
 
   '@quasar/extras@1.16.15':
     resolution: {integrity: sha512-ZM8rUAagZ3Gm7Thu6DjKdGfkyFBv61RaCeVSIWdve6+q300yN+6aouxttf2RmxCk12RsSqEyzBnIg7BlF1s7MA==}
-
-  '@quasar/quasar-ui-qcalendar@4.0.0-beta.23':
-    resolution: {integrity: sha512-Kbq4xXu2TipwDQPMe2vFYmnAGhY/HI1hJWeckpvyC3tvGwz/GCv712onaTqfYB0Pd9Ebs4LqsSp4cAsQyc/n4w==}
 
   '@quasar/render-ssr-error@1.0.3':
     resolution: {integrity: sha512-A8RF99q6/sOSe1Ighnh5syEIbliD3qUYEJd2HyfFyBPSMF+WYGXon5dmzg4nUoK662NgOggInevkDyBDJcZugg==}
@@ -7395,8 +7392,6 @@ snapshots:
       - yaml
 
   '@quasar/extras@1.16.15': {}
-
-  '@quasar/quasar-ui-qcalendar@4.0.0-beta.23': {}
 
   '@quasar/render-ssr-error@1.0.3':
     dependencies:
