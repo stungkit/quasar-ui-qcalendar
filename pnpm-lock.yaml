@@ -148,6 +148,9 @@ importers:
       '@quasar/app-vite':
         specifier: ^2.0.7
         version: 2.0.7(@types/node@22.10.6)(eslint@9.18.0(jiti@2.4.2))(jiti@2.4.2)(pinia@2.3.0(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3)))(quasar@2.17.6)(rollup@4.30.1)(terser@5.37.0)(typescript@5.7.3)(vue-router@4.5.0(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
+      '@quasar/quasar-ui-qcalendar':
+        specifier: workspace:*
+        version: link:../ui
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2

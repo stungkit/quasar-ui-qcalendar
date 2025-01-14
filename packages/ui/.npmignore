@@ -24,10 +24,6 @@ jsconfig.json
 .eslintrc.js
 .babelrc
 
-# Other
-/src/components/QCalendar.json
-/src/utils/Timestamp.json
-
 # Testing
 /test
 .env.jest

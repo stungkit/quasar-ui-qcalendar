@@ -42,6 +42,7 @@
     "@md-plugins/vite-examples-plugin": "0.1.0-alpha.18",
     "@md-plugins/vite-md-plugin": "0.1.0-alpha.18",
     "@quasar/app-vite": "^2.0.7",
+    "@quasar/quasar-ui-qcalendar": "workspace:*",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^22.10.6",
     "@vue/eslint-config-prettier": "^10.1.0",
