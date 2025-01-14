@@ -3,11 +3,11 @@
     <div style="display: flex; align-items: center; justify-content: start; flex-wrap: nowrap">
       <div style="max-width: 25px; min-width: 25px">
         <div :style="userIconStyle">
-          <CheckboxChecked v-if="modelValue === true" @clicked.stop.prevent="onClicked" />
-          <Checkbox v-else @clicked.stop.prevent="onClicked" />
+          <CheckboxChecked v-if="modelValue === true" @click.stop.prevent="onClicked" />
+          <Checkbox v-else @click.stop.prevent="onClicked" />
         </div>
       </div>
-      <div class="ellipsis" :style="userStyle">
+      <div class="ellipsis" :style="userStyle" @click.stop.prevent="onClicked">
         {{ name }}
       </div>
     </div>
@@ -106,20 +106,16 @@ const overdueStyle = computed(() => ({
 }))
 
 const userIconStyle = computed(() => {
-  const x = {
+  return {
     color: modelValue.value ? userRedStyle.value : userBlueStyle.value,
     cursor: 'pointer',
   }
-  console.log('userIconStyle', x)
-  return x
 })
 
 const userStyle = computed(() => {
-  const y = {
+  return {
     color: modelValue.value ? userRedStyle.value : userBlueStyle.value,
   }
-  console.log('userStyle:', y)
-  return y
 })
 
 function onClicked() {

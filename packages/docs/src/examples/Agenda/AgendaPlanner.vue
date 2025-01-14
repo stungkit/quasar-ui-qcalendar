@@ -381,7 +381,7 @@ export default defineComponent({
         },
       ]),
       startTimestamp = reactive({}),
-      overdueSelected = ref(false),
+      overdueSelected = ref(true),
       selected = reactive([false, false, false, false, false]),
       overdue = reactive([]),
       agenda = reactive({
