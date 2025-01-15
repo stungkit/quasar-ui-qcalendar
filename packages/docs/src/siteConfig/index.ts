@@ -201,6 +201,10 @@ const otherMenu: SiteMenuItem = {
       name: 'Releases',
       path: '/other/release-notes',
     },
+    {
+      name: 'Migration Guide',
+      path: '/other/migration-guide',
+    },
   ],
 }
 
@@ -260,7 +264,7 @@ const config = {
     line2: '',
   } as CopyrightConfig,
   githubEditRootSrc:
-    'https://github.com/quasarframework/quasar-ui-qcalendar/tree/next/edit/packages/docs/src/markdown/',
+    'https://github.com/quasarframework/quasar-ui-qcalendar/tree/next/edit/packages/docs/src',
   license: {
     label: 'MIT License',
     link: 'https://github.com/quasarframework/quasar-ui-qcalendar/blob/next/LICENSE.md',
