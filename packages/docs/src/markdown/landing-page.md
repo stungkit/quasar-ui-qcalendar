@@ -1,6 +1,6 @@
 ---
-title: MD-PLUGINS
-desc: Markdown for your Quasar and Vue builds
+title: QCalendar
+desc: Build Beautiful, Responsive Calendars for Vue and Quasar
 editLink: false
 ---
 
