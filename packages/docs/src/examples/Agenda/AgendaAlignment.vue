@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { QCalendarAgenda, today } from '@quasar/quasar-ui-qcalendar/src'
+import { QCalendarAgenda, today } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarAgenda.scss'

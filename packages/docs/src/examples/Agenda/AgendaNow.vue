@@ -29,71 +29,73 @@
   </div>
 </template>
 
-<script>
-import { QCalendarAgenda, addToDate, parseTimestamp, today } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import {
+  QCalendarAgenda,
+  addToDate,
+  parseTimestamp,
+  today,
+  Timestamp,
+} from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarAgenda.scss'
 
-import { defineComponent } from 'vue'
+import { ref } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarAgenda as IQCalendarAgenda } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'AgendaNow',
-  components: {
-    NavigationBar,
-    QCalendarAgenda,
+const calendar = ref<IQCalendarAgenda>()
+const selectedDate = ref(today())
+const nowDate = ref(addToDate(parseTimestamp(today()) as Timestamp, { day: 1 }).date)
+const leftColumnOptions = ref([
+  {
+    id: 'overdue',
+    label: 'Overdue',
   },
-  data() {
-    return {
-      selectedDate: today(),
-      nowDate: addToDate(parseTimestamp(today()), { day: 1 }).date,
-      leftColumnOptions: [
-        {
-          id: 'overdue',
-          label: 'Overdue',
-        },
-      ],
-      rightColumnOptions: [
-        {
-          id: 'summary',
-          label: 'Summary',
-        },
-      ],
-    }
+])
+const rightColumnOptions = ref([
+  {
+    id: 'summary',
+    label: 'Summary',
   },
-  methods: {
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
+])
 
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickTime(data) {
-      console.log('onClickTime', data)
-    },
-    onClickInterval(data) {
-      console.log('onClickInterval', data)
-    },
-    onClickHeadIntervals(data) {
-      console.log('onClickHeadIntervals', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-  },
-})
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: Timestamp) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickTime(data: Timestamp) {
+  console.log('onClickTime', data)
+}
+function onClickInterval(data: Timestamp) {
+  console.log('onClickInterval', data)
+}
+function onClickHeadIntervals(data: Timestamp) {
+  console.log('onClickHeadIntervals', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>
