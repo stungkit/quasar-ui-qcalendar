@@ -8,21 +8,25 @@ import QCalendarScheduler from './QCalendarScheduler.js'
 import QCalendarTask from './QCalendarTask.js'
 
 import { useCommonProps } from '../composables/useCommon.js'
-import { useIntervalProps, useSchedulerProps, useResourceProps } from '../composables/useInterval.js'
+import {
+  useIntervalProps,
+  useSchedulerProps,
+  useResourceProps,
+} from '../composables/useInterval.js'
 import { useMaxDaysProps } from '../composables/useMaxDays.js'
 import { useTimesProps } from '../composables/useTimes.js'
 import { useCellWidthProps } from '../composables/useCellWidth.js'
 import { useNavigationProps } from '../composables/useKeyboard.js'
 import { useMonthProps } from '../composables/useMonth.js'
 import { useTaskProps } from '../composables/useTask.js'
-import useCalendar from '../composables/useCalendar.js'
+// import useCalendar from '../composables/useCalendar.js'
 
 export default defineComponent({
   name: 'QCalendar',
   props: {
     mode: {
       type: String,
-      validator: (v) => [ 'day', 'month', 'agenda', 'resource', 'scheduler', 'task' ].includes(v),
+      validator: (v) => ['day', 'month', 'agenda', 'resource', 'scheduler', 'task'].includes(v),
       default: 'day',
     },
     ...useCommonProps,
@@ -53,7 +57,6 @@ export default defineComponent({
           return QCalendarDay
         case 'task':
           return QCalendarTask
-        case 'day':
         default:
           return QCalendarDay
       }

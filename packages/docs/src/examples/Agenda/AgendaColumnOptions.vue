@@ -54,189 +54,190 @@
   </div>
 </template>
 
-<script>
-import { QCalendarAgenda, today } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import { ref, reactive } from 'vue'
+import { QCalendarAgenda, Timestamp, today } from '@quasar/quasar-ui-qcalendar/src'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarAgenda.scss'
 
-import { defineComponent } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarAgenda as IQCalendarAgenda } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'AgendaColumnOptions',
-  components: {
-    NavigationBar,
-    QCalendarAgenda,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      agenda: {
-        // value represents day of the week
-        1: [
-          {
-            time: '08:00',
-            avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-            desc: 'Meeting with CEO',
-          },
-          {
-            time: '08:30',
-            avatar: 'https://cdn.quasar.dev/img/avatar.png',
-            desc: 'Meeting with HR',
-          },
-          {
-            time: '10:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar1.jpg',
-            desc: 'Meeting with Karen',
-          },
-        ],
-        2: [
-          {
-            time: '11:30',
-            avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
-            desc: 'Meeting with Alisha',
-          },
-          {
-            time: '17:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
-            desc: 'Meeting with Sarah',
-          },
-        ],
-        3: [
-          {
-            time: '08:00',
-            desc: 'Stand-up SCRUM',
-            avatar: 'https://cdn.quasar.dev/img/material.png',
-          },
-          {
-            time: '09:00',
-            avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-          },
-          {
-            time: '10:00',
-            desc: 'Sprint planning',
-            avatar: 'https://cdn.quasar.dev/img/material.png',
-          },
-          {
-            time: '13:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar1.jpg',
-          },
-        ],
-        4: [
-          {
-            time: '09:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
-          },
-          {
-            time: '10:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
-          },
-          {
-            time: '13:00',
-            avatar: 'https://cdn.quasar.dev/img/material.png',
-          },
-        ],
-        5: [
-          {
-            time: '08:00',
-            avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-          },
-          {
-            time: '09:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
-          },
-          {
-            time: '09:30',
-            avatar: 'https://cdn.quasar.dev/img/avatar4.jpg',
-          },
-          {
-            time: '10:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar5.jpg',
-          },
-          {
-            time: '11:30',
-            avatar: 'https://cdn.quasar.dev/img/material.png',
-          },
-          {
-            time: '13:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar6.jpg',
-          },
-          {
-            time: '13:30',
-            avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
-          },
-          {
-            time: '14:00',
-            avatar: 'https://cdn.quasar.dev/img/linux-avatar.png',
-          },
-          {
-            time: '14:30',
-            avatar: 'https://cdn.quasar.dev/img/avatar.png',
-          },
-          {
-            time: '15:00',
-            avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-          },
-          {
-            time: '15:30',
-            avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
-          },
-          {
-            time: '16:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar6.jpg',
-          },
-        ],
-      },
-      leftColumnOptions: [
-        {
-          id: 'over-due',
-          label: 'Over Due',
-        },
-      ],
-      rightColumnOptions: [
-        {
-          id: 'summary',
-          label: 'Summary',
-        },
-      ],
-    }
-  },
+interface AgendaItem {
+  time: string
+  avatar?: string
+  desc?: string
+}
 
-  methods: {
-    getAgenda(day) {
-      return this.agenda[parseInt(day.weekday, 10)]
+const calendar = ref<IQCalendarAgenda>()
+const selectedDate = ref(today())
+const agenda = reactive<Record<number, AgendaItem[]>>({
+  // value represents day of the week
+  1: [
+    {
+      time: '08:00',
+      avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+      desc: 'Meeting with CEO',
     },
-    onToday() {
-      this.$refs.calendar.moveToToday()
+    {
+      time: '08:30',
+      avatar: 'https://cdn.quasar.dev/img/avatar.png',
+      desc: 'Meeting with HR',
     },
-    onPrev() {
-      this.$refs.calendar.prev()
+    {
+      time: '10:00',
+      avatar: 'https://cdn.quasar.dev/img/avatar1.jpg',
+      desc: 'Meeting with Karen',
     },
-    onNext() {
-      this.$refs.calendar.next()
+  ],
+  2: [
+    {
+      time: '11:30',
+      avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
+      desc: 'Meeting with Alisha',
     },
-    onMoved(data) {
-      console.log('onMoved', data)
+    {
+      time: '17:00',
+      avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
+      desc: 'Meeting with Sarah',
     },
-    onChange(data) {
-      console.log('onChange', data)
+  ],
+  3: [
+    {
+      time: '08:00',
+      desc: 'Stand-up SCRUM',
+      avatar: 'https://cdn.quasar.dev/img/material.png',
     },
-    onClickDate(data) {
-      console.log('onClickDate', data)
+    {
+      time: '09:00',
+      avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
     },
-    onClickTime(data) {
-      console.log('onClickTime', data)
+    {
+      time: '10:00',
+      desc: 'Sprint planning',
+      avatar: 'https://cdn.quasar.dev/img/material.png',
     },
-    onClickInterval(data) {
-      console.log('onClickInterval', data)
+    {
+      time: '13:00',
+      avatar: 'https://cdn.quasar.dev/img/avatar1.jpg',
     },
-    onClickHeadIntervals(data) {
-      console.log('onClickHeadIntervals', data)
+  ],
+  4: [
+    {
+      time: '09:00',
+      avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
     },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
+    {
+      time: '10:00',
+      avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
     },
-  },
+    {
+      time: '13:00',
+      avatar: 'https://cdn.quasar.dev/img/material.png',
+    },
+  ],
+  5: [
+    {
+      time: '08:00',
+      avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+    },
+    {
+      time: '09:00',
+      avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
+    },
+    {
+      time: '09:30',
+      avatar: 'https://cdn.quasar.dev/img/avatar4.jpg',
+    },
+    {
+      time: '10:00',
+      avatar: 'https://cdn.quasar.dev/img/avatar5.jpg',
+    },
+    {
+      time: '11:30',
+      avatar: 'https://cdn.quasar.dev/img/material.png',
+    },
+    {
+      time: '13:00',
+      avatar: 'https://cdn.quasar.dev/img/avatar6.jpg',
+    },
+    {
+      time: '13:30',
+      avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
+    },
+    {
+      time: '14:00',
+      avatar: 'https://cdn.quasar.dev/img/linux-avatar.png',
+    },
+    {
+      time: '14:30',
+      avatar: 'https://cdn.quasar.dev/img/avatar.png',
+    },
+    {
+      time: '15:00',
+      avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+    },
+    {
+      time: '15:30',
+      avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
+    },
+    {
+      time: '16:00',
+      avatar: 'https://cdn.quasar.dev/img/avatar6.jpg',
+    },
+  ],
 })
+const leftColumnOptions = reactive([
+  {
+    id: 'over-due',
+    label: 'Over Due',
+  },
+])
+const rightColumnOptions = reactive([
+  {
+    id: 'summary',
+    label: 'Summary',
+  },
+])
+
+function getAgenda(day: Timestamp) {
+  return agenda[Number(day.weekday)] || []
+}
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: Timestamp) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickTime(data: Timestamp) {
+  console.log('onClickTime', data)
+}
+function onClickInterval(data: Timestamp) {
+  console.log('onClickInterval', data)
+}
+function onClickHeadIntervals(data: Timestamp) {
+  console.log('onClickHeadIntervals', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>

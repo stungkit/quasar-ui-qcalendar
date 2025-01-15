@@ -33,69 +33,74 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref } from 'vue'
 import { QCalendarAgenda, today } from '@quasar/quasar-ui-qcalendar/src'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarAgenda.scss'
 
-import { defineComponent } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarAgenda as IQCalendarAgenda } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'AgendaCellWidth',
-  components: {
-    NavigationBar,
-    QCalendarAgenda,
+const selectedDate = ref(today())
+const leftColumnOptions = ref([
+  {
+    id: 'overdue',
+    label: 'Overdue',
   },
-  data() {
-    return {
-      selectedDate: today(),
-      leftColumnOptions: [
-        {
-          id: 'overdue',
-          label: 'Overdue',
-        },
-      ],
-      rightColumnOptions: [
-        {
-          id: 'summary',
-          label: 'Summary',
-        },
-      ],
-    }
+])
+const rightColumnOptions = ref([
+  {
+    id: 'summary',
+    label: 'Summary',
   },
-  methods: {
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickTime(data) {
-      console.log('onClickTime', data)
-    },
-    onClickInterval(data) {
-      console.log('onClickInterval', data)
-    },
-    onClickHeadIntervals(data) {
-      console.log('onClickHeadIntervals', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-  },
-})
+])
+const calendar = ref<IQCalendarAgenda>()
+
+const onChange = (date: string) => {
+  console.log('Date changed:', date)
+}
+
+const onMoved = (date: string) => {
+  console.log('Date moved:', date)
+}
+
+const onClickDate = (date: string) => {
+  console.log('Date clicked:', date)
+}
+
+const onClickTime = (time: string) => {
+  console.log('Time clicked:', time)
+}
+
+const onClickInterval = (interval: string) => {
+  console.log('Interval clicked:', interval)
+}
+
+const onClickHeadIntervals = (interval: string) => {
+  console.log('Head intervals clicked:', interval)
+}
+
+const onClickHeadDay = (day: string) => {
+  console.log('Head day clicked:', day)
+}
+
+const onToday = () => {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+
+const onPrev = () => {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+
+const onNext = () => {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
 </script>
