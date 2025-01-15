@@ -1,5 +1,5 @@
 ---
-title: Build Beautiful, Responsive Calendars for Vue and Quasar
+title: QCalendar | Build Beautiful, Responsive Calendars for Vue and Quasar
 desc: QCalendar
 editLink: false
 ---
