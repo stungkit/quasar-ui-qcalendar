@@ -1,6 +1,5 @@
 import { fabGithub, fabXTwitter } from '@quasar/extras/fontawesome-v6'
 import { slugify } from '@md-plugins/shared'
-// import { productName } from '../../package.json'
 import { version, productName } from '../../../ui/package.json'
 
 export interface SocialLink {
@@ -208,6 +207,36 @@ const otherMenu: SiteMenuItem = {
     {
       name: 'Contact',
       path: '/other/contact',
+    },
+    // { separator: true },
+    {
+      name: 'Contributing',
+      children: [
+        {
+          name: 'Overview',
+          path: '/other/contributing/overview',
+        },
+        {
+          name: 'Bugs and Feature Requests',
+          path: '/other/contributing/bugs-and-feature-requests',
+        },
+        {
+          name: 'Components',
+          path: '/other/contributing/components',
+        },
+        {
+          name: 'Documentation',
+          path: '/other/contributing/documentation',
+        },
+        {
+          name: 'Call to Action',
+          path: '/other/contributing/call-to-action',
+        },
+        {
+          name: 'Sponsor',
+          path: '/other/contributing/sponsor',
+        },
+      ],
     },
   ],
 }
