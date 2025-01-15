@@ -205,6 +205,10 @@ const otherMenu: SiteMenuItem = {
       name: 'Migration Guide',
       path: '/other/migration-guide',
     },
+    {
+      name: 'Contact',
+      path: '/other/contact',
+    },
   ],
 }
 
