@@ -1,3 +1,4 @@
+/* global Intl */
 export const PARSE_DATETIME =
   /^(\d{4})-(\d{1,2})(-(\d{1,2}))?([^\d]+(\d{1,2}))?(:(\d{1,2}))?(:(\d{1,2}))?(.(\d{1,3}))?$/
 export const PARSE_DATE = /^(\d{4})-(\d{1,2})(-(\d{1,2}))/
@@ -249,7 +250,8 @@ export function parsed(input) {
 
   return {
     date: input,
-    time: padNumber(parseInt(parts[6], 10) || 0, 2) + ':' + padNumber(parseInt(parts[8], 10) || 0, 2),
+    time:
+      padNumber(parseInt(parts[6], 10) || 0, 2) + ':' + padNumber(parseInt(parts[8], 10) || 0, 2),
     year: parseInt(parts[1], 10),
     month: parseInt(parts[2], 10),
     day: parseInt(parts[4], 10) || 1,
@@ -293,7 +295,7 @@ export function parseTimestamp(input, now) {
  * @returns {Timestamp} A minimal {@link Timestamp} without updated or relative updates.
  */
 export function parseDate(date, utc = false) {
-  const UTC = !!utc ? 'UTC' : ''
+  const UTC = utc ? 'UTC' : ''
   return updateFormatted({
     date:
       padNumber(date[`get${UTC}FullYear`](), 4) +
@@ -301,7 +303,10 @@ export function parseDate(date, utc = false) {
       padNumber(date[`get${UTC}Month`]() + 1, 2) +
       '-' +
       padNumber(date[`get${UTC}Date`](), 2),
-    time: padNumber(date[`get${UTC}Hours`]() || 0, 2) + ':' + padNumber(date[`get${UTC}Minutes`]() || 0, 2),
+    time:
+      padNumber(date[`get${UTC}Hours`]() || 0, 2) +
+      ':' +
+      padNumber(date[`get${UTC}Minutes`]() || 0, 2),
     year: date[`get${UTC}FullYear`](),
     month: date[`get${UTC}Month`]() + 1,
     day: date[`get${UTC}Date`](),
@@ -451,7 +456,13 @@ export function updateWorkWeek(timestamp) {
  * @param {string[]} [disabledDays] An array of days in 'YYYY-MM-DD' format. If an array with a pair of dates is in first array, then this is treated as a range.
  * @returns The modified {@link Timestamp}
  */
-export function updateDisabled(timestamp, disabledBefore, disabledAfter, disabledWeekdays, disabledDays) {
+export function updateDisabled(
+  timestamp,
+  disabledBefore,
+  disabledAfter,
+  disabledWeekdays,
+  disabledDays,
+) {
   const t = getDayIdentifier(timestamp)
 
   if (disabledBefore !== undefined) {
@@ -468,7 +479,11 @@ export function updateDisabled(timestamp, disabledBefore, disabledAfter, disable
     }
   }
 
-  if (timestamp.disabled !== true && Array.isArray(disabledWeekdays) && disabledWeekdays.length > 0) {
+  if (
+    timestamp.disabled !== true &&
+    Array.isArray(disabledWeekdays) &&
+    disabledWeekdays.length > 0
+  ) {
     for (const weekday in disabledWeekdays) {
       if (disabledWeekdays[weekday] === timestamp.weekday) {
         timestamp.disabled = true
@@ -523,7 +538,8 @@ export function updateFormatted(timestamp) {
 export function getDayOfYear(timestamp) {
   if (timestamp.year === 0) return
   return (
-    (Date.UTC(timestamp.year, timestamp.month - 1, timestamp.day) - Date.UTC(timestamp.year, 0, 0)) /
+    (Date.UTC(timestamp.year, timestamp.month - 1, timestamp.day) -
+      Date.UTC(timestamp.year, 0, 0)) /
     24 /
     60 /
     60 /
@@ -580,7 +596,15 @@ export function getWeekday(timestamp) {
     const year = (timestamp.year % 100) - (timestamp.month <= 2 ? 1 : 0)
 
     weekday =
-      (((day + floor(2.6 * month - 0.2) - 2 * century + year + floor(year / 4) + floor(century / 4)) % 7) + 7) % 7
+      (((day +
+        floor(2.6 * month - 0.2) -
+        2 * century +
+        year +
+        floor(year / 4) +
+        floor(century / 4)) %
+        7) +
+        7) %
+      7
   }
 
   return weekday
@@ -672,7 +696,10 @@ export function getDateTime(timestamp) {
 export function nextDay(timestamp) {
   ++timestamp.day
   timestamp.weekday = (timestamp.weekday + 1) % DAYS_IN_WEEK
-  if (timestamp.day > DAYS_IN_MONTH_MIN && timestamp.day > daysInMonth(timestamp.year, timestamp.month)) {
+  if (
+    timestamp.day > DAYS_IN_MONTH_MIN &&
+    timestamp.day > daysInMonth(timestamp.year, timestamp.month)
+  ) {
     timestamp.day = DAY_MIN
     ++timestamp.month
     if (timestamp.month > MONTH_MAX) {
@@ -712,7 +739,12 @@ export function prevDay(timestamp) {
  * @param {number[]} [allowedWeekdays=[ 0, 1, 2, 3, 4, 5, 6 ]] An array of numbers representing the weekdays. ie: [0 = Sun, ..., 6 = Sat].
  * @returns The modified {@link Timestamp}
  */
-export function moveRelativeDays(timestamp, mover = nextDay, days = 1, allowedWeekdays = [0, 1, 2, 3, 4, 5, 6]) {
+export function moveRelativeDays(
+  timestamp,
+  mover = nextDay,
+  days = 1,
+  allowedWeekdays = [0, 1, 2, 3, 4, 5, 6],
+) {
   return relativeDays(timestamp, mover, days, allowedWeekdays)
 }
 
@@ -724,8 +756,17 @@ export function moveRelativeDays(timestamp, mover = nextDay, days = 1, allowedWe
  * @param {number[]} [allowedWeekdays=[ 0, 1, 2, 3, 4, 5, 6 ]] An array of numbers representing the weekdays. ie: [0 = Sun, ..., 6 = Sat].
  * @returns The modified {@link Timestamp}
  */
-export function relativeDays(timestamp, mover = nextDay, days = 1, allowedWeekdays = [0, 1, 2, 3, 4, 5, 6]) {
-  if (!allowedWeekdays.includes(timestamp.weekday) && timestamp.weekday === 0 && mover === nextDay) {
+export function relativeDays(
+  timestamp,
+  mover = nextDay,
+  days = 1,
+  allowedWeekdays = [0, 1, 2, 3, 4, 5, 6],
+) {
+  if (
+    !allowedWeekdays.includes(timestamp.weekday) &&
+    timestamp.weekday === 0 &&
+    mover === nextDay
+  ) {
     ++days
   }
   while (--days >= 0) {
@@ -801,7 +842,7 @@ export function createDayList(
   disabledWeekdays = [],
   disabledDays = [],
   max = 42,
-  min = 0
+  min = 0,
 ) {
   const stop = getDayIdentifier(end)
   const days = []
@@ -914,8 +955,22 @@ export function makeDate(timestamp, utc = true) {
  */
 export function makeDateTime(timestamp, utc = true) {
   if (utc)
-    return new Date(Date.UTC(timestamp.year, timestamp.month - 1, timestamp.day, timestamp.hour, timestamp.minute))
-  return new Date(timestamp.year, timestamp.month - 1, timestamp.day, timestamp.hour, timestamp.minute)
+    return new Date(
+      Date.UTC(
+        timestamp.year,
+        timestamp.month - 1,
+        timestamp.day,
+        timestamp.hour,
+        timestamp.minute,
+      ),
+    )
+  return new Date(
+    timestamp.year,
+    timestamp.month - 1,
+    timestamp.day,
+    timestamp.hour,
+    timestamp.minute,
+  )
 }
 
 // validate a number IS a number
@@ -964,8 +1019,10 @@ export function minTimestamp(timestamps, useTime = false) {
  */
 export function isBetweenDates(timestamp, startTimestamp, endTimestamp, useTime /* = false */) {
   const cd = getDayIdentifier(timestamp) + (useTime === true ? getTimeIdentifier(timestamp) : 0)
-  const sd = getDayIdentifier(startTimestamp) + (useTime === true ? getTimeIdentifier(startTimestamp) : 0)
-  const ed = getDayIdentifier(endTimestamp) + (useTime === true ? getTimeIdentifier(endTimestamp) : 0)
+  const sd =
+    getDayIdentifier(startTimestamp) + (useTime === true ? getTimeIdentifier(startTimestamp) : 0)
+  const ed =
+    getDayIdentifier(endTimestamp) + (useTime === true ? getTimeIdentifier(endTimestamp) : 0)
 
   return cd >= sd && cd <= ed
 }
@@ -1178,7 +1235,10 @@ export function getWeekdayFormatter() {
   // type = 'narrow', 'short', 'long'
   function weekdayFormatter(weekday, type, locale) {
     try {
-      const intlFormatter = new Intl.DateTimeFormat(locale || undefined, options[type] || options['long'])
+      const intlFormatter = new Intl.DateTimeFormat(
+        locale || undefined,
+        options[type] || options['long'],
+      )
       return intlFormatter.format(weekdayDateMap[weekday])
     } catch (e) /* istanbul ignore next */ {
       /* eslint-disable-next-line */
@@ -1212,7 +1272,10 @@ export function getMonthFormatter() {
   // type = 'narrow', 'short', 'long'
   function monthFormatter(month, type, locale) {
     try {
-      const intlFormatter = new Intl.DateTimeFormat(locale || undefined, options[type] || options['long'])
+      const intlFormatter = new Intl.DateTimeFormat(
+        locale || undefined,
+        options[type] || options['long'],
+      )
       const date = new Date()
       date.setDate(1)
       date.setMonth(month)

@@ -1,3 +1,4 @@
+/* global window */
 import {
   h,
   computed,
@@ -10,21 +11,13 @@ import {
   ref,
   Transition,
   watch,
-  withDirectives
+  withDirectives,
 } from 'vue'
 
 // Utility
-import {
-  getDayIdentifier,
-  parsed,
-  parseTimestamp,
-  today
-} from '../utils/Timestamp.js'
+import { getDayIdentifier, parsed, parseTimestamp, today } from '../utils/Timestamp.js'
 
-import {
-  convertToUnit,
-  minCharWidth
-} from '../utils/helpers.js'
+import { convertToUnit, minCharWidth } from '../utils/helpers.js'
 
 import useMouse, { getRawMouseEvents } from '../composables/useMouse.js'
 
@@ -56,7 +49,7 @@ export default defineComponent({
     ...useMonthProps,
     ...useTimesProps,
     ...useCellWidthProps,
-    ...useNavigationProps
+    ...useNavigationProps,
   },
 
   emits: [
@@ -68,21 +61,18 @@ export default defineComponent({
     ...getRawMouseEvents('-day'),
     ...getRawMouseEvents('-head-workweek'),
     ...getRawMouseEvents('-head-day'),
-    ...getRawMouseEvents('-workweek')
+    ...getRawMouseEvents('-workweek'),
   ],
 
-  setup (props, { slots, emit, expose }) {
-    const
-      scrollArea = ref(null),
+  setup(props, { slots, emit, expose }) {
+    const scrollArea = ref(null),
       pane = ref(null),
-
       headerColumnRef = ref(null),
       focusRef = ref(null),
       focusValue = ref(null),
       datesRef = ref({}),
       weekEventRef = ref([]),
       weekRef = ref([]),
-
       direction = ref('next'),
       startDate = ref(props.modelValue || today()),
       endDate = ref('0000-00-00'),
@@ -107,19 +97,13 @@ export default defineComponent({
     // initialize emit listeners
     const { emitListeners } = useEmitListeners(vm)
 
-    const {
-      isSticky
-    } = useCellWidth(props)
+    const { isSticky } = useCellWidth(props)
 
-    watch(isSticky, (val) => {
+    watch(isSticky, () => {
       // console.log('isSticky', isSticky.value)
     })
 
-    const {
-      times,
-      setCurrent,
-      updateCurrent
-    } = useTimes(props)
+    const { times, setCurrent, updateCurrent } = useTimes(props)
 
     // update dates
     updateCurrent()
@@ -135,13 +119,11 @@ export default defineComponent({
       ariaDateFormatter,
       // methods
       dayStyleDefault,
-      getRelativeClasses
+      getRelativeClasses,
     } = useCommon(props, { startDate, endDate, times })
 
     const parsedValue = computed(() => {
-      return parseTimestamp(props.modelValue, times.now)
-        || parsedStart.value
-        || times.today
+      return parseTimestamp(props.modelValue, times.now) || parsedStart.value || times.today
     })
 
     focusValue.value = parsedValue.value
@@ -161,16 +143,12 @@ export default defineComponent({
     const { renderValues } = useRenderValues(props, {
       parsedView,
       times,
-      parsedValue
+      parsedValue,
     })
 
-    const {
-      rootRef,
-      __initCalendar,
-      __renderCalendar
-    } = useCalendar(props, __renderMonth, {
+    const { rootRef, __initCalendar, __renderCalendar } = useCalendar(props, __renderMonth, {
       scrollArea,
-      pane
+      pane,
     })
 
     const {
@@ -182,14 +160,14 @@ export default defineComponent({
       parsedMonthLabelSize,
       // methods
       isOutside,
-      monthFormatter
+      monthFormatter,
     } = useMonth(props, emit, {
       weekdaySkips,
       times,
       parsedStart,
       parsedEnd,
       size,
-      headerColumnRef
+      headerColumnRef,
     })
 
     const { move } = useMove(props, {
@@ -200,20 +178,14 @@ export default defineComponent({
       maxDays: maxDaysRendered,
       times,
       emittedValue,
-      emit
+      emit,
     })
 
-    const {
-      getDefaultMouseEventHandlers
-    } = useMouse(emit, emitListeners)
+    const { getDefaultMouseEventHandlers } = useMouse(emit, emitListeners)
 
-    const {
-      checkChange
-    } = useCheckChange(emit, { days, lastStart, lastEnd })
+    const { checkChange } = useCheckChange(emit, { days, lastStart, lastEnd })
 
-    const {
-      isKeyCode
-    } = useEvents()
+    const { isKeyCode } = useEvents()
 
     const { tryFocus } = useKeyboard(props, {
       rootRef,
@@ -226,12 +198,23 @@ export default defineComponent({
       emittedValue,
       weekdaySkips,
       direction,
-      times
+      times,
     })
 
     const workweekWidth = computed(() => {
       if (rootRef.value) {
-        return props.showWorkWeeks === true ? parseInt(getComputedStyle(rootRef.value).getPropertyValue(isMiniMode.value === true ? '--calendar-mini-work-week-width' : '--calendar-work-week-width'), 10) : 0
+        return props.showWorkWeeks === true
+          ? parseInt(
+              window
+                .getComputedStyle(rootRef.value)
+                .getPropertyValue(
+                  isMiniMode.value === true
+                    ? '--calendar-mini-work-week-width'
+                    : '--calendar-work-week-width',
+                ),
+              10,
+            )
+          : 0
       }
       return 0
     })
@@ -244,33 +227,42 @@ export default defineComponent({
       if (rootRef.value) {
         const width = size.width || rootRef.value.getBoundingClientRect().width
         if (width && parsedColumnCount.value) {
-          return ((width - workweekWidth.value) / parsedColumnCount.value) + 'px'
+          return (width - workweekWidth.value) / parsedColumnCount.value + 'px'
         }
       }
-      return (100 / parsedColumnCount.value) + '%'
+      return 100 / parsedColumnCount.value + '%'
     })
 
     const isDayFocusable = computed(() => {
-      return props.focusable === true && props.focusType.includes('day') && isMiniMode.value !== true
+      return (
+        props.focusable === true && props.focusType.includes('day') && isMiniMode.value !== true
+      )
     })
 
     const isDateFocusable = computed(() => {
-      return props.focusable === true && props.focusType.includes('date') && isDayFocusable.value !== true
+      return (
+        props.focusable === true &&
+        props.focusType.includes('date') &&
+        isDayFocusable.value !== true
+      )
     })
 
     watch([days], checkChange, { deep: true, immediate: true })
 
-    watch(() => props.modelValue, (val, oldVal) => {
-      if (emittedValue.value !== val) {
-        if (props.animated === true) {
-          const v1 = getDayIdentifier(parsed(val))
-          const v2 = getDayIdentifier(parsed(oldVal))
-          direction.value = v1 >= v2 ? 'next' : 'prev'
+    watch(
+      () => props.modelValue,
+      (val, oldVal) => {
+        if (emittedValue.value !== val) {
+          if (props.animated === true) {
+            const v1 = getDayIdentifier(parsed(val))
+            const v2 = getDayIdentifier(parsed(oldVal))
+            direction.value = v1 >= v2 ? 'next' : 'prev'
+          }
+          emittedValue.value = val
         }
-        emittedValue.value = val
-      }
-      focusRef.value = val
-    })
+        focusRef.value = val
+      },
+    )
 
     watch(emittedValue, (val, oldVal) => {
       if (emittedValue.value !== props.modelValue) {
@@ -283,7 +275,7 @@ export default defineComponent({
       }
     })
 
-    watch(focusRef, val => {
+    watch(focusRef, (val) => {
       if (val) {
         focusValue.value = parseTimestamp(val)
         if (emittedValue.value !== val) {
@@ -292,11 +284,10 @@ export default defineComponent({
       }
     })
 
-    watch(focusValue, (val) => {
-      if (datesRef.value[ focusRef.value ]) {
-        datesRef.value[ focusRef.value ].focus()
-      }
-      else {
+    watch(focusValue, () => {
+      if (datesRef.value[focusRef.value]) {
+        datesRef.value[focusRef.value].focus()
+      } else {
         // if focusRef is not in the list of current dates of dateRef,
         // then assume month is changing
         tryFocus()
@@ -319,37 +310,37 @@ export default defineComponent({
 
     // public functions
 
-    function moveToToday () {
+    function moveToToday() {
       emittedValue.value = today()
     }
 
-    function next (amount = 1) {
+    function next(amount = 1) {
       move(amount)
     }
 
-    function prev (amount = 1) {
+    function prev(amount = 1) {
       move(-amount)
     }
 
-    function __onResize ({ width, height }) {
+    function __onResize({ width, height }) {
       size.width = width
       size.height = height
     }
 
-    function __isActiveDate (day) {
+    function __isActiveDate(day) {
       return day.date === emittedValue.value
     }
 
-    function isCurrentWeek (week) {
+    function isCurrentWeek(week) {
       for (let i = 0; i < week.length; ++i) {
-        if (week[ i ].current === true) {
-          return { timestamp: week[ i ] }
+        if (week[i].current === true) {
+          return { timestamp: week[i] }
         }
       }
       return { timestamp: false }
     }
 
-    function __adjustForWeekEvents () {
+    function __adjustForWeekEvents() {
       if (isMiniMode.value === true) return
       if (props.dayHeight !== 0) return
       const slotWeek = slots.week
@@ -357,9 +348,9 @@ export default defineComponent({
 
       if (window) {
         for (const row in weekEventRef.value) {
-          const weekEvent = weekEventRef.value[ row ]
+          const weekEvent = weekEventRef.value[row]
           if (weekEvent === void 0) continue
-          const wrapper = weekRef.value[ row ]
+          const wrapper = weekRef.value[row]
           if (wrapper === void 0) continue
           // this sucks to have to do it this way
           const styles = window.getComputedStyle(weekEvent)
@@ -373,64 +364,78 @@ export default defineComponent({
 
     // Render functions
 
-    function __renderBody () {
-      return h('div', {
-        class: 'q-calendar-month__body'
-      }, [
-        ...__renderWeeks()
-      ])
+    function __renderBody() {
+      return h(
+        'div',
+        {
+          class: 'q-calendar-month__body',
+        },
+        [...__renderWeeks()],
+      )
     }
 
-    function __renderHead () {
-      return h('div', {
-        role: 'presentation',
-        class: 'q-calendar-month__head'
-      }, [
-        props.showWorkWeeks === true && __renderWorkWeekHead(),
-        h('div', {
-          class: 'q-calendar-month__head--wrapper'
-        }, [
-          __renderHeadDaysRow()
-        ])
-      ])
+    function __renderHead() {
+      return h(
+        'div',
+        {
+          role: 'presentation',
+          class: 'q-calendar-month__head',
+        },
+        [
+          props.showWorkWeeks === true && __renderWorkWeekHead(),
+          h(
+            'div',
+            {
+              class: 'q-calendar-month__head--wrapper',
+            },
+            [__renderHeadDaysRow()],
+          ),
+        ],
+      )
     }
 
-    function __renderHeadDaysRow () {
-      return h('div', {
-        ref: headerColumnRef,
-        class: {
-          'q-calendar-month__head--weekdays': true
-        }
-      }, [
-        ...__renderHeadDays()
-      ])
+    function __renderHeadDaysRow() {
+      return h(
+        'div',
+        {
+          ref: headerColumnRef,
+          class: {
+            'q-calendar-month__head--weekdays': true,
+          },
+        },
+        [...__renderHeadDays()],
+      )
     }
 
-    function __renderWorkWeekHead () {
-      const slot = slots[ 'head-workweek' ]
+    function __renderWorkWeekHead() {
+      const slot = slots['head-workweek']
       const scope = {
         start: parsedStart.value,
         end: parsedEnd.value,
-        miniMode: isMiniMode.value
+        miniMode: isMiniMode.value,
       }
 
-      return h('div', {
-        class: 'q-calendar-month__head--workweek',
-        ...getDefaultMouseEventHandlers('-head-workweek', event => {
-          return { scope, event }
-        })
-      }, (slot ? slot({ scope }) : '#'))
+      return h(
+        'div',
+        {
+          class: 'q-calendar-month__head--workweek',
+          ...getDefaultMouseEventHandlers('-head-workweek', (event) => {
+            return { scope, event }
+          }),
+        },
+        slot ? slot({ scope }) : '#',
+      )
     }
 
-    function __renderHeadDays () {
+    function __renderHeadDays() {
       return todayWeek.value.map((day, index) => __renderHeadDay(day, index))
     }
 
-    function __renderHeadDay (day, index) {
-      const headDaySlot = slots[ 'head-day' ]
+    function __renderHeadDay(day, index) {
+      const headDaySlot = slots['head-day']
 
-      const filteredDays = days.value.filter(day2 => day2.weekday === day.weekday)
-      const weekday = filteredDays[ 0 ].weekday
+      const filteredDays = days.value.filter((day2) => day2.weekday === day.weekday)
+      const weekday = filteredDays[0].weekday
       const activeDate = props.noActiveDate !== true && __isActiveDate(day)
 
       const scope = {
@@ -441,10 +446,11 @@ export default defineComponent({
         index,
         miniMode: isMiniMode.value,
         droppable: dragOverHeadDayRef.value === day.weekday,
-        disabled: (props.disabledWeekdays ? props.disabledWeekdays.includes(day.weekday) : false)
+        disabled: props.disabledWeekdays ? props.disabledWeekdays.includes(day.weekday) : false,
       }
 
-      const weekdayClass = typeof props.weekdayClass === 'function' ? props.weekdayClass({ scope }) : {}
+      const weekdayClass =
+        typeof props.weekdayClass === 'function' ? props.weekdayClass({ scope }) : {}
       const isFocusable = props.focusable === true && props.focusType.includes('weekday')
 
       const width = computedWidth.value
@@ -453,7 +459,7 @@ export default defineComponent({
         width,
         maxWidth: width,
         minWidth: width,
-        ...styler({ scope })
+        ...styler({ scope }),
       }
 
       const data = {
@@ -463,47 +469,47 @@ export default defineComponent({
           'q-calendar-month__head--weekday': true,
           ...weekdayClass,
           'q-disabled-day disabled': scope.disabled === true,
-          [ 'q-calendar__' + props.weekdayAlign ]: true,
+          ['q-calendar__' + props.weekdayAlign]: true,
           'q-calendar__ellipsis': true,
-          'q-calendar__focusable': isFocusable === true
+          'q-calendar__focusable': isFocusable === true,
         },
         style,
         onDragenter: (e) => {
           if (props.dragEnterFunc !== undefined && typeof props.dragEnterFunc === 'function') {
             props.dragEnterFunc(e, 'head-day', scope) === true
-              ? dragOverHeadDayRef.value = day.weekday
-              : dragOverHeadDayRef.value = ''
+              ? (dragOverHeadDayRef.value = day.weekday)
+              : (dragOverHeadDayRef.value = '')
           }
         },
         onDragover: (e) => {
           if (props.dragOverFunc !== undefined && typeof props.dragOverFunc === 'function') {
             props.dragOverFunc(e, 'head-day', scope) === true
-              ? dragOverHeadDayRef.value = day.weekday
-              : dragOverHeadDayRef.value = ''
+              ? (dragOverHeadDayRef.value = day.weekday)
+              : (dragOverHeadDayRef.value = '')
           }
         },
         onDragleave: (e) => {
           if (props.dragLeaveFunc !== undefined && typeof props.dragLeaveFunc === 'function') {
             props.dragLeaveFunc(e, 'head-day', scope) === true
-              ? dragOverHeadDayRef.value = day.weekday
-              : dragOverHeadDayRef.value = ''
+              ? (dragOverHeadDayRef.value = day.weekday)
+              : (dragOverHeadDayRef.value = '')
           }
         },
         onDrop: (e) => {
           if (props.dropFunc !== undefined && typeof props.dropFunc === 'function') {
             props.dropFunc(e, 'head-day', scope) === true
-              ? dragOverHeadDayRef.value = day.weekday
-              : dragOverHeadDayRef.value = ''
+              ? (dragOverHeadDayRef.value = day.weekday)
+              : (dragOverHeadDayRef.value = '')
           }
         },
-        onFocus: (e) => {
+        onFocus: () => {
           if (isFocusable === true) {
             focusRef.value = day.date
           }
         },
-        ...getDefaultMouseEventHandlers('-head-day', event => {
+        ...getDefaultMouseEventHandlers('-head-day', (event) => {
           return { scope, event }
-        })
+        }),
       }
 
       if (props.noAria !== true) {
@@ -511,18 +517,19 @@ export default defineComponent({
       }
 
       return h('div', data, [
-        headDaySlot === undefined && __renderHeadWeekdayLabel(day, props.shortWeekdayLabel || isMiniMode.value),
+        headDaySlot === undefined &&
+          __renderHeadWeekdayLabel(day, props.shortWeekdayLabel || isMiniMode.value),
         headDaySlot !== undefined && headDaySlot({ scope }),
         __renderHeadDayEvent(day, index),
-        isFocusable === true && useFocusHelper()
+        isFocusable === true && useFocusHelper(),
       ])
     }
 
-    function __renderHeadDayEvent (day, index) {
-      const headDayEventSlot = slots[ 'head-day-event' ]
+    function __renderHeadDayEvent(day, index) {
+      const headDayEventSlot = slots['head-day-event']
       const activeDate = props.noActiveDate !== true && __isActiveDate(day)
-      const filteredDays = days.value.filter(day2 => day2.weekday === day.weekday)
-      const weekday = filteredDays[ 0 ].weekday
+      const filteredDays = days.value.filter((day2) => day2.weekday === day.weekday)
+      const weekday = filteredDays[0].weekday
 
       const scope = {
         weekday,
@@ -531,7 +538,7 @@ export default defineComponent({
         index,
         miniMode: isMiniMode.value,
         activeDate,
-        disabled: (props.disabledWeekdays ? props.disabledWeekdays.includes(day.weekday) : false)
+        disabled: props.disabledWeekdays ? props.disabledWeekdays.includes(day.weekday) : false,
       }
 
       const width = computedWidth.value
@@ -540,28 +547,41 @@ export default defineComponent({
         width,
         maxWidth: width,
         minWidth: width,
-        ...styler({ scope })
+        ...styler({ scope }),
       }
 
-      return h('div', {
-        key: 'event-' + day.date + (index !== undefined ? '-' + index : ''),
-        class: {
-          'q-calendar-month__head--event': true
+      return h(
+        'div',
+        {
+          key: 'event-' + day.date + (index !== undefined ? '-' + index : ''),
+          class: {
+            'q-calendar-month__head--event': true,
+          },
+          style,
         },
-        style
-      }, [
-        headDayEventSlot !== undefined && headDayEventSlot({ scope })
-      ])
+        [headDayEventSlot !== undefined && headDayEventSlot({ scope })],
+      )
     }
 
-    function __renderHeadWeekdayLabel (day, shortWeekdayLabel) {
-      const weekdayLabel = weekdayFormatter.value(day, shortWeekdayLabel || (props.weekdayBreakpoints[ 0 ] > 0 && parsedCellWidth.value <= props.weekdayBreakpoints[ 0 ]))
-      return h('span', {
-        class: 'q-calendar__ellipsis'
-      }, (isMiniMode.value === true && props.shortWeekdayLabel === true) || (props.weekdayBreakpoints[ 1 ] > 0 && parsedCellWidth.value <= props.weekdayBreakpoints[ 1 ]) ? minCharWidth(weekdayLabel, props.minWeekdayLabel) : weekdayLabel)
+    function __renderHeadWeekdayLabel(day, shortWeekdayLabel) {
+      const weekdayLabel = weekdayFormatter.value(
+        day,
+        shortWeekdayLabel ||
+          (props.weekdayBreakpoints[0] > 0 && parsedCellWidth.value <= props.weekdayBreakpoints[0]),
+      )
+      return h(
+        'span',
+        {
+          class: 'q-calendar__ellipsis',
+        },
+        (isMiniMode.value === true && props.shortWeekdayLabel === true) ||
+          (props.weekdayBreakpoints[1] > 0 && parsedCellWidth.value <= props.weekdayBreakpoints[1])
+          ? minCharWidth(weekdayLabel, props.minWeekdayLabel)
+          : weekdayLabel,
+      )
     }
 
-    function __renderWeeks () {
+    function __renderWeeks() {
       const weekDays = props.weekdays.length
       const weeks = []
       for (let i = 0; i < days.value.length; i += weekDays) {
@@ -571,71 +591,102 @@ export default defineComponent({
       return weeks
     }
 
-    function __renderWeek (week, weekNum) {
+    function __renderWeek(week, weekNum) {
       const slotWeek = slots.week
       const weekdays = props.weekdays
       const scope = { week, weekdays, miniMode: isMiniMode.value }
       const style = {}
 
       // this applies height properly, even if workweeks are displaying
-      style.height = props.dayHeight > 0 && isMiniMode.value !== true ? convertToUnit(parseInt(props.dayHeight, 10)) : 'auto'
+      style.height =
+        props.dayHeight > 0 && isMiniMode.value !== true
+          ? convertToUnit(parseInt(props.dayHeight, 10))
+          : 'auto'
       if (props.dayMinHeight > 0 && isMiniMode.value !== true) {
         style.minHeight = convertToUnit(parseInt(props.dayMinHeight, 10))
       }
-      const useAutoHeight = parseInt(props.dayHeight, 10) === 0 && parseInt(props.dayMinHeight, 10) === 0
+      const useAutoHeight =
+        parseInt(props.dayHeight, 10) === 0 && parseInt(props.dayMinHeight, 10) === 0
 
-      return h('div', {
-        key: week[ 0 ].date,
-        ref: (el) => { weekRef.value[ weekNum ] = el },
-        class: {
-          'q-calendar-month__week--wrapper': true,
-          'q-calendar-month__week--auto-height': useAutoHeight
+      return h(
+        'div',
+        {
+          key: week[0].date,
+          ref: (el) => {
+            weekRef.value[weekNum] = el
+          },
+          class: {
+            'q-calendar-month__week--wrapper': true,
+            'q-calendar-month__week--auto-height': useAutoHeight,
+          },
+          style,
         },
-        style
-      }, [
-        props.showWorkWeeks === true ? __renderWorkWeekGutter(week) : undefined,
-        h('div', {
-          class: 'q-calendar-month__week'
-        }, [
-          h('div', {
-            class: 'q-calendar-month__week--days'
-          }, week.map((day, index) => __renderDay(day))),
-          isMiniMode.value !== true && slotWeek !== undefined
-            ? h('div', {
-              ref: (el) => { weekEventRef.value[ weekNum ] = el },
-              class: 'q-calendar-month__week--events'
-            }, slotWeek({ scope }))
-            : undefined
-        ])
-      ])
+        [
+          props.showWorkWeeks === true ? __renderWorkWeekGutter(week) : undefined,
+          h(
+            'div',
+            {
+              class: 'q-calendar-month__week',
+            },
+            [
+              h(
+                'div',
+                {
+                  class: 'q-calendar-month__week--days',
+                },
+                week.map((day) => __renderDay(day)),
+              ),
+              isMiniMode.value !== true && slotWeek !== undefined
+                ? h(
+                    'div',
+                    {
+                      ref: (el) => {
+                        weekEventRef.value[weekNum] = el
+                      },
+                      class: 'q-calendar-month__week--events',
+                    },
+                    slotWeek({ scope }),
+                  )
+                : undefined,
+            ],
+          ),
+        ],
+      )
     }
 
-    function __renderWorkWeekGutter (week) {
+    function __renderWorkWeekGutter(week) {
       const slot = slots.workweek
       // adjust day to account for Sunday/Monday start of week calendars
-      const day = week.length > 2 ? week[ 2 ] : week[ 0 ]
+      const day = week.length > 2 ? week[2] : week[0]
       const { timestamp } = isCurrentWeek(week)
       const workweekLabel = Number(day.workweek).toLocaleString(props.locale)
       const scope = { workweekLabel, week, miniMode: isMiniMode.value }
 
-      return h('div', {
-        key: day.workweek,
-        class: {
-          'q-calendar-month__workweek': true,
-          ...getRelativeClasses(timestamp !== false ? timestamp : day, false)
+      return h(
+        'div',
+        {
+          key: day.workweek,
+          class: {
+            'q-calendar-month__workweek': true,
+            ...getRelativeClasses(timestamp !== false ? timestamp : day, false),
+          },
+          ...getDefaultMouseEventHandlers('-workweek', (event) => {
+            return { scope, event }
+          }),
         },
-        ...getDefaultMouseEventHandlers('-workweek', event => {
-          return { scope, event }
-        })
-      }, slot ? slot({ scope }) : workweekLabel)
+        slot ? slot({ scope }) : workweekLabel,
+      )
     }
 
-    function __renderDay (day) {
+    function __renderDay(day) {
       const slot = slots.day
       const styler = props.dayStyle || dayStyleDefault
       const outside = isOutside(day)
       const activeDate = props.noActiveDate !== true && parsedValue.value.date === day.date
-      const hasMonth = (outside === false && props.showMonthLabel === true && days.value.find(d => d.month === day.month).day === day.day)
+      const hasMonth =
+        outside === false &&
+        props.showMonthLabel === true &&
+        days.value.find((d) => d.month === day.month).day === day.day
       const scope = {
         outside,
         timestamp: day,
@@ -643,7 +694,7 @@ export default defineComponent({
         activeDate,
         hasMonth,
         droppable: dragOverDayRef.value === day.date,
-        disabled: (props.disabledWeekdays ? props.disabledWeekdays.includes(day.weekday) : false)
+        disabled: props.disabledWeekdays ? props.disabledWeekdays.includes(day.weekday) : false,
       }
 
       const style = Object.assign({ ...computedStyles.value }, styler({ scope }))
@@ -653,81 +704,82 @@ export default defineComponent({
         key: day.date,
         ref: (el) => {
           if (isDayFocusable.value === true) {
-            datesRef.value[ day.date ] = el
+            datesRef.value[day.date] = el
           }
         },
         tabindex: isDayFocusable.value === true ? 0 : -1,
         class: {
           'q-calendar-month__day': true,
           ...dayClass,
-          ...getRelativeClasses(day, outside, props.selectedDates, props.selectedStartEndDates, props.hover),
+          ...getRelativeClasses(
+            day,
+            outside,
+            props.selectedDates,
+            props.selectedStartEndDates,
+            props.hover,
+          ),
           'q-active-date': activeDate === true,
           disabled: props.enableOutsideDays !== true && outside === true,
           'q-calendar__hoverable': props.hoverable === true,
-          'q-calendar__focusable': isDayFocusable.value === true
+          'q-calendar__focusable': isDayFocusable.value === true,
         },
         style,
-        onFocus: (e) => {
+        onFocus: () => {
           if (isDayFocusable.value === true) {
             focusRef.value = day.date
           }
         },
         onKeydown: (e) => {
-          if (outside !== true
-            && day.disabled !== true
-            && isKeyCode(e, [ 13, 32 ])) {
+          if (outside !== true && day.disabled !== true && isKeyCode(e, [13, 32])) {
             e.stopPropagation()
             e.preventDefault()
           }
         },
         onKeyup: (event) => {
           // allow selection of date via Enter or Space keys
-          if (outside !== true
-            && day.disabled !== true
-            && isKeyCode(event, [ 13, 32 ])) {
+          if (outside !== true && day.disabled !== true && isKeyCode(event, [13, 32])) {
             event.stopPropagation()
             event.preventDefault()
             // emit only if there is a listener
             if (emitListeners.value.onClickDay !== undefined && isMiniMode.value !== true) {
-              // eslint-disable-next-line vue/require-explicit-emits
               emit('click-day', { scope, event })
             }
           }
         },
-        ...getDefaultMouseEventHandlers('-day', event => {
+        ...getDefaultMouseEventHandlers('-day', (event) => {
           return { scope, event }
-        })
+        }),
       }
 
       const dragAndDrop = {
         onDragenter: (e) => {
           if (props.dragEnterFunc !== undefined && typeof props.dragEnterFunc === 'function') {
             props.dragEnterFunc(e, 'day', scope) === true
-              ? dragOverDayRef.value = day.date
-              : dragOverDayRef.value = ''
+              ? (dragOverDayRef.value = day.date)
+              : (dragOverDayRef.value = '')
           }
         },
         onDragover: (e) => {
           if (props.dragOverFunc !== undefined && typeof props.dragOverFunc === 'function') {
             props.dragOverFunc(e, 'day', scope) === true
-              ? dragOverDayRef.value = day.date
-              : dragOverDayRef.value = ''
+              ? (dragOverDayRef.value = day.date)
+              : (dragOverDayRef.value = '')
           }
         },
         onDragleave: (e) => {
           if (props.dragLeaveFunc !== undefined && typeof props.dragLeaveFunc === 'function') {
             props.dragLeaveFunc(e, 'day', scope) === true
-              ? dragOverDayRef.value = day.date
-              : dragOverDayRef.value = ''
+              ? (dragOverDayRef.value = day.date)
+              : (dragOverDayRef.value = '')
           }
         },
         onDrop: (e) => {
           if (props.dropFunc !== undefined && typeof props.dropFunc === 'function') {
             props.dropFunc(e, 'day', scope) === true
-              ? dragOverDayRef.value = day.date
-              : dragOverDayRef.value = ''
+              ? (dragOverDayRef.value = day.date)
+              : (dragOverDayRef.value = '')
           }
-        }
+        },
       }
 
       if (outside !== true) {
@@ -740,16 +792,20 @@ export default defineComponent({
 
       return h('div', data, [
         __renderDayLabelContainer(day, outside, hasMonth),
-        h('div', {
-          class: {
-            'q-calendar-month__day--content': true
-          }
-        }, slot ? slot({ scope }) : undefined),
-        isDayFocusable.value === true && useFocusHelper()
+        h(
+          'div',
+          {
+            class: {
+              'q-calendar-month__day--content': true,
+            },
+          },
+          slot ? slot({ scope }) : undefined,
+        ),
+        isDayFocusable.value === true && useFocusHelper(),
       ])
     }
 
-    function __renderDayLabelContainer (day, outside, hasMonth) {
+    function __renderDayLabelContainer(day, outside, hasMonth) {
       let dayOfYearLabel, monthLabel
       const children = [__renderDayLabel(day, outside)]
 
@@ -757,19 +813,23 @@ export default defineComponent({
         monthLabel = __renderDayMonth(day, outside)
       }
 
-      if (isMiniMode.value !== true && props.showDayOfYearLabel === true && monthLabel === undefined && size.width > 300) {
+      if (
+        isMiniMode.value !== true &&
+        props.showDayOfYearLabel === true &&
+        monthLabel === undefined &&
+        size.width > 300
+      ) {
         dayOfYearLabel = __renderDayOfYearLabel(day, outside)
       }
 
       if (props.dateAlign === 'left') {
         dayOfYearLabel !== undefined && children.push(dayOfYearLabel)
         monthLabel !== undefined && children.push(monthLabel)
-      }
-      else if (props.dateAlign === 'right') {
+      } else if (props.dateAlign === 'right') {
         dayOfYearLabel !== undefined && children.unshift(dayOfYearLabel)
         monthLabel !== undefined && children.unshift(monthLabel)
-      }
-      else { // center
+      } else {
+        // center
         // no day of year or month labels
         dayOfYearLabel = undefined
         monthLabel = undefined
@@ -781,29 +841,29 @@ export default defineComponent({
         class: {
           'q-calendar-month__day--label__wrapper': true,
           'q-calendar__ellipsis': true,
-          [ 'q-calendar__' + props.dateAlign ]: (dayOfYearLabel === undefined && monthLabel === undefined),
-          'q-calendar__justify': (dayOfYearLabel !== undefined || monthLabel !== undefined)
-        }
+          ['q-calendar__' + props.dateAlign]:
+            dayOfYearLabel === undefined && monthLabel === undefined,
+          'q-calendar__justify': dayOfYearLabel !== undefined || monthLabel !== undefined,
+        },
       }
 
       return h('div', data, children)
     }
 
-    function __renderDayLabel (day, outside) {
+    function __renderDayLabel(day, outside) {
       // return if outside days are hidden
       if (outside === true && props.noOutsideDays === true) {
         return
       }
 
       const dayLabel = dayFormatter.value(day, false)
-      const dayLabelSlot = slots[ 'head-day-label' ]
-      const dayBtnSlot = slots[ 'head-day-button' ]
+      const dayLabelSlot = slots['head-day-label']
+      const dayBtnSlot = slots['head-day-button']
 
-      const selectedDate = (
-        props.selectedDates
-          && props.selectedDates.length > 0
-          && props.selectedDates.includes(day.date)
-      )
+      const selectedDate =
+        props.selectedDates &&
+        props.selectedDates.length > 0 &&
+        props.selectedDates.includes(day.date)
 
       const activeDate = props.noActiveDate !== true && __isActiveDate(day)
 
@@ -814,7 +874,7 @@ export default defineComponent({
         activeDate,
         selectedDate,
         miniMode: isMiniMode.value,
-        disabled: (props.disabledWeekdays ? props.disabledWeekdays.includes(day.weekday) : false)
+        disabled: props.disabledWeekdays ? props.disabledWeekdays.includes(day.weekday) : false,
       }
 
       // const size = isMiniMode.value ? 'sm' : props.monthLabelSize
@@ -823,7 +883,7 @@ export default defineComponent({
         key: day.date,
         ref: (el) => {
           if (isDateFocusable.value === true) {
-            datesRef.value[ day.date ] = el
+            datesRef.value[day.date] = el
           }
         },
         tabindex: isDateFocusable.value === true ? 0 : -1,
@@ -834,36 +894,35 @@ export default defineComponent({
           'q-calendar__button--rounded': props.dateType === 'rounded',
           'q-calendar__button--bordered': day.current === true,
           'q-calendar__hoverable': props.hoverable === true,
-          'q-calendar__focusable': isDateFocusable.value === true
+          'q-calendar__focusable': isDateFocusable.value === true,
         },
         // style: {
         //   lineHeight: isMiniMode.value ? 'unset' : '1.715em'
         // },
         disabled: day.disabled === true || (props.enableOutsideDays !== true && outside === true),
-        onFocus: (e) => {
+        onFocus: () => {
           if (isDateFocusable.value === true) {
             focusRef.value = day.date
           }
         },
         onKeydown: (e) => {
-          if (outside !== true
-            && day.disabled !== true
-            && isKeyCode(e, [ 13, 32 ])) {
+          if (outside !== true && day.disabled !== true && isKeyCode(e, [13, 32])) {
             e.stopPropagation()
             e.preventDefault()
           }
         },
         onKeyup: (event) => {
           // allow selection of date via Enter or Space keys
-          if (isDateFocusable.value === true
-            && outside !== true
-            && day.disabled !== true
-            && isKeyCode(event, [ 13, 32 ])) {
+          if (
+            isDateFocusable.value === true &&
+            outside !== true &&
+            day.disabled !== true &&
+            isKeyCode(event, [13, 32])
+          ) {
             event.stopPropagation()
             event.preventDefault()
             emittedValue.value = day.date
             if (emitListeners.value.onClickDate !== undefined) {
-              // eslint-disable-next-line vue/require-explicit-emits
               emit('click-date', { scope, event })
             }
           }
@@ -875,7 +934,7 @@ export default defineComponent({
             emittedValue.value = day.date
           }
           return { scope, event }
-        })
+        }),
       }
 
       if (props.noAria !== true) {
@@ -886,34 +945,38 @@ export default defineComponent({
         dayBtnSlot
           ? dayBtnSlot({ scope })
           : useButton(props, data, dayLabelSlot ? dayLabelSlot({ scope }) : dayLabel),
-        isDateFocusable.value === true && useFocusHelper()
+        isDateFocusable.value === true && useFocusHelper(),
       ]
     }
 
-    function __renderDayOfYearLabel (day, outside) {
+    function __renderDayOfYearLabel(day, outside) {
       // return if outside days are hidden
       if (outside === true && props.noOutsideDays === true) {
         return
       }
 
-      const slot = slots[ 'day-of-year' ]
+      const slot = slots['day-of-year']
       const scope = { timestamp: day }
 
-      return h('span', {
-        class: {
-          'q-calendar-month__day--day-of-year': true,
-          'q-calendar__ellipsis': true
-        }
-      }, slot ? slot({ scope }) : day.doy)
+      return h(
+        'span',
+        {
+          class: {
+            'q-calendar-month__day--day-of-year': true,
+            'q-calendar__ellipsis': true,
+          },
+        },
+        slot ? slot({ scope }) : day.doy,
+      )
     }
 
-    function __renderDayMonth (day, outside) {
+    function __renderDayMonth(day, outside) {
       // return if outside days are hidden
       if (outside === true && props.noOutsideDays === true) {
         return
       }
 
-      const slot = slots[ 'month-label' ]
+      const slot = slots['month-label']
       const monthLabel = monthFormatter.value(day, props.shortMonthLabel || size.width < 500)
       const scope = { monthLabel, timestamp: day, miniMode: isMiniMode.value }
 
@@ -922,41 +985,53 @@ export default defineComponent({
         style.fontSize = parsedMonthLabelSize.value
       }
 
-      return h('span', {
-        class: 'q-calendar-month__day--month q-calendar__ellipsis',
-        style
-      }, [
-        slot ? slot({ scope }) : isMiniMode.value !== true ? monthLabel : undefined
-      ])
+      return h(
+        'span',
+        {
+          class: 'q-calendar-month__day--month q-calendar__ellipsis',
+          style,
+        },
+        [slot ? slot({ scope }) : isMiniMode.value !== true ? monthLabel : undefined],
+      )
     }
 
-    function __renderMonth () {
+    function __renderMonth() {
       const { start, end } = renderValues.value
       startDate.value = start.date
       endDate.value = end.date
 
       const hasWidth = size.width > 0
 
-      const weekly = withDirectives(h('div', {
-        class: {
-          'q-calendar-mini': isMiniMode.value === true,
-          'q-calendar-month': true
-        },
-        key: startDate.value
-      }, [
-        hasWidth === true && props.noHeader !== true && __renderHead(),
-        hasWidth === true && __renderBody()
-      ]), [[
-        ResizeObserver,
-        __onResize
-      ]])
+      const weekly = withDirectives(
+        h(
+          'div',
+          {
+            class: {
+              'q-calendar-mini': isMiniMode.value === true,
+              'q-calendar-month': true,
+            },
+            key: startDate.value,
+          },
+          [
+            hasWidth === true && props.noHeader !== true && __renderHead(),
+            hasWidth === true && __renderBody(),
+          ],
+        ),
+        [[ResizeObserver, __onResize]],
+      )
 
       if (props.animated === true) {
-        const transition = 'q-calendar--' + (direction.value === 'prev' ? props.transitionPrev : props.transitionNext)
-        return h(Transition, {
-          name: transition,
-          appear: true
-        }, () => weekly)
+        const transition =
+          'q-calendar--' +
+          (direction.value === 'prev' ? props.transitionPrev : props.transitionNext)
+        return h(
+          Transition,
+          {
+            name: transition,
+            appear: true,
+          },
+          () => weekly,
+        )
       }
 
       return weekly
@@ -968,7 +1043,7 @@ export default defineComponent({
       next,
       move,
       moveToToday,
-      updateCurrent
+      updateCurrent,
     })
     // Object.assign(vm.proxy, {
     //   prev,
@@ -979,5 +1054,5 @@ export default defineComponent({
     // })
 
     return () => __renderCalendar()
-  }
+  },
 })

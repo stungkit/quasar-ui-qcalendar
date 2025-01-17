@@ -1,3 +1,4 @@
+/* global window */
 // Vue
 import {
   h,
@@ -11,21 +12,13 @@ import {
   ref,
   Transition,
   watch,
-  withDirectives
+  withDirectives,
 } from 'vue'
 
 // Utility
-import {
-  getDayIdentifier,
-  parsed,
-  parseTimestamp,
-  today
-} from '../utils/Timestamp.js'
+import { getDayIdentifier, parsed, parseTimestamp, today } from '../utils/Timestamp.js'
 
-import {
-  convertToUnit,
-  minCharWidth
-} from '../utils/helpers.js'
+import { convertToUnit, minCharWidth } from '../utils/helpers.js'
 
 // Composables
 import useCalendar from '../composables/useCalendar.js'
@@ -60,7 +53,7 @@ export default defineComponent({
     ...useMaxDaysProps,
     ...useTimesProps,
     ...useCellWidthProps,
-    ...useNavigationProps
+    ...useNavigationProps,
   },
 
   emits: [
@@ -73,12 +66,11 @@ export default defineComponent({
     ...getRawMouseEvents('-day-resource'),
     ...getRawMouseEvents('-head-resources'),
     ...getRawMouseEvents('-head-day'),
-    ...getRawMouseEvents('-resource')
+    ...getRawMouseEvents('-resource'),
   ],
 
-  setup (props, { slots, emit, expose }) {
-    const
-      scrollArea = ref(null),
+  setup(props, { slots, emit, expose }) {
+    const scrollArea = ref(null),
       pane = ref(null),
       headerColumnRef = ref(null),
       focusRef = ref(null),
@@ -102,10 +94,13 @@ export default defineComponent({
       lastStart = ref(null),
       lastEnd = ref(null)
 
-    watch(() => props.view, () => {
-      // reset maxDaysRendered
-      maxDaysRendered.value = 0
-    })
+    watch(
+      () => props.view,
+      () => {
+        // reset maxDaysRendered
+        maxDaysRendered.value = 0
+      },
+    )
 
     const parsedView = computed(() => {
       if (props.view === 'month') {
@@ -121,15 +116,9 @@ export default defineComponent({
 
     const { emitListeners } = useEmitListeners(vm)
 
-    const {
-      isSticky
-    } = useCellWidth(props)
+    const { isSticky } = useCellWidth(props)
 
-    const {
-      times,
-      setCurrent,
-      updateCurrent
-    } = useTimes(props)
+    const { times, setCurrent, updateCurrent } = useTimes(props)
 
     // update dates
     updateCurrent()
@@ -145,13 +134,11 @@ export default defineComponent({
       ariaDateFormatter,
       // methods
       dayStyleDefault,
-      getRelativeClasses
+      getRelativeClasses,
     } = useCommon(props, { startDate, endDate, times })
 
     const parsedValue = computed(() => {
-      return parseTimestamp(props.modelValue, times.now)
-        || parsedStart.value
-        || times.today
+      return parseTimestamp(props.modelValue, times.now) || parsedStart.value || times.today
     })
 
     focusValue.value = parsedValue.value
@@ -160,18 +147,17 @@ export default defineComponent({
     const { renderValues } = useRenderValues(props, {
       parsedView,
       parsedValue,
-      times
+      times,
     })
 
-    const {
-      rootRef,
-      scrollWidth,
-      __initCalendar,
-      __renderCalendar
-    } = useCalendar(props, __renderScheduler, {
-      scrollArea,
-      pane
-    })
+    const { rootRef, scrollWidth, __initCalendar, __renderCalendar } = useCalendar(
+      props,
+      __renderScheduler,
+      {
+        scrollArea,
+        pane,
+      },
+    )
 
     const {
       // computed
@@ -198,7 +184,7 @@ export default defineComponent({
       parsedEnd,
       maxDays: maxDaysRendered,
       size,
-      headerColumnRef
+      headerColumnRef,
     })
 
     const { move } = useMove(props, {
@@ -209,20 +195,14 @@ export default defineComponent({
       maxDays: maxDaysRendered,
       times,
       emittedValue,
-      emit
+      emit,
     })
 
-    const {
-      getDefaultMouseEventHandlers
-    } = useMouse(emit, emitListeners)
+    const { getDefaultMouseEventHandlers } = useMouse(emit, emitListeners)
 
-    const {
-      checkChange
-    } = useCheckChange(emit, { days, lastStart, lastEnd })
+    const { checkChange } = useCheckChange(emit, { days, lastStart, lastEnd })
 
-    const {
-      isKeyCode
-    } = useEvents()
+    const { isKeyCode } = useEvents()
 
     const { tryFocus } = useKeyboard(props, {
       rootRef,
@@ -235,14 +215,13 @@ export default defineComponent({
       emittedValue,
       weekdaySkips,
       direction,
-      times
+      times,
     })
 
     const parsedColumnCount = computed(() => {
       if (parsedView.value === 'day' && parseInt(props.columnCount, 10) > 1) {
         return parseInt(props.columnCount, 10)
-      }
-      else if (parsedView.value === 'day' && props.maxDays && props.maxDays > 1) {
+      } else if (parsedView.value === 'day' && props.maxDays && props.maxDays > 1) {
         return props.maxDays
       }
       return days.value.length
@@ -250,7 +229,10 @@ export default defineComponent({
 
     const resourcesWidth = computed(() => {
       if (rootRef.value) {
-        return parseInt(getComputedStyle(rootRef.value).getPropertyValue('--calendar-resources-width'), 10)
+        return parseInt(
+          window.getComputedStyle(rootRef.value).getPropertyValue('--calendar-resources-width'),
+          10,
+        )
       }
       return 0
     })
@@ -271,27 +253,28 @@ export default defineComponent({
       if (rootRef.value) {
         const width = size.width || rootRef.value.getBoundingClientRect().width
         if (width && resourcesWidth.value && parsedColumnCount.value) {
-          return (
-            (width - scrollWidth.value - resourcesWidth.value) / parsedColumnCount.value
-          ) + 'px'
+          return (width - scrollWidth.value - resourcesWidth.value) / parsedColumnCount.value + 'px'
         }
       }
-      return (100 / parsedColumnCount.value) + '%'
+      return 100 / parsedColumnCount.value + '%'
     })
 
     watch([days], checkChange, { deep: true, immediate: true })
 
-    watch(() => props.modelValue, (val, oldVal) => {
-      if (emittedValue.value !== props.modelValue) {
-        if (props.animated === true) {
-          const v1 = getDayIdentifier(parsed(val))
-          const v2 = getDayIdentifier(parsed(oldVal))
-          direction.value = v1 >= v2 ? 'next' : 'prev'
+    watch(
+      () => props.modelValue,
+      (val, oldVal) => {
+        if (emittedValue.value !== props.modelValue) {
+          if (props.animated === true) {
+            const v1 = getDayIdentifier(parsed(val))
+            const v2 = getDayIdentifier(parsed(oldVal))
+            direction.value = v1 >= v2 ? 'next' : 'prev'
+          }
+          emittedValue.value = val
         }
-        emittedValue.value = val
-      }
-      focusRef.value = val
-    })
+        focusRef.value = val
+      },
+    )
 
     watch(emittedValue, (val, oldVal) => {
       if (emittedValue.value !== props.modelValue) {
@@ -304,26 +287,28 @@ export default defineComponent({
       }
     })
 
-    watch(focusRef, val => {
+    watch(focusRef, (val) => {
       if (val) {
         focusValue.value = parseTimestamp(val)
       }
     })
 
-    watch(focusValue, (val) => {
-      if (datesRef.value[ focusRef.value ]) {
-        datesRef.value[ focusRef.value ].focus()
-      }
-      else {
+    watch(focusValue, () => {
+      if (datesRef.value[focusRef.value]) {
+        datesRef.value[focusRef.value].focus()
+      } else {
         // if focusRef is not in the list of current dates of dateRef,
         // then assume list of days is changing
         tryFocus()
       }
     })
 
-    watch(() => props.maxDays, val => {
-      maxDaysRendered.value = val
-    })
+    watch(
+      () => props.maxDays,
+      (val) => {
+        maxDaysRendered.value = val
+      },
+    )
 
     onBeforeUpdate(() => {
       datesRef.value = {}
@@ -338,26 +323,26 @@ export default defineComponent({
 
     // public functions
 
-    function moveToToday () {
+    function moveToToday() {
       emittedValue.value = today()
     }
 
-    function next (amount = 1) {
+    function next(amount = 1) {
       move(amount)
     }
 
-    function prev (amount = 1) {
+    function prev(amount = 1) {
       move(-amount)
     }
 
     // private functions
 
-    function __onResize ({ width, height }) {
+    function __onResize({ width, height }) {
       size.width = width
       size.height = height
     }
 
-    function __isActiveDate (day) {
+    function __isActiveDate(day) {
       return day.date === emittedValue.value
     }
 
@@ -370,72 +355,78 @@ export default defineComponent({
 
     // Render functions
 
-    function __renderHead () {
-      return h('div', {
-        roll: 'presentation',
-        class: {
-          'q-calendar-scheduler__head': true,
-          'q-calendar__sticky': isSticky.value === true
+    function __renderHead() {
+      return h(
+        'div',
+        {
+          roll: 'presentation',
+          class: {
+            'q-calendar-scheduler__head': true,
+            'q-calendar__sticky': isSticky.value === true,
+          },
+          style: {
+            marginRight: scrollWidth.value + 'px',
+          },
         },
-        style: {
-          marginRight: scrollWidth.value + 'px'
-        }
-      }, [
-        __renderHeadResources(),
-        __renderHeadDaysColumn()
-      ])
+        [__renderHeadResources(), __renderHeadDaysColumn()],
+      )
     }
 
     /*
      * Outputs the header that is above the resources
      */
-    function __renderHeadResources () {
-      const slot = slots[ 'head-resources' ]
+    function __renderHeadResources() {
+      const slot = slots['head-resources']
 
       const scope = {
         days: days.value, // deprecated
         timestamps: days.value,
         date: props.modelValue,
-        resources: props.modelResources
+        resources: props.modelResources,
       }
 
-      return h('div', {
-        class: {
-          'q-calendar-scheduler__head--resources': true,
-          'q-calendar__sticky': isSticky.value === true
+      return h(
+        'div',
+        {
+          class: {
+            'q-calendar-scheduler__head--resources': true,
+            'q-calendar__sticky': isSticky.value === true,
+          },
+          ...getDefaultMouseEventHandlers('-head-resources', (event) => {
+            return { scope, event }
+          }),
         },
-        ...getDefaultMouseEventHandlers('-head-resources', event => {
-          return { scope, event }
-        })
-      }, [
-        slot && slot({ scope })
-      ])
+        [slot && slot({ scope })],
+      )
     }
 
-    function __renderHeadDaysColumn () {
-      return h('div', {
-        ref: headerColumnRef,
-        class: {
-          'q-calendar-scheduler__head--days__column': true
-        }
-      }, [
-        __renderHeadDaysRow(),
-        __renderHeadDaysEventsRow()
-      ])
+    function __renderHeadDaysColumn() {
+      return h(
+        'div',
+        {
+          ref: headerColumnRef,
+          class: {
+            'q-calendar-scheduler__head--days__column': true,
+          },
+        },
+        [__renderHeadDaysRow(), __renderHeadDaysEventsRow()],
+      )
     }
 
-    function __renderHeadDaysRow () {
-      return h('div', {
-        class: {
-          'q-calendar-scheduler__head--days__weekdays': true
-        }
-      }, [
-        ...__renderHeadDays()
-      ])
+    function __renderHeadDaysRow() {
+      return h(
+        'div',
+        {
+          class: {
+            'q-calendar-scheduler__head--days__weekdays': true,
+          },
+        },
+        [...__renderHeadDays()],
+      )
     }
 
-    function __renderHeadDaysEventsRow () {
-      const slot = slots[ 'head-days-events' ]
+    function __renderHeadDaysEventsRow() {
+      const slot = slots['head-days-events']
 
       nextTick(() => {
         if (headDayEventsChildRef.value && parseInt(props.columnCount, 10) === 0 && window) {
@@ -443,93 +434,107 @@ export default defineComponent({
             const styles = window.getComputedStyle(headDayEventsChildRef.value)
             headDayEventsParentRef.value.parentElement.style.height = styles.height
             headDayEventsParentRef.value.style.height = styles.height
+          } catch {
+            //
           }
-          catch (e) {}
         }
       })
 
-      return h('div', {
-        class: {
-          'q-calendar-scheduler__head--days__event': true
-        }
-      }, [
-        slot && h('div', {
-          ref: headDayEventsParentRef,
-          // TODO: this needs to be in a class
-          style: {
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            right: 0,
-            overflow: 'hidden',
-            zIndex: 1
-          }
-        }, [
-          slot({ scope: {
-            timestamps: days.value,
-            days: days.value, // deprecated
-            ref: headDayEventsChildRef
-          } })
-        ]),
-        ...__renderHeadDaysEvents()
-      ])
+      return h(
+        'div',
+        {
+          class: {
+            'q-calendar-scheduler__head--days__event': true,
+          },
+        },
+        [
+          slot &&
+            h(
+              'div',
+              {
+                ref: headDayEventsParentRef,
+                // TODO: this needs to be in a class
+                style: {
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  right: 0,
+                  overflow: 'hidden',
+                  zIndex: 1,
+                },
+              },
+              [
+                slot({
+                  scope: {
+                    timestamps: days.value,
+                    days: days.value, // deprecated
+                    ref: headDayEventsChildRef,
+                  },
+                }),
+              ],
+            ),
+          ...__renderHeadDaysEvents(),
+        ],
+      )
     }
 
-    function __renderHeadDays () {
+    function __renderHeadDays() {
       if (days.value.length === 1 && parseInt(props.columnCount, 10) > 0) {
         return Array.apply(null, new Array(parseInt(props.columnCount, 10)))
           .map((_, i) => i + parseInt(props.columnIndexStart, 10))
-          .map(columnIndex => __renderHeadDay(days.value[ 0 ], columnIndex))
-      }
-      else {
-        return days.value.map(day => __renderHeadDay(day))
+          .map((columnIndex) => __renderHeadDay(days.value[0], columnIndex))
+      } else {
+        return days.value.map((day) => __renderHeadDay(day))
       }
     }
 
-    function __renderHeadDaysEvents () {
+    function __renderHeadDaysEvents() {
       if (days.value.length === 1 && parseInt(props.columnCount, 10) > 0) {
         return Array.apply(null, new Array(parseInt(props.columnCount, 10)))
           .map((_, i) => i + parseInt(props.columnIndexStart, 10))
-          .map(columnIndex => __renderHeadDayEvent(days.value[ 0 ], columnIndex))
-      }
-      else {
-        return days.value.map(day => __renderHeadDayEvent(day))
+          .map((columnIndex) => __renderHeadDayEvent(days.value[0], columnIndex))
+      } else {
+        return days.value.map((day) => __renderHeadDayEvent(day))
       }
     }
 
-    function __renderHeadDay (day, columnIndex) {
-      const headDaySlot = slots[ 'head-day' ]
-      const headDateSlot = slots[ 'head-date' ]
+    function __renderHeadDay(day, columnIndex) {
+      const headDaySlot = slots['head-day']
+      const headDateSlot = slots['head-date']
       const activeDate = props.noActiveDate !== true && __isActiveDate(day)
 
       const scope = {
         timestamp: day,
         activeDate,
         droppable: dragOverHeadDayRef.value === day.date,
-        disabled: (props.disabledWeekdays ? props.disabledWeekdays.includes(day.weekday) : false)
+        disabled: props.disabledWeekdays ? props.disabledWeekdays.includes(day.weekday) : false,
       }
       if (columnIndex !== undefined) {
         scope.columnIndex = columnIndex
       }
 
-      const width = isSticky.value === true ? convertToUnit(parsedCellWidth.value) : computedWidth.value
+      const width =
+        isSticky.value === true ? convertToUnit(parsedCellWidth.value) : computedWidth.value
       const styler = props.weekdayStyle || dayStyleDefault
       const style = {
         width,
         maxWidth: width,
         minWidth: width,
-        ...styler({ scope })
+        ...styler({ scope }),
       }
       if (isSticky.value === true) {
         style.minWidth = width
       }
-      const weekdayClass = typeof props.weekdayClass === 'function' ? props.weekdayClass({ scope }) : {}
+      const weekdayClass =
+        typeof props.weekdayClass === 'function' ? props.weekdayClass({ scope }) : {}
       const isFocusable = props.focusable === true && props.focusType.includes('weekday')
       const key = day.date + (columnIndex !== undefined ? '-' + columnIndex : '')
 
       const data = {
         key,
-        ref: (el) => { datesRef.value[ key ] = el },
+        ref: (el) => {
+          datesRef.value[key] = el
+        },
         tabindex: isFocusable === true ? 0 : -1,
         class: {
           'q-calendar-scheduler__head--day': true,
@@ -537,59 +542,57 @@ export default defineComponent({
           ...getRelativeClasses(day),
           'q-active-date': activeDate,
           'q-calendar__hoverable': props.hoverable === true,
-          'q-calendar__focusable': isFocusable === true
+          'q-calendar__focusable': isFocusable === true,
         },
         style,
-        onFocus: (e) => {
+        onFocus: () => {
           if (isFocusable === true) {
             focusRef.value = key
           }
         },
         onKeydown: (e) => {
-          if (day.disabled !== true
-            && isKeyCode(e, [ 13, 32 ])) {
+          if (day.disabled !== true && isKeyCode(e, [13, 32])) {
             e.stopPropagation()
             e.preventDefault()
           }
         },
         onKeyup: (e) => {
           // allow selection of date via Enter or Space keys
-          if (day.disabled !== true
-            && isKeyCode(e, [ 13, 32 ])) {
+          if (day.disabled !== true && isKeyCode(e, [13, 32])) {
             emittedValue.value = day.date
           }
         },
-        ...getDefaultMouseEventHandlers('-head-day', event => {
+        ...getDefaultMouseEventHandlers('-head-day', (event) => {
           return { scope, event }
         }),
         onDragenter: (e) => {
           if (props.dragEnterFunc !== undefined && typeof props.dragEnterFunc === 'function') {
             props.dragEnterFunc(e, 'head-day', scope) === true
-              ? dragOverHeadDayRef.value = day.date
-              : dragOverHeadDayRef.value = ''
+              ? (dragOverHeadDayRef.value = day.date)
+              : (dragOverHeadDayRef.value = '')
           }
         },
         onDragover: (e) => {
           if (props.dragOverFunc !== undefined && typeof props.dragOverFunc === 'function') {
             props.dragOverFunc(e, 'head-day', scope) === true
-              ? dragOverHeadDayRef.value = day.date
-              : dragOverHeadDayRef.value = ''
+              ? (dragOverHeadDayRef.value = day.date)
+              : (dragOverHeadDayRef.value = '')
           }
         },
         onDragleave: (e) => {
           if (props.dragLeaveFunc !== undefined && typeof props.dragLeaveFunc === 'function') {
             props.dragLeaveFunc(e, 'head-day', scope) === true
-              ? dragOverHeadDayRef.value = day.date
-              : dragOverHeadDayRef.value = ''
+              ? (dragOverHeadDayRef.value = day.date)
+              : (dragOverHeadDayRef.value = '')
           }
         },
         onDrop: (e) => {
           if (props.dropFunc !== undefined && typeof props.dropFunc === 'function') {
             props.dropFunc(e, 'head-day', scope) === true
-              ? dragOverHeadDayRef.value = day.date
-              : dragOverHeadDayRef.value = ''
+              ? (dragOverHeadDayRef.value = day.date)
+              : (dragOverHeadDayRef.value = '')
           }
-        }
+        },
       }
 
       return h('div', data, [
@@ -599,111 +602,132 @@ export default defineComponent({
         headDaySlot === undefined && __renderDateHeader(day),
         headDaySlot === undefined && headDateSlot && headDateSlot({ scope }),
         headDaySlot === undefined && __renderColumnHeaderAfter(day, columnIndex),
-        useFocusHelper()
+        useFocusHelper(),
       ])
     }
 
-    function __renderDateHeader (day) {
+    function __renderDateHeader(day) {
       if (props.dateHeader === 'stacked') {
         return [
           props.noDefaultHeaderText !== true && __renderHeadWeekday(day),
-          props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day)
+          props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day),
         ]
-      }
-      else if (props.dateHeader === 'inline') {
+      } else if (props.dateHeader === 'inline') {
         if (props.weekdayAlign === 'left' && props.dateAlign === 'right') {
-          return h('div', {
-            class: 'q-calendar__header--inline'
-          }, [
-            props.noDefaultHeaderText !== true && __renderHeadWeekday(day),
-            props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day)
-          ])
+          return h(
+            'div',
+            {
+              class: 'q-calendar__header--inline',
+            },
+            [
+              props.noDefaultHeaderText !== true && __renderHeadWeekday(day),
+              props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day),
+            ],
+          )
+        } else if (props.weekdayAlign === 'right' && props.dateAlign === 'left') {
+          return h(
+            'div',
+            {
+              class: 'q-calendar__header--inline',
+            },
+            [
+              props.noDefaultHeaderText !== true && __renderHeadWeekday(day),
+              props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day),
+            ],
+          )
+        } else {
+          return h(
+            'div',
+            {
+              class: 'q-calendar__header--inline',
+            },
+            [
+              props.noDefaultHeaderText !== true && __renderHeadWeekday(day),
+              props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day),
+            ],
+          )
         }
-        else if (props.weekdayAlign === 'right' && props.dateAlign === 'left') {
-          return h('div', {
-            class: 'q-calendar__header--inline'
-          }, [
-            props.noDefaultHeaderText !== true && __renderHeadWeekday(day),
-            props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day)
-          ])
-        }
-        else {
-          return h('div', {
-            class: 'q-calendar__header--inline'
-          }, [
-            props.noDefaultHeaderText !== true && __renderHeadWeekday(day),
-            props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day)
-          ])
-        }
-      }
-      else if (props.dateHeader === 'inverted') {
+      } else if (props.dateHeader === 'inverted') {
         if (props.weekdayAlign === 'left' && props.dateAlign === 'right') {
-          return h('div', {
-            class: 'q-calendar__header--inline'
-          }, [
-            props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day),
-            props.noDefaultHeaderText !== true && __renderHeadWeekday(day)
-          ])
-        }
-        else if (props.weekdayAlign === 'right' && props.dateAlign === 'left') {
-          return h('div', {
-            class: 'q-calendar__header--inline'
-          }, [
-            props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day),
-            props.noDefaultHeaderText !== true && __renderHeadWeekday(day)
-          ])
-        }
-        else {
-          return h('div', {
-            class: 'q-calendar__header--inline'
-          }, [
-            props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day),
-            props.noDefaultHeaderText !== true && __renderHeadWeekday(day)
-          ])
+          return h(
+            'div',
+            {
+              class: 'q-calendar__header--inline',
+            },
+            [
+              props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day),
+              props.noDefaultHeaderText !== true && __renderHeadWeekday(day),
+            ],
+          )
+        } else if (props.weekdayAlign === 'right' && props.dateAlign === 'left') {
+          return h(
+            'div',
+            {
+              class: 'q-calendar__header--inline',
+            },
+            [
+              props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day),
+              props.noDefaultHeaderText !== true && __renderHeadWeekday(day),
+            ],
+          )
+        } else {
+          return h(
+            'div',
+            {
+              class: 'q-calendar__header--inline',
+            },
+            [
+              props.noDefaultHeaderBtn !== true && __renderHeadDayDate(day),
+              props.noDefaultHeaderText !== true && __renderHeadWeekday(day),
+            ],
+          )
         }
       }
     }
 
-    function __renderHeadDayEvent (day, columnIndex) {
-      const headDayEventSlot = slots[ 'head-day-event' ]
+    function __renderHeadDayEvent(day, columnIndex) {
+      const headDayEventSlot = slots['head-day-event']
       const activeDate = props.noActiveDate !== true && __isActiveDate(day)
 
       const scope = {
         timestamp: day,
         activeDate,
         droppable: dragOverHeadDayRef.value === day.date,
-        disabled: (props.disabledWeekdays ? props.disabledWeekdays.includes(day.weekday) : false)
+        disabled: props.disabledWeekdays ? props.disabledWeekdays.includes(day.weekday) : false,
       }
 
       if (columnIndex !== undefined) {
         scope.columnIndex = columnIndex
       }
 
-      const width = isSticky.value === true ? convertToUnit(parsedCellWidth.value) : computedWidth.value
+      const width =
+        isSticky.value === true ? convertToUnit(parsedCellWidth.value) : computedWidth.value
       const style = {
         width,
         maxWidth: width,
-        minWidth: width
+        minWidth: width,
       }
       if (isSticky.value === true) {
         style.minWidth = width
       }
 
-      return h('div', {
-        key: 'event-' + day.date + (columnIndex !== undefined ? '-' + columnIndex : ''),
-        class: {
-          'q-calendar-scheduler__head--day__event': true,
-          ...getRelativeClasses(day),
-          'q-active-date': activeDate
+      return h(
+        'div',
+        {
+          key: 'event-' + day.date + (columnIndex !== undefined ? '-' + columnIndex : ''),
+          class: {
+            'q-calendar-scheduler__head--day__event': true,
+            ...getRelativeClasses(day),
+            'q-active-date': activeDate,
+          },
+          style,
         },
-        style
-      }, [
-        headDayEventSlot && headDayEventSlot({ scope })
-      ])
+        [headDayEventSlot && headDayEventSlot({ scope })],
+      )
     }
 
-    function __renderHeadWeekday (day) {
-      const slot = slots[ 'head-weekday-label' ]
+    function __renderHeadWeekday(day) {
+      const slot = slots['head-weekday-label']
       const shortWeekdayLabel = props.shortWeekdayLabel === true
       // const divisor = props.dateHeader === 'inline' || props.dateHeader === 'inverted' ? 0.5 : 1
       // const shortCellWidth = props.weekdayBreakpoints[ 1 ] > 0 && (parsedCellWidth.value * divisor) <= props.weekdayBreakpoints[ 1 ]
@@ -712,42 +736,56 @@ export default defineComponent({
       const data = {
         class: {
           'q-calendar-scheduler__head--weekday': true,
-          [ 'q-calendar__' + props.weekdayAlign ]: true,
-          'q-calendar__ellipsis': true
-        }
+          ['q-calendar__' + props.weekdayAlign]: true,
+          'q-calendar__ellipsis': true,
+        },
       }
 
-      return h('div', data, (slot && slot({ scope })) || __renderHeadWeekdayLabel(day, shortWeekdayLabel))
+      return h(
+        'div',
+        data,
+        (slot && slot({ scope })) || __renderHeadWeekdayLabel(day, shortWeekdayLabel),
+      )
     }
 
-    function __renderHeadWeekdayLabel (day, shortWeekdayLabel) {
-      const weekdayLabel = weekdayFormatter.value(day, shortWeekdayLabel || (props.weekdayBreakpoints[ 0 ] > 0 && parsedCellWidth.value <= props.weekdayBreakpoints[ 0 ]))
-      return h('span', {
-        class: 'q-calendar-scheduler__head--weekday-label q-calendar__ellipsis'
-      }, props.weekdayBreakpoints[ 1 ] > 0 && parsedCellWidth.value <= props.weekdayBreakpoints[ 1 ] ? minCharWidth(weekdayLabel, props.minWeekdayLabel) : weekdayLabel)
+    function __renderHeadWeekdayLabel(day, shortWeekdayLabel) {
+      const weekdayLabel = weekdayFormatter.value(
+        day,
+        shortWeekdayLabel ||
+          (props.weekdayBreakpoints[0] > 0 && parsedCellWidth.value <= props.weekdayBreakpoints[0]),
+      )
+      return h(
+        'span',
+        {
+          class: 'q-calendar-scheduler__head--weekday-label q-calendar__ellipsis',
+        },
+        props.weekdayBreakpoints[1] > 0 && parsedCellWidth.value <= props.weekdayBreakpoints[1]
+          ? minCharWidth(weekdayLabel, props.minWeekdayLabel)
+          : weekdayLabel,
+      )
     }
 
-    function __renderHeadDayDate (day) {
+    function __renderHeadDayDate(day) {
       const data = {
         class: {
           'q-calendar-scheduler__head--date': true,
-          [ 'q-calendar__' + props.dateAlign ]: true
-        }
+          ['q-calendar__' + props.dateAlign]: true,
+        },
       }
 
       return h('div', data, __renderHeadDayBtn(day))
     }
 
-    function __renderHeadDayBtn (day) {
+    function __renderHeadDayBtn(day) {
       const activeDate = props.noActiveDate !== true && __isActiveDate(day)
       const dayLabel = dayFormatter.value(day, false)
-      const headDayLabelSlot = slots[ 'head-day-label' ]
-      const headDayButtonSlot = slots[ 'head-day-button' ]
+      const headDayLabelSlot = slots['head-day-label']
+      const headDayButtonSlot = slots['head-day-button']
 
       const scope = {
         dayLabel,
         timestamp: day,
-        activeDate
+        activeDate,
       }
 
       const data = {
@@ -757,23 +795,20 @@ export default defineComponent({
           'q-calendar__button--round': props.dateType === 'round',
           'q-calendar__button--rounded': props.dateType === 'rounded',
           'q-calendar__button--bordered': day.current === true,
-          'q-calendar__focusable': true
+          'q-calendar__focusable': true,
         },
         disabled: day.disabled,
         onKeydown: (e) => {
-          if (day.disabled !== true
-            && isKeyCode(e, [ 13, 32 ])) {
+          if (day.disabled !== true && isKeyCode(e, [13, 32])) {
             e.stopPropagation()
             e.preventDefault()
           }
         },
         onKeyup: (e) => {
           // allow selection of date via Enter or Space keys
-          if (day.disabled !== true
-            && isKeyCode(e, [ 13, 32 ])) {
+          if (day.disabled !== true && isKeyCode(e, [13, 32])) {
             emittedValue.value = day.date
             if (emitListeners.value.onClickDate !== undefined) {
-              // eslint-disable-next-line vue/require-explicit-emits
               emit('click-date', { scope })
             }
           }
@@ -786,7 +821,7 @@ export default defineComponent({
             }
           }
           return { scope, event }
-        })
+        }),
       }
 
       if (props.noAria !== true) {
@@ -798,261 +833,300 @@ export default defineComponent({
         : useButton(props, data, headDayLabelSlot ? headDayLabelSlot({ scope }) : dayLabel)
     }
 
-    function __renderColumnHeaderBefore (day, columnIndex) {
-      const slot = slots[ 'column-header-before' ]
+    function __renderColumnHeaderBefore(day, columnIndex) {
+      const slot = slots['column-header-before']
       if (slot) {
         const scope = { timestamp: day, columnIndex }
-        return h('div', {
-          class: 'q-calendar-scheduler__column-header--before'
-        }, [
-          slot({ scope })
-        ])
+        return h(
+          'div',
+          {
+            class: 'q-calendar-scheduler__column-header--before',
+          },
+          [slot({ scope })],
+        )
       }
     }
 
-    function __renderColumnHeaderAfter (day, columnIndex) {
-      const slot = slots[ 'column-header-after' ]
+    function __renderColumnHeaderAfter(day, columnIndex) {
+      const slot = slots['column-header-after']
       if (slot) {
         const scope = { timestamp: day, columnIndex }
-        return h('div', {
-          class: 'q-calendar-scheduler__column-header--after'
-        }, [
-          slot({ scope })
-        ])
+        return h(
+          'div',
+          {
+            class: 'q-calendar-scheduler__column-header--after',
+          },
+          [slot({ scope })],
+        )
       }
     }
 
-    function __renderBody () {
-      return h('div', {
-        class: 'q-calendar-scheduler__body'
-      }, [
-        __renderScrollArea()
-      ])
+    function __renderBody() {
+      return h(
+        'div',
+        {
+          class: 'q-calendar-scheduler__body',
+        },
+        [__renderScrollArea()],
+      )
     }
 
-    function __renderScrollArea () {
+    function __renderScrollArea() {
       if (isSticky.value === true) {
-        return h('div', {
-          ref: scrollArea,
-          class: {
-            'q-calendar-scheduler__scroll-area': true,
-            'q-calendar__scroll': true
-          }
-        }, [
-          isSticky.value !== true && __renderDayResources(),
-          __renderDayContainer()
-        ])
-      }
-      else if (props.noScroll === true) {
+        return h(
+          'div',
+          {
+            ref: scrollArea,
+            class: {
+              'q-calendar-scheduler__scroll-area': true,
+              'q-calendar__scroll': true,
+            },
+          },
+          [isSticky.value !== true && __renderDayResources(), __renderDayContainer()],
+        )
+      } else if (props.noScroll === true) {
         return __renderPane()
+      } else {
+        return h(
+          'div',
+          {
+            ref: scrollArea,
+            class: {
+              'q-calendar-scheduler__scroll-area': true,
+              'q-calendar__scroll': true,
+            },
+          },
+          [__renderPane()],
+        )
       }
-      else {
-        return h('div', {
-          ref: scrollArea,
-          class: {
-            'q-calendar-scheduler__scroll-area': true,
-            'q-calendar__scroll': true
-          }
-        }, [
-          __renderPane()
-        ])
-      }
     }
 
-    function __renderPane () {
-      return h('div', {
-        ref: pane,
-        class: 'q-calendar-scheduler__pane'
-      }, [
-        __renderDayContainer()
-      ])
+    function __renderPane() {
+      return h(
+        'div',
+        {
+          ref: pane,
+          class: 'q-calendar-scheduler__pane',
+        },
+        [__renderDayContainer()],
+      )
     }
 
-    function __renderDayContainer () {
-      return h('div', {
-        class: 'q-calendar-scheduler__day--container'
-      }, [
-        isSticky.value === true && props.noHeader !== true && __renderHead(),
-        __renderResources()
-      ])
+    function __renderDayContainer() {
+      return h(
+        'div',
+        {
+          class: 'q-calendar-scheduler__day--container',
+        },
+        [isSticky.value === true && props.noHeader !== true && __renderHead(), __renderResources()],
+      )
     }
 
-    function __renderResources (resources = undefined, indentLevel = 0, expanded = true) {
+    function __renderResources(resources = undefined, indentLevel = 0, expanded = true) {
       if (resources === undefined) {
         resources = props.modelResources
       }
       return resources.map((resource, resourceIndex) => {
-        return __renderResourceRow(resource, resourceIndex, indentLevel, resource.children !== undefined ? resource.expanded : expanded)
+        return __renderResourceRow(
+          resource,
+          resourceIndex,
+          indentLevel,
+          resource.children !== undefined ? resource.expanded : expanded,
+        )
       })
     }
 
-    function __renderResourceRow (resource, resourceIndex, indentLevel = 0, expanded = true) {
-      const style = {
-      }
-      style.height = resource.height !== void 0
-        ? convertToUnit(parseInt(resource.height, 10))
-        : parsedResourceHeight.value
-          ? convertToUnit(parsedResourceHeight.value)
-          : 'auto'
+    function __renderResourceRow(resource, resourceIndex, indentLevel = 0, expanded = true) {
+      const style = {}
+      style.height =
+        resource.height !== void 0
+          ? convertToUnit(parseInt(resource.height, 10))
+          : parsedResourceHeight.value
+            ? convertToUnit(parsedResourceHeight.value)
+            : 'auto'
       if (parsedResourceMinHeight.value > 0) {
         style.minHeight = convertToUnit(parsedResourceMinHeight.value)
       }
-    
-      const resourceRow = h('div', {
-        key: resource[ props.resourceKey ] + '-' + resourceIndex,
-        class: {
-          'q-calendar-scheduler__resource--row': true
+
+      const resourceRow = h(
+        'div',
+        {
+          key: resource[props.resourceKey] + '-' + resourceIndex,
+          class: {
+            'q-calendar-scheduler__resource--row': true,
+          },
+          style,
         },
-        style
-      }, [
-        __renderResource(resource, resourceIndex, indentLevel, expanded),
-        __renderDayResources(resource, resourceIndex, indentLevel, expanded)
-      ])
+        [
+          __renderResource(resource, resourceIndex, indentLevel, expanded),
+          __renderDayResources(resource, resourceIndex, indentLevel, expanded),
+        ],
+      )
 
       if (resource.children !== undefined) {
         return [
           resourceRow,
-          h('div', {
-            class: {
-              'q-calendar__child': true,
-              'q-calendar__child--expanded': expanded === true,
-              'q-calendar__child--collapsed': expanded !== true
-            }
-          }, [
-            __renderResources(resource.children, indentLevel + 1, (expanded === false ? expanded : resource.expanded))
-          ])
+          h(
+            'div',
+            {
+              class: {
+                'q-calendar__child': true,
+                'q-calendar__child--expanded': expanded === true,
+                'q-calendar__child--collapsed': expanded !== true,
+              },
+            },
+            [
+              __renderResources(
+                resource.children,
+                indentLevel + 1,
+                expanded === false ? expanded : resource.expanded,
+              ),
+            ],
+          ),
         ]
       }
 
       return [resourceRow]
     }
 
-    function __renderResource (resource, resourceIndex, indentLevel = 0, expanded = true) {
-      const slotResourceLabel = slots[ 'resource-label' ]
+    function __renderResource(resource, resourceIndex, indentLevel = 0, expanded = true) {
+      const slotResourceLabel = slots['resource-label']
 
-      const style = {
-      }
-      style.height = resource.height !== void 0
-        ? convertToUnit(parseInt(resource.height, 10))
-        : parsedResourceHeight.value
-          ? convertToUnit(parsedResourceHeight.value)
-          : 'auto'
+      const style = {}
+      style.height =
+        resource.height !== void 0
+          ? convertToUnit(parseInt(resource.height, 10))
+          : parsedResourceHeight.value
+            ? convertToUnit(parsedResourceHeight.value)
+            : 'auto'
       if (parseInt(props.resourceMinHeight, 10) > 0) {
         style.minHeight = convertToUnit(parseInt(props.resourceMinHeight, 10))
       }
       const styler = props.resourceStyle || styleDefault
-      const label = resource[ props.resourceLabel ]
+      const label = resource[props.resourceLabel]
 
-      const isFocusable = props.focusable === true && props.focusType.includes('resource') && expanded === true
+      const isFocusable =
+        props.focusable === true && props.focusType.includes('resource') && expanded === true
       const scope = {
         resource,
         timestamps: days.value,
         days: days.value, // deprecated
         resourceIndex,
         indentLevel,
-        label
+        label,
       }
-      const dragValue = resource[ props.resourceKey ]
+      const dragValue = resource[props.resourceKey]
       scope.droppable = dragOverResource.value === dragValue
-      const resourceClass = typeof props.resourceClass === 'function' ? props.resourceClass({ scope }) : {}
+      const resourceClass =
+        typeof props.resourceClass === 'function' ? props.resourceClass({ scope }) : {}
 
-      return h('div', {
-        key: resource[ props.resourceKey ] + '-' + resourceIndex,
-        ref: (el) => { resourcesRef.value[ resource[ props.resourceKey ] ] = el },
-        tabindex: isFocusable === true ? 0 : -1,
-        class: {
-          'q-calendar-scheduler__resource': indentLevel === 0,
-          'q-calendar-scheduler__resource--section': indentLevel !== 0,
-          ...resourceClass,
-          'q-calendar__sticky': isSticky.value === true,
-          'q-calendar__hoverable': props.hoverable === true,
-          'q-calendar__focusable': isFocusable === true
-        },
-        style: {
-          ...style,
-          ...styler({ scope })
-        },
-        onDragenter: (e) => {
-          if (props.dragEnterFunc !== undefined && typeof props.dragEnterFunc === 'function') {
-            props.dragEnterFunc(e, 'resource', scope) === true
-              ? dragOverResource.value = dragValue
-              : dragOverResource.value = ''
-          }
-        },
-        onDragover: (e) => {
-          if (props.dragOverFunc !== undefined && typeof props.dragOverFunc === 'function') {
-            props.dragOverFunc(e, 'resource', scope) === true
-              ? dragOverResource.value = dragValue
-              : dragOverResource.value = ''
-          }
-        },
-        onDragleave: (e) => {
-          if (props.dragLeaveFunc !== undefined && typeof props.dragLeaveFunc === 'function') {
-            props.dragLeaveFunc(e, 'resource', scope) === true
-              ? dragOverResource.value = dragValue
-              : dragOverResource.value = ''
-          }
-        },
-        onDrop: (e) => {
-          if (props.dropFunc !== undefined && typeof props.dropFunc === 'function') {
-            props.dropFunc(e, 'resource', scope) === true
-              ? dragOverResource.value = dragValue
-              : dragOverResource.value = ''
-          }
-        },
-        onKeydown: (event) => {
-          if (isKeyCode(event, [ 13, 32 ])) {
-            event.stopPropagation()
-            event.preventDefault()
-          }
-        },
-        onKeyup: (event) => {
-          // allow selection of resource via Enter or Space keys
-          if (isKeyCode(event, [ 13, 32 ])) {
-            if (emitListeners.value.onClickResource !== undefined) {
-              // eslint-disable-next-line vue/require-explicit-emits
-              emit('click-resource', { scope, event })
+      return h(
+        'div',
+        {
+          key: resource[props.resourceKey] + '-' + resourceIndex,
+          ref: (el) => {
+            resourcesRef.value[resource[props.resourceKey]] = el
+          },
+          tabindex: isFocusable === true ? 0 : -1,
+          class: {
+            'q-calendar-scheduler__resource': indentLevel === 0,
+            'q-calendar-scheduler__resource--section': indentLevel !== 0,
+            ...resourceClass,
+            'q-calendar__sticky': isSticky.value === true,
+            'q-calendar__hoverable': props.hoverable === true,
+            'q-calendar__focusable': isFocusable === true,
+          },
+          style: {
+            ...style,
+            ...styler({ scope }),
+          },
+          onDragenter: (e) => {
+            if (props.dragEnterFunc !== undefined && typeof props.dragEnterFunc === 'function') {
+              props.dragEnterFunc(e, 'resource', scope) === true
+                ? (dragOverResource.value = dragValue)
+                : (dragOverResource.value = '')
             }
-          }
+          },
+          onDragover: (e) => {
+            if (props.dragOverFunc !== undefined && typeof props.dragOverFunc === 'function') {
+              props.dragOverFunc(e, 'resource', scope) === true
+                ? (dragOverResource.value = dragValue)
+                : (dragOverResource.value = '')
+            }
+          },
+          onDragleave: (e) => {
+            if (props.dragLeaveFunc !== undefined && typeof props.dragLeaveFunc === 'function') {
+              props.dragLeaveFunc(e, 'resource', scope) === true
+                ? (dragOverResource.value = dragValue)
+                : (dragOverResource.value = '')
+            }
+          },
+          onDrop: (e) => {
+            if (props.dropFunc !== undefined && typeof props.dropFunc === 'function') {
+              props.dropFunc(e, 'resource', scope) === true
+                ? (dragOverResource.value = dragValue)
+                : (dragOverResource.value = '')
+            }
+          },
+          onKeydown: (event) => {
+            if (isKeyCode(event, [13, 32])) {
+              event.stopPropagation()
+              event.preventDefault()
+            }
+          },
+          onKeyup: (event) => {
+            // allow selection of resource via Enter or Space keys
+            if (isKeyCode(event, [13, 32])) {
+              if (emitListeners.value.onClickResource !== undefined) {
+                emit('click-resource', { scope, event })
+              }
+            }
+          },
+          ...getDefaultMouseEventHandlers('-resource', (event) => {
+            return { scope, event }
+          }),
         },
-        ...getDefaultMouseEventHandlers('-resource', event => {
-          return { scope, event }
-        })
-      }, [
+        [
           [
-              h('div', {
-                class: {
-                  'q-calendar__parent': resource.children !== undefined,
-                  'q-calendar__parent--expanded': resource.children !== undefined && resource.expanded === true,
-                  'q-calendar__parent--collapsed': resource.children !== undefined && resource.expanded !== true
-                },
-                onClick: (e) => {
-                  e.stopPropagation()
-                  resource.expanded = !resource.expanded
-                  // emit('update:model-resources', props.modelResources)
-                  emit('resource-expanded', { expanded: resource.expanded, scope })
-                }
-              }),
-              h('div', {
+            h('div', {
+              class: {
+                'q-calendar__parent': resource.children !== undefined,
+                'q-calendar__parent--expanded':
+                  resource.children !== undefined && resource.expanded === true,
+                'q-calendar__parent--collapsed':
+                  resource.children !== undefined && resource.expanded !== true,
+              },
+              onClick: (e) => {
+                e.stopPropagation()
+                resource.expanded = !resource.expanded
+                // emit('update:model-resources', props.modelResources)
+                emit('resource-expanded', { expanded: resource.expanded, scope })
+              },
+            }),
+            h(
+              'div',
+              {
                 class: {
                   'q-calendar-scheduler__resource--text': true,
-                  'q-calendar__ellipsis': true
+                  'q-calendar__ellipsis': true,
                 },
                 style: {
-                  paddingLeft: (10 * indentLevel + 2) + 'px'
-                }
-              }, [
-                slotResourceLabel ? slotResourceLabel({ scope }) : label
-              ]),
-              useFocusHelper()
-            ]
-      ])
+                  paddingLeft: 10 * indentLevel + 2 + 'px',
+                },
+              },
+              [slotResourceLabel ? slotResourceLabel({ scope }) : label],
+            ),
+            useFocusHelper(),
+          ],
+        ],
+      )
     }
 
-    function __renderDayResources (resource, resourceIndex, indentLevel = 0, expanded = true) {
-      const slot = slots[ 'resource-days' ]
+    function __renderDayResources(resource, resourceIndex, indentLevel = 0, expanded = true) {
+      const slot = slots['resource-days']
 
-      const width = isSticky.value === true ? convertToUnit(parsedCellWidth.value) : computedWidth.value
+      const width =
+        isSticky.value === true ? convertToUnit(parsedCellWidth.value) : computedWidth.value
 
       const scope = {
         resource,
@@ -1061,159 +1135,205 @@ export default defineComponent({
         expanded,
         cellWidth: width,
         timestamps: days.value,
-        days: days.value // deprecated
+        days: days.value, // deprecated
       }
 
       const style = {}
-      style.height = parseInt(props.resourceHeight, 10) > 0 ? convertToUnit(parseInt(props.resourceHeight, 10)) : 'auto'
+      style.height =
+        parseInt(props.resourceHeight, 10) > 0
+          ? convertToUnit(parseInt(props.resourceHeight, 10))
+          : 'auto'
       if (parseInt(props.resourceMinHeight, 10) > 0) {
         style.minHeight = convertToUnit(parseInt(props.resourceMinHeight, 10))
       }
 
       const data = {
         class: 'q-calendar-scheduler__resource--days',
-        style
+        style,
       }
 
-      return h('div', data,
-        [
-          ...__renderDays(resource, resourceIndex, indentLevel, expanded),
-          slot && slot({ scope })
-        ])
+      return h('div', data, [
+        ...__renderDays(resource, resourceIndex, indentLevel, expanded),
+        slot && slot({ scope }),
+      ])
     }
 
-    function __renderDays (resource, resourceIndex, indentLevel = 0, expanded = true) {
+    function __renderDays(resource, resourceIndex, indentLevel = 0, expanded = true) {
       if (days.value.length === 1 && parseInt(props.columnCount, 10) > 0) {
         return Array.apply(null, new Array(parseInt(props.columnCount, 10)))
           .map((_, i) => i + parseInt(props.columnIndexStart, 10))
-          .map(columnIndex => __renderDay(days.value[ 0 ], columnIndex, resource, resourceIndex, indentLevel, expanded))
-      }
-      else {
-        return days.value.map(day => __renderDay(day, undefined, resource, resourceIndex, indentLevel, expanded))
+          .map((columnIndex) =>
+            __renderDay(days.value[0], columnIndex, resource, resourceIndex, indentLevel, expanded),
+          )
+      } else {
+        return days.value.map((day) =>
+          __renderDay(day, undefined, resource, resourceIndex, indentLevel, expanded),
+        )
       }
     }
 
-    function __renderDay (day, columnIndex, resource, resourceIndex, indentLevel = 0, expanded = true) {
+    function __renderDay(
+      day,
+      columnIndex,
+      resource,
+      resourceIndex,
+      indentLevel = 0,
+      expanded = true,
+    ) {
       const slot = slots.day
 
       const styler = props.dayStyle || dayStyleDefault
       const activeDate = props.noActiveDate !== true && parsedValue.value.date === day.date
-      const dragValue = day.date + ':' + resource[ props.resourceKey ] + (columnIndex !== undefined ? ':' + columnIndex : '')
+      const dragValue =
+        day.date +
+        ':' +
+        resource[props.resourceKey] +
+        (columnIndex !== undefined ? ':' + columnIndex : '')
       const droppable = dragOverResource.value === dragValue
-      const scope = { timestamp: day, columnIndex, resource, resourceIndex, indentLevel, activeDate, droppable }
+      const scope = {
+        timestamp: day,
+        columnIndex,
+        resource,
+        resourceIndex,
+        indentLevel,
+        activeDate,
+        droppable,
+      }
 
-      const width = isSticky.value === true ? convertToUnit(parsedCellWidth.value) : computedWidth.value
+      const width =
+        isSticky.value === true ? convertToUnit(parsedCellWidth.value) : computedWidth.value
       const style = {
         width,
         maxWidth: width,
-        ...styler({ scope })
+        ...styler({ scope }),
       }
-      style.height = parseInt(props.resourceHeight, 10) > 0 ? convertToUnit(parseInt(props.resourceHeight, 10)) : 'auto'
+      style.height =
+        parseInt(props.resourceHeight, 10) > 0
+          ? convertToUnit(parseInt(props.resourceHeight, 10))
+          : 'auto'
       if (parseInt(props.resourceMinHeight, 10) > 0) {
         style.minHeight = convertToUnit(parseInt(props.resourceMinHeight, 10))
       }
       const dayClass = typeof props.dayClass === 'function' ? props.dayClass({ scope }) : {}
-      const isFocusable = props.focusable === true && props.focusType.includes('day') && expanded === true
+      const isFocusable =
+        props.focusable === true && props.focusType.includes('day') && expanded === true
 
-      return h('div', {
-        key: day.date + (columnIndex !== undefined ? ':' + columnIndex : ''),
-        tabindex: isFocusable === true ? 0 : -1,
-        class: {
-          'q-calendar-scheduler__day': indentLevel === 0,
-          'q-calendar-scheduler__day--section': indentLevel !== 0,
-          ...dayClass,
-          ...getRelativeClasses(day),
-          'q-calendar__hoverable': props.hoverable === true,
-          'q-calendar__focusable': isFocusable === true
-        },
-        style,
-        onDragenter: (e) => {
-          if (props.dragEnterFunc !== undefined && typeof props.dragEnterFunc === 'function') {
-            props.dragEnterFunc(e, 'day', scope) === true
-              ? dragOverResource.value = dragValue
-              : dragOverResource.value = ''
-          }
-        },
-        onDragover: (e) => {
-          if (props.dragOverFunc !== undefined && typeof props.dragOverFunc === 'function') {
-            props.dragOverFunc(e, 'day', scope) === true
-              ? dragOverResource.value = dragValue
-              : dragOverResource.value = ''
-          }
-        },
-        onDragleave: (e) => {
-          if (props.dragLeaveFunc !== undefined && typeof props.dragLeaveFunc === 'function') {
-            props.dragLeaveFunc(e, 'day', scope) === true
-              ? dragOverResource.value = dragValue
-              : dragOverResource.value = ''
-          }
-        },
-        onDrop: (e) => {
-          if (props.dropFunc !== undefined && typeof props.dropFunc === 'function') {
-            props.dropFunc(e, 'day', scope) === true
-              ? dragOverResource.value = dragValue
-              : dragOverResource.value = ''
-          }
-        },
-        onKeydown: (event) => {
-          if (isKeyCode(event, [ 13, 32 ])) {
-            event.stopPropagation()
-            event.preventDefault()
-          }
-        },
-        onKeyup: (event) => {
-          // allow selection of date via Enter or Space keys
-          if (isKeyCode(event, [ 13, 32 ])) {
-            emittedValue.value = scope.timestamp.date
-            if (emitListeners.value.onClickResource !== undefined) {
-              // eslint-disable-next-line vue/require-explicit-emits
-              emit('click-resource', { scope, event })
+      return h(
+        'div',
+        {
+          key: day.date + (columnIndex !== undefined ? ':' + columnIndex : ''),
+          tabindex: isFocusable === true ? 0 : -1,
+          class: {
+            'q-calendar-scheduler__day': indentLevel === 0,
+            'q-calendar-scheduler__day--section': indentLevel !== 0,
+            ...dayClass,
+            ...getRelativeClasses(day),
+            'q-calendar__hoverable': props.hoverable === true,
+            'q-calendar__focusable': isFocusable === true,
+          },
+          style,
+          onDragenter: (e) => {
+            if (props.dragEnterFunc !== undefined && typeof props.dragEnterFunc === 'function') {
+              props.dragEnterFunc(e, 'day', scope) === true
+                ? (dragOverResource.value = dragValue)
+                : (dragOverResource.value = '')
             }
-          }
+          },
+          onDragover: (e) => {
+            if (props.dragOverFunc !== undefined && typeof props.dragOverFunc === 'function') {
+              props.dragOverFunc(e, 'day', scope) === true
+                ? (dragOverResource.value = dragValue)
+                : (dragOverResource.value = '')
+            }
+          },
+          onDragleave: (e) => {
+            if (props.dragLeaveFunc !== undefined && typeof props.dragLeaveFunc === 'function') {
+              props.dragLeaveFunc(e, 'day', scope) === true
+                ? (dragOverResource.value = dragValue)
+                : (dragOverResource.value = '')
+            }
+          },
+          onDrop: (e) => {
+            if (props.dropFunc !== undefined && typeof props.dropFunc === 'function') {
+              props.dropFunc(e, 'day', scope) === true
+                ? (dragOverResource.value = dragValue)
+                : (dragOverResource.value = '')
+            }
+          },
+          onKeydown: (event) => {
+            if (isKeyCode(event, [13, 32])) {
+              event.stopPropagation()
+              event.preventDefault()
+            }
+          },
+          onKeyup: (event) => {
+            // allow selection of date via Enter or Space keys
+            if (isKeyCode(event, [13, 32])) {
+              emittedValue.value = scope.timestamp.date
+              if (emitListeners.value.onClickResource !== undefined) {
+                emit('click-resource', { scope, event })
+              }
+            }
+          },
+          ...getDefaultMouseEventHandlers('-day-resource', (event) => {
+            return { scope, event }
+          }),
         },
-        ...getDefaultMouseEventHandlers('-day-resource', event => {
-          return { scope, event }
-        })
-
-      }, [
-        slot && slot({ scope }),
-        useFocusHelper()
-      ])
+        [slot && slot({ scope }), useFocusHelper()],
+      )
     }
 
-    function __renderResourcesError () {
+    function __renderResourcesError() {
       return h('div', {}, 'No resources have been defined')
     }
 
-    function __renderScheduler () {
+    function __renderScheduler() {
       const { start, end, maxDays } = renderValues.value
-      if (startDate.value !== start.date || endDate.value !== end.date || maxDaysRendered.value !== maxDays) {
+      if (
+        startDate.value !== start.date ||
+        endDate.value !== end.date ||
+        maxDaysRendered.value !== maxDays
+      ) {
         startDate.value = start.date
         endDate.value = end.date
-        maxDaysRendered.value = maxDays 
+        maxDaysRendered.value = maxDays
       }
 
       const hasWidth = size.width > 0
       const hasResources = props.modelResources && props.modelResources.length > 0
 
-      const scheduler = withDirectives(h('div', {
-        key: startDate.value,
-        class: 'q-calendar-scheduler'
-      }, [
-        hasWidth === true && hasResources === true && isSticky.value !== true && props.noHeader !== true && __renderHead(),
-        hasWidth === true && hasResources === true && __renderBody(),
-        hasResources === false && __renderResourcesError()
-      ]), [[
-        ResizeObserver,
-        __onResize
-      ]])
+      const scheduler = withDirectives(
+        h(
+          'div',
+          {
+            key: startDate.value,
+            class: 'q-calendar-scheduler',
+          },
+          [
+            hasWidth === true &&
+              hasResources === true &&
+              isSticky.value !== true &&
+              props.noHeader !== true &&
+              __renderHead(),
+            hasWidth === true && hasResources === true && __renderBody(),
+            hasResources === false && __renderResourcesError(),
+          ],
+        ),
+        [[ResizeObserver, __onResize]],
+      )
 
       if (props.animated === true) {
-        const transition = 'q-calendar--' + (direction.value === 'prev' ? props.transitionPrev : props.transitionNext)
-        return h(Transition, {
-          name: transition,
-          appear: true
-        }, () => scheduler)
+        const transition =
+          'q-calendar--' +
+          (direction.value === 'prev' ? props.transitionPrev : props.transitionNext)
+        return h(
+          Transition,
+          {
+            name: transition,
+            appear: true,
+          },
+          () => scheduler,
+        )
       }
 
       return scheduler
@@ -1225,7 +1345,7 @@ export default defineComponent({
       next,
       move,
       moveToToday,
-      updateCurrent
+      updateCurrent,
     })
     // Object.assign(vm.proxy, {
     //   prev,
@@ -1236,5 +1356,5 @@ export default defineComponent({
     // })
 
     return () => __renderCalendar()
-  }
+  },
 })
