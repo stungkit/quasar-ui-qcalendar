@@ -28,87 +28,89 @@
   </div>
 </template>
 
-<script>
-import { QCalendarDay, today, copyTimestamp, getDateTime } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import {
+  QCalendarDay,
+  today,
+  copyTimestamp,
+  getDateTime,
+  Timestamp,
+} from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.scss'
 
-import { defineComponent } from 'vue'
+import { ref } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'WeekSelectedIntervals',
-  components: {
-    NavigationBar,
-    QCalendarDay,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      selectedDates: [],
+const calendar = ref<IQCalendarDay>(),
+  selectedDate = ref(today()),
+  selectedDates = ref<string[]>([])
+
+function onToggleTime({ scope }: { scope: { timestamp: Timestamp; outside: boolean } }) {
+  console.log('click-time (scope)', scope)
+  if (scope === undefined) {
+    return
+  }
+
+  // make a copy of the timestamp
+  const ts = copyTimestamp(scope.timestamp)
+
+  // get date with time
+  const t = getDateTime(ts)
+
+  // toggle to/from array
+  if (selectedDates.value.includes(t)) {
+    // remove the date
+    for (let i = 0; i < selectedDates.value.length; ++i) {
+      if (t === selectedDates.value[i]) {
+        selectedDates.value.splice(i, 1)
+        break
+      }
     }
-  },
-  methods: {
-    onToggleTime({ scope }) {
-      console.log('click-time (scope)', scope)
-      if (scope === undefined) {
-        return
-      }
+  } else {
+    // add the date if not outside
+    if (scope.outside !== true) {
+      selectedDates.value.push(t)
+    }
+  }
+}
 
-      // make a copy of the timestamp
-      const ts = copyTimestamp(scope.timestamp)
-
-      // get date with time
-      const t = getDateTime(ts)
-
-      // toggle to/from array
-      if (this.selectedDates.includes(t)) {
-        // remove the date
-        for (let i = 0; i < this.selectedDates.length; ++i) {
-          if (t === this.selectedDates[i]) {
-            this.selectedDates.splice(i, 1)
-            break
-          }
-        }
-      } else {
-        // add the date if not outside
-        if (scope.outside !== true) {
-          this.selectedDates.push(t)
-        }
-      }
-    },
-
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    // onClickTime (data) {
-    //   console.log('onClickTime', data)
-    // },
-    onClickInterval(data) {
-      console.log('onClickInterval', data)
-    },
-    onClickHeadIntervals(data) {
-      console.log('onClickHeadIntervals', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-  },
-})
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+// onClickTime (data) {
+//   console.log('onClickTime', data)
+// },
+function onClickInterval(data: Timestamp) {
+  console.log('onClickInterval', data)
+}
+function onClickHeadIntervals(data: Timestamp) {
+  console.log('onClickHeadIntervals', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>

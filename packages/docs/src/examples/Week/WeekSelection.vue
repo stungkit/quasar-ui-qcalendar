@@ -34,148 +34,127 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import {
   QCalendarDay,
   today,
   getDayTimeIdentifier,
   getDateTime,
-} from '@quasar/quasar-ui-qcalendar/src'
+  Timestamp,
+} from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.scss'
 
-import { defineComponent, ref, computed } from 'vue'
+import { ref, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-function leftClick(e) {
+function leftClick(e: MouseEvent) {
   return e.button === 0
 }
 
-export default defineComponent({
-  name: 'WeekSelection',
-  components: {
-    NavigationBar,
-    QCalendarDay,
-  },
-  setup() {
-    const selectedDate = ref(today()),
-      calendar = ref(null),
-      anchorTimestamp = ref(null),
-      otherTimestamp = ref(null),
-      mouseDown = ref(false),
-      mobile = ref(true)
+const calendar = ref<IQCalendarDay>(),
+  selectedDate = ref(today()),
+  anchorTimestamp = ref<Timestamp | null>(null),
+  otherTimestamp = ref<Timestamp | null>(null),
+  mouseDown = ref(false),
+  mobile = ref(true)
 
-    const startEndDates = computed(() => {
-      const dates = []
-      if (anchorDayTimeIdentifier.value !== false && otherDayTimeIdentifier.value !== false) {
-        if (anchorDayTimeIdentifier.value <= otherDayTimeIdentifier.value) {
-          dates.push(getDateTime(anchorTimestamp.value), getDateTime(otherTimestamp.value))
-        } else {
-          dates.push(getDateTime(otherTimestamp.value), getDateTime(anchorTimestamp.value))
-        }
-      }
-      return dates
-    })
-
-    const anchorDayTimeIdentifier = computed(() => {
-      if (anchorTimestamp.value !== null) {
-        return getDayTimeIdentifier(anchorTimestamp.value)
-      }
-      return false
-    })
-
-    const otherDayTimeIdentifier = computed(() => {
-      if (otherTimestamp.value !== null) {
-        return getDayTimeIdentifier(otherTimestamp.value)
-      }
-      return false
-    })
-
-    function onMouseDownTime({ scope, event }) {
-      console.log('onMouseDownTime', { scope, event })
-      if (leftClick(event)) {
-        if (
-          mobile.value === true &&
-          anchorTimestamp.value !== null &&
-          otherTimestamp.value !== null &&
-          getDateTime(anchorTimestamp.value) === getDateTime(otherTimestamp.value)
-        ) {
-          otherTimestamp.value = scope.timestamp
-          mouseDown.value = false
-          return
-        }
-        // mouse is down, start selection and capture current
-        mouseDown.value = true
-        anchorTimestamp.value = scope.timestamp
-        otherTimestamp.value = scope.timestamp
-      }
+const startEndDates = computed(() => {
+  const dates = []
+  if (anchorDayTimeIdentifier.value !== false && otherDayTimeIdentifier.value !== false) {
+    if (anchorDayTimeIdentifier.value <= otherDayTimeIdentifier.value) {
+      dates.push(getDateTime(anchorTimestamp.value!), getDateTime(otherTimestamp.value!))
+    } else {
+      dates.push(getDateTime(otherTimestamp.value!), getDateTime(anchorTimestamp.value!))
     }
-
-    function onMouseUpTime({ scope, event }) {
-      if (mobile.value !== true && leftClick(event)) {
-        // mouse is up, capture last and cancel selection
-        otherTimestamp.value = scope.timestamp
-        mouseDown.value = false
-      }
-    }
-
-    function onMouseMoveTime({ scope /*, event*/ }) {
-      if (mobile.value !== true && mouseDown.value === true) {
-        otherTimestamp.value = scope.timestamp
-      }
-    }
-
-    function onToday() {
-      calendar.value.moveToToday()
-    }
-    function onPrev() {
-      calendar.value.prev()
-    }
-    function onNext() {
-      calendar.value.next()
-    }
-    function onMoved(data) {
-      console.log('onMoved', data)
-    }
-    function onChange(data) {
-      console.log('onChange', data)
-    }
-    function onClickDate(data) {
-      console.log('onClickDate', data)
-    }
-    function onClickTime(data) {
-      console.log('onClickTime', data)
-    }
-    function onClickInterval(data) {
-      console.log('onClickInterval', data)
-    }
-    function onClickHeadIntervals(data) {
-      console.log('onClickHeadIntervals', data)
-    }
-    function onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    }
-
-    return {
-      selectedDate,
-      calendar,
-      startEndDates,
-      mobile,
-      onMouseDownTime,
-      onMouseUpTime,
-      onMouseMoveTime,
-      onToday,
-      onPrev,
-      onNext,
-      onMoved,
-      onChange,
-      onClickDate,
-      onClickTime,
-      onClickInterval,
-      onClickHeadIntervals,
-      onClickHeadDay,
-    }
-  },
+  }
+  return dates
 })
+
+const anchorDayTimeIdentifier = computed(() => {
+  if (anchorTimestamp.value !== null) {
+    return getDayTimeIdentifier(anchorTimestamp.value)
+  }
+  return false
+})
+
+const otherDayTimeIdentifier = computed(() => {
+  if (otherTimestamp.value !== null) {
+    return getDayTimeIdentifier(otherTimestamp.value)
+  }
+  return false
+})
+
+function onMouseDownTime({ scope, event }: { scope: any; event: MouseEvent }) {
+  console.log('onMouseDownTime', { scope, event })
+  if (leftClick(event)) {
+    if (
+      mobile.value === true &&
+      anchorTimestamp.value !== null &&
+      otherTimestamp.value !== null &&
+      getDateTime(anchorTimestamp.value) === getDateTime(otherTimestamp.value)
+    ) {
+      otherTimestamp.value = scope.timestamp
+      mouseDown.value = false
+      return
+    }
+    // mouse is down, start selection and capture current
+    mouseDown.value = true
+    anchorTimestamp.value = scope.timestamp
+    otherTimestamp.value = scope.timestamp
+  }
+}
+
+function onMouseUpTime({ scope, event }: { scope: any; event: MouseEvent }) {
+  if (mobile.value !== true && leftClick(event)) {
+    // mouse is up, capture last and cancel selection
+    otherTimestamp.value = scope.timestamp
+    mouseDown.value = false
+  }
+}
+
+function onMouseMoveTime({ scope }: { scope: any /*, event*/ }) {
+  if (mobile.value !== true && mouseDown.value === true) {
+    otherTimestamp.value = scope.timestamp
+  }
+}
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+// function onClickTime(data: Timestamp) {
+//   console.log('onClickTime', data)
+// }
+function onClickInterval(data: Timestamp) {
+  console.log('onClickInterval', data)
+}
+function onClickHeadIntervals(data: Timestamp) {
+  console.log('onClickHeadIntervals', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>

@@ -24,90 +24,91 @@
   </div>
 </template>
 
-<script>
-import { QCalendarMonth, today } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import { QCalendarMonth, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.scss'
 
-import { defineComponent } from 'vue'
+import { ref } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'MonthSelectedDates',
-  components: {
-    NavigationBar,
-    QCalendarMonth,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      selectedDates: [],
+const calendar = ref<IQCalendarMonth>(),
+  selectedDate = ref(today()),
+  selectedDates = ref<string[]>([])
+
+interface Scope {
+  timestamp: Timestamp
+  outside: boolean
+}
+
+function onToggleDate(scope: Scope) {
+  console.log('date clicked (scope)', scope)
+  if (scope !== undefined) {
+    toggleDate(scope)
+  }
+}
+
+function onToggleDay(scope: Scope) {
+  console.log('day clicked (scope)', scope)
+  if (scope !== undefined) {
+    toggleDate(scope)
+  }
+}
+
+function toggleDate(scope: Scope) {
+  const date = scope.timestamp.date
+  if (selectedDates.value.includes(date)) {
+    // remove the date
+    for (let i = 0; i < selectedDates.value.length; ++i) {
+      if (date === selectedDates.value[i]) {
+        selectedDates.value.splice(i, 1)
+        break
+      }
     }
-  },
-  methods: {
-    onToggleDate({ scope }) {
-      console.log('date clicked (scope)', scope)
-      if (scope !== undefined) {
-        this.toggleDate(scope)
-      }
-    },
+  } else {
+    // add the date if not outside
+    if (scope.outside !== true) {
+      selectedDates.value.push(date)
+    }
+  }
+}
 
-    onToggleDay({ scope }) {
-      console.log('day clicked (scope)', scope)
-      if (scope !== undefined) {
-        this.toggleDate(scope)
-      }
-    },
-
-    toggleDate(scope) {
-      const date = scope.timestamp.date
-      if (this.selectedDates.includes(date)) {
-        // remove the date
-        for (let i = 0; i < this.selectedDates.length; ++i) {
-          if (date === this.selectedDates[i]) {
-            this.selectedDates.splice(i, 1)
-            break
-          }
-        }
-      } else {
-        // add the date if not outside
-        if (scope.outside !== true) {
-          this.selectedDates.push(date)
-        }
-      }
-    },
-
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    // onClickDate (data) {
-    //   console.log('onClickDate', data)
-    // },
-    // onClickDay (data) {
-    //   console.log('onClickDay', data)
-    // },
-    onClickWorkweek(data) {
-      console.log('onClickWorkweek', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-    onClickHeadWorkweek(data) {
-      console.log('onClickHeadWorkweek', data)
-    },
-  },
-})
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+// onClickDate (data) {
+//   console.log('onClickDate', data)
+// },
+// onClickDay (data) {
+//   console.log('onClickDay', data)
+// },
+function onClickWorkweek(data: Timestamp) {
+  console.log('onClickWorkweek', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
+function onClickHeadWorkweek(data: Timestamp) {
+  console.log('onClickHeadWorkweek', data)
+}
 </script>

@@ -50,72 +50,64 @@
   </div>
 </template>
 
-<script>
-import { QCalendarMonth, today } from '@quasar/quasar-ui-qcalendar/src/QCalendarMonth'
+<script setup lang="ts">
+import { QCalendarMonth, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.scss'
 
-import { defineComponent } from 'vue'
+import { ref, computed, type CSSProperties } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'MonthDayHeight',
-  components: {
-    NavigationBar,
-    QCalendarMonth,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      dayHeight: 50,
-      dayMinHeight: 50,
-    }
-  },
-  computed: {
-    calendarStyle() {
-      const style = {
-        display: 'flex',
-        maxWidth: '800px',
-        width: '100%',
-      }
-      if (this.dayHeight === 0 && this.dayMinHeight === 0) {
-        style.height = '600px'
-      }
-      return style
-    },
-  },
-  methods: {
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickDay(data) {
-      console.log('onClickDay', data)
-    },
-    onClickWorkweek(data) {
-      console.log('onClickWorkweek', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-    onClickHeadWorkweek(data) {
-      console.log('onClickHeadWorkweek', data)
-    },
-  },
+const calendar = ref<IQCalendarMonth>(),
+  selectedDate = ref(today()),
+  dayHeight = ref(50),
+  dayMinHeight = ref(50)
+
+const calendarStyle = computed<CSSProperties>(() => {
+  return {
+    display: 'flex',
+    maxWidth: '800px',
+    width: '100%',
+    height: dayHeight.value === 0 && dayMinHeight.value === 0 ? '600px' : '',
+  }
 })
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickDay(data: Timestamp) {
+  console.log('onClickDay', data)
+}
+function onClickWorkweek(data: Timestamp) {
+  console.log('onClickWorkweek', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
+function onClickHeadWorkweek(data: Timestamp) {
+  console.log('onClickHeadWorkweek', data)
+}
 </script>

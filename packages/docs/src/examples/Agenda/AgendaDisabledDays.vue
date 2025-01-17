@@ -84,14 +84,11 @@ const rightColumnOptions = ref([
     label: 'Summary',
   },
 ])
+
 const disabledDays = computed(() => {
-  const days: string[] = []
   const ts = parseTimestamp(today())
   // make next 4 days, after today, disabled
-  Array.from(Array(4)).forEach((_, i) => {
-    days.push(addToDate(ts as Timestamp, { day: i + 1 }).date)
-  })
-  return days
+  return Array.from({ length: 4 }, (_, i) => addToDate(ts!, { day: i + 1 }).date)
 })
 
 const disabledDaysRange = computed(() => {
@@ -119,7 +116,7 @@ function onNext() {
 function onMoved(data: Timestamp) {
   console.log('onMoved', data)
 }
-function onChange(data: Timestamp) {
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
   console.log('onChange', data)
 }
 function onClickDate(data: Timestamp) {

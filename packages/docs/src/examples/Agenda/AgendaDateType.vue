@@ -79,7 +79,7 @@ function onNext() {
 function onMoved(data: Timestamp) {
   console.log('onMoved', data)
 }
-function onChange(data: Timestamp) {
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
   console.log('onChange', data)
 }
 function onClickDate(data: Timestamp) {

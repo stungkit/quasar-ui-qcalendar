@@ -56,117 +56,108 @@
   </div>
 </template>
 
-<script>
-import { QCalendarDay, today } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import { QCalendarDay, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.scss'
 
-import { defineComponent } from 'vue'
+import { ref, computed, watch } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'DayModifyIntervals',
-  components: {
-    NavigationBar,
-    QCalendarDay,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      resources: [
-        { id: '1', name: 'John' },
-        { id: '2', name: 'Board Room' },
-        { id: '3', name: 'Mary' },
-        { id: '4', name: 'Susan' },
-        { id: '5', name: 'Olivia' },
-      ],
-      intervalRange: { min: 0, max: 24 },
-      intervalRangeStep: 1,
-      options: [
-        { label: '60 min', value: 1 },
-        { label: '30 min', value: 0.5 },
-        { label: '15 min', value: 0.25 },
-      ],
-    }
-  },
-  computed: {
-    intervalStart() {
-      return this.intervalRange.min * (1 / this.intervalRangeStep)
-    },
+const calendar = ref<IQCalendarDay>()
 
-    intervalCount() {
-      return (this.intervalRange.max - this.intervalRange.min) * (1 / this.intervalRangeStep)
-    },
+const selectedDate = ref(today())
+const intervalRange = ref({ min: 0, max: 24 })
+const intervalRangeStep = ref(1)
+const options = ref([
+  { label: '60 min', value: 1 },
+  { label: '30 min', value: 0.5 },
+  { label: '15 min', value: 0.25 },
+])
 
-    leftLabelRange() {
-      const a = Math.floor(this.intervalRange.min)
-      const b = Number((this.intervalRange.min % 1).toFixed(2))
-      const c = 60 * b
-      return a + ':' + (c < 10 ? c + '0' : c)
-    },
-
-    rightLabelRange() {
-      const a = Math.floor(this.intervalRange.max)
-      const b = Number((this.intervalRange.max % 1).toFixed(2))
-      const c = 60 * b
-      return a + ':' + (c < 10 ? c + '0' : c)
-    },
-  },
-  watch: {
-    intervalRangeStep(val) {
-      // normalize min/max values according to the step value
-      const calcMin = (range) => {
-        const b = Number((range % 1).toFixed(2))
-        const c = b % val
-        if (c > 0) {
-          return range + c
-        }
-        return range
-      }
-      const calcMax = (range) => {
-        const b = Number((range % 1).toFixed(2))
-        const c = b % val
-        if (c > 0) {
-          return range - c
-        }
-        return range
-      }
-      this.intervalRange.min = calcMin(this.intervalRange.min)
-      this.intervalRange.max = calcMax(this.intervalRange.max)
-    },
-  },
-  methods: {
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickTime(data) {
-      console.log('onClickTime', data)
-    },
-    onClickInterval(data) {
-      console.log('onClickInterval', data)
-    },
-    onClickHeadIntervals(data) {
-      console.log('onClickHeadIntervals', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-  },
+const intervalStart = computed(() => {
+  return intervalRange.value.min * (1 / intervalRangeStep.value)
 })
+
+const intervalCount = computed(() => {
+  return (intervalRange.value.max - intervalRange.value.min) * (1 / intervalRangeStep.value)
+})
+
+const leftLabelRange = computed(() => {
+  const a = Math.floor(intervalRange.value.min)
+  const b = Number((intervalRange.value.min % 1).toFixed(2))
+  const c = 60 * b
+  return a + ':' + (c < 10 ? c + '0' : c)
+})
+
+const rightLabelRange = computed(() => {
+  const a = Math.floor(intervalRange.value.max)
+  const b = Number((intervalRange.value.max % 1).toFixed(2))
+  const c = 60 * b
+  return a + ':' + (c < 10 ? c + '0' : c)
+})
+
+watch(
+  () => intervalRangeStep.value,
+  (val) => {
+    // normalize min/max values according to the step value
+    const calcMin = (range: number) => {
+      const b = Number((range % 1).toFixed(2))
+      const c = b % val
+      if (c > 0) {
+        return range + c
+      }
+      return range
+    }
+    const calcMax = (range: number) => {
+      const b = Number((range % 1).toFixed(2))
+      const c = b % val
+      if (c > 0) {
+        return range - c
+      }
+      return range
+    }
+    intervalRange.value.min = calcMin(intervalRange.value.min)
+    intervalRange.value.max = calcMax(intervalRange.value.max)
+  },
+)
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickTime(data: Timestamp) {
+  console.log('onClickTime', data)
+}
+function onClickInterval(data: Timestamp) {
+  console.log('onClickInterval', data)
+}
+function onClickHeadIntervals(data: Timestamp) {
+  console.log('onClickHeadIntervals', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>

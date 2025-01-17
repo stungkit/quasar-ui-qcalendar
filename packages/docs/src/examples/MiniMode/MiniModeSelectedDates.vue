@@ -25,76 +25,72 @@
   </div>
 </template>
 
-<script>
-import { QCalendarMonth, today } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import { QCalendarMonth, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.scss'
 
-function leftClick(e) {
+import { ref } from 'vue'
+import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
+
+function leftClick(e: MouseEvent) {
   return e.button === 0
 }
 
-import { defineComponent } from 'vue'
-import NavigationBar from 'components/NavigationBar.vue'
+const calendar = ref<IQCalendarMonth>(),
+  selectedDate = ref(today())
+const selectedDates = ref<string[]>([])
 
-export default defineComponent({
-  name: 'MiniModeSelectedDates',
-  components: {
-    NavigationBar,
-    QCalendarMonth,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      selectedDates: [],
-    }
-  },
-  methods: {
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate({ scope, event }) {
-      console.log('onClickDate', { scope, event })
-      if (leftClick(event)) {
-        if (this.selectedDates.includes(scope.timestamp.date)) {
-          // remove the date
-          for (let i = 0; i < this.selectedDates.length; ++i) {
-            if (scope.timestamp.date === this.selectedDates[i]) {
-              this.selectedDates.splice(i, 1)
-              break
-            }
-          }
-        } else {
-          // add the date
-          this.selectedDates.push(scope.timestamp.date)
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate({ scope, event }: { scope: { timestamp: Timestamp }; event: MouseEvent }) {
+  console.log('onClickDate', { scope, event })
+  if (leftClick(event)) {
+    if (selectedDates.value.includes(scope.timestamp.date)) {
+      // remove the date
+      for (let i = 0; i < selectedDates.value.length; ++i) {
+        if (scope.timestamp.date === selectedDates.value[i]) {
+          selectedDates.value.splice(i, 1)
+          break
         }
       }
-    },
-    onClickDay(data) {
-      console.log('onClickDay', data)
-    },
-    onClickWorkweek(data) {
-      console.log('onClickWorkweek', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-    onClickHeadWorkweek(data) {
-      console.log('onClickHeadWorkweek', data)
-    },
-  },
-})
+    } else {
+      // add the date
+      selectedDates.value.push(scope.timestamp.date)
+    }
+  }
+}
+function onClickDay(data: Timestamp) {
+  console.log('onClickDay', data)
+}
+function onClickWorkweek(data: Timestamp) {
+  console.log('onClickWorkweek', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
+function onClickHeadWorkweek(data: Timestamp) {
+  console.log('onClickHeadWorkweek', data)
+}
 </script>

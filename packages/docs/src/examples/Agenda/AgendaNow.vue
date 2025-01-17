@@ -47,7 +47,9 @@ import { type QCalendarAgenda as IQCalendarAgenda } from '@quasar/quasar-ui-qcal
 
 const calendar = ref<IQCalendarAgenda>()
 const selectedDate = ref(today())
-const nowDate = ref(addToDate(parseTimestamp(today()) as Timestamp, { day: 1 }).date)
+const nowDate = ref(
+  parseTimestamp(today()) ? addToDate(parseTimestamp(today()) as Timestamp, { day: 1 }).date : '',
+)
 const leftColumnOptions = ref([
   {
     id: 'overdue',
@@ -80,7 +82,7 @@ function onNext() {
 function onMoved(data: Timestamp) {
   console.log('onMoved', data)
 }
-function onChange(data: Timestamp) {
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
   console.log('onChange', data)
 }
 function onClickDate(data: Timestamp) {

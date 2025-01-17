@@ -27,87 +27,84 @@
   </div>
 </template>
 
-<script>
-import { QCalendarScheduler, today } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import { QCalendarScheduler, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarScheduler.scss'
 
-import { defineComponent } from 'vue'
+import { ref, reactive } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarScheduler as IQCalendarScheduler } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'SchedulerChildren',
-  components: {
-    NavigationBar,
-    QCalendarScheduler,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      resources: [
-        { id: '1', name: 'John' },
+const calendar = ref<IQCalendarScheduler>(),
+  selectedDate = ref(today()),
+  resources = reactive([
+    { id: '1', name: 'John' },
+    {
+      id: '2',
+      name: 'Board Room',
+      expanded: false,
+      children: [
+        { id: '2.1', name: 'Room-1' },
         {
-          id: '2',
-          name: 'Board Room',
+          id: '2.2',
+          name: 'Room-2',
           expanded: false,
           children: [
-            { id: '2.1', name: 'Room-1' },
-            {
-              id: '2.2',
-              name: 'Room-2',
-              expanded: false,
-              children: [
-                { id: '2.2.1', name: 'Partition-A' },
-                { id: '2.2.2', name: 'Partition-B' },
-                { id: '2.2.3', name: 'Partition-C' },
-              ],
-            },
+            { id: '2.2.1', name: 'Partition-A' },
+            { id: '2.2.2', name: 'Partition-B' },
+            { id: '2.2.3', name: 'Partition-C' },
           ],
         },
-        { id: '3', name: 'Mary' },
-        { id: '4', name: 'Susan' },
-        { id: '5', name: 'Olivia' },
       ],
-    }
-  },
-  methods: {
-    onToday() {
-      this.$refs.calendar.moveToToday()
     },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickDayResource(data) {
-      console.log('onClickDayResource', data)
-    },
-    onResourceExpanded(data) {
-      console.log('onResourceExpanded', data)
-    },
-    onClickResource(data) {
-      console.log('onClickResource', data)
-      if (data.scope.resource.expanded !== undefined) {
-        // data.scope.resource.expanded = !data.scope.resource.expanded
-      }
-    },
-    onClickHeadResources(data) {
-      console.log('onClickHeadResources', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-  },
-})
+    { id: '3', name: 'Mary' },
+    { id: '4', name: 'Susan' },
+    { id: '5', name: 'Olivia' },
+  ])
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickDayResource(data: Timestamp) {
+  console.log('onClickDayResource', data)
+}
+function onResourceExpanded(data: Timestamp) {
+  console.log('onResourceExpanded', data)
+}
+function onClickResource(data: {
+  scope: { resource: { id: string; name: string; expanded: boolean } }
+}) {
+  console.log('onClickResource', data)
+  if (data.scope.resource.expanded !== undefined) {
+    // data.scope.resource.expanded = !data.scope.resource.expanded
+  }
+}
+function onClickHeadResources(data: Timestamp) {
+  console.log('onClickHeadResources', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>

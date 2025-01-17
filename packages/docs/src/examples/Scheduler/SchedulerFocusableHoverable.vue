@@ -48,87 +48,73 @@
   </div>
 </template>
 
-<script>
-import { QCalendarScheduler, today } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import { QCalendarScheduler, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarScheduler.scss'
 
-import { defineComponent } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarScheduler as IQCalendarScheduler } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'SchedulerFocusableHoverable',
-  components: {
-    NavigationBar,
-    QCalendarScheduler,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      hoverable: true,
-      focusable: true,
-      focusType: [],
-      options: ['day', 'weekday', 'date', 'resource'],
-      resources: [
-        { id: 1, label: 'John' },
-        { id: 2, label: 'Mary' },
-        { id: 3, label: 'Susan' },
-        { id: 4, label: 'Olivia' },
-        { id: 5, label: 'Board Room' },
-        { id: 6, label: 'Room-1' },
-        { id: 7, label: 'Room-2' },
-      ],
-    }
-  },
-  watch: {
-    hoverable(val) {
-      console.log(`hoverable: ${val}`)
-    },
-    focusable(val) {
-      console.log(`focusable: ${val}`)
-    },
-    focusTypeSelection(val) {
-      const index = this.focusType.indexOf(val)
-      if (index > -1) {
-        this.focusType.splice(index, 1)
-      } else {
-        this.focusType.push(val)
-      }
-      console.log('focusType', this.focusType)
-    },
-  },
-  methods: {
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickDayResource(data) {
-      console.log('onClickDayResource', data)
-    },
-    onClickResource(data) {
-      console.log('onClickResource', data)
-    },
-    onClickHeadResources(data) {
-      console.log('onClickHeadResources', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-  },
+const calendar = ref<IQCalendarScheduler>(),
+  selectedDate = ref(today()),
+  hoverable = ref(true),
+  focusable = ref(true),
+  focusType = ref([]),
+  options = ref(['day', 'weekday', 'date', 'resource']),
+  resources = reactive([
+    { id: 1, label: 'John' },
+    { id: 2, label: 'Mary' },
+    { id: 3, label: 'Susan' },
+    { id: 4, label: 'Olivia' },
+    { id: 5, label: 'Board Room' },
+    { id: 6, label: 'Room-1' },
+    { id: 7, label: 'Room-2' },
+  ])
+
+watch(hoverable, (val) => {
+  console.log(`hoverable: ${val}`)
 })
+watch(focusable, (val) => {
+  console.log(`focusable: ${val}`)
+})
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickDayResource(data: Timestamp) {
+  console.log('onClickDayResource', data)
+}
+function onClickResource(data: Timestamp) {
+  console.log('onClickResource', data)
+}
+function onClickHeadResources(data: Timestamp) {
+  console.log('onClickHeadResources', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>

@@ -80,7 +80,7 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import {
   QCalendarDay,
   addToDate,
@@ -89,239 +89,272 @@ import {
   today,
   parsed,
   parseTime,
-} from '@quasar/quasar-ui-qcalendar/src'
+  Timestamp,
+} from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.scss'
 
-import { defineComponent } from 'vue'
+import { ref, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'WeekSlotDayBody',
-  components: {
-    NavigationBar,
-    QCalendarDay,
+interface Event {
+  id: number
+  title: string
+  details: string
+  date: string
+  time: string
+  duration: number
+  bgcolor: string
+  icon: string
+  side?: string
+  days?: number
+}
+
+const calendar = ref<IQCalendarDay>()
+const selectedDate = ref(today())
+
+const events = ref<Event[]>([
+  {
+    id: 1,
+    title: 'Meeting',
+    details: 'Time to pitch my idea to the company',
+    date: today(),
+    time: '09:00',
+    duration: 120,
+    bgcolor: 'red',
+    icon: 'fas fa-handshake',
   },
-  data() {
-    return {
-      selectedDate: today(),
-      events: [
-        {
-          id: 1,
-          title: 'Meeting',
-          details: 'Time to pitch my idea to the company',
-          date: today(),
-          time: '09:00',
-          duration: 120,
-          bgcolor: 'red',
-          icon: 'fas fa-handshake',
-        },
-        {
-          id: 2,
-          title: 'Lunch',
-          details: 'Company is paying!',
-          date: today(),
-          time: '12:00',
-          duration: 60,
-          bgcolor: 'teal',
-          icon: 'fas fa-hamburger',
-        },
-        {
-          id: 3,
-          title: 'Conference',
-          details: 'Teaching Javascript 101',
-          date: today(),
-          time: '13:00',
-          duration: 240,
-          bgcolor: 'blue',
-          icon: 'fas fa-chalkboard-teacher',
-        },
-        {
-          id: 4,
-          title: 'Girlfriend',
-          details: 'Meet GF for dinner at Swanky Restaurant',
-          date: today(),
-          time: '19:00',
-          duration: 180,
-          bgcolor: 'teal-2',
-          icon: 'fas fa-utensils',
-        },
-      ],
+  {
+    id: 2,
+    title: 'Lunch',
+    details: 'Company is paying!',
+    date: today(),
+    time: '12:00',
+    duration: 60,
+    bgcolor: 'teal',
+    icon: 'fas fa-hamburger',
+  },
+  {
+    id: 3,
+    title: 'Conference',
+    details: 'Teaching Javascript 101',
+    date: today(),
+    time: '13:00',
+    duration: 240,
+    bgcolor: 'blue',
+    icon: 'fas fa-chalkboard-teacher',
+  },
+  {
+    id: 4,
+    title: 'Girlfriend',
+    details: 'Meet GF for dinner at Swanky Restaurant',
+    date: today(),
+    time: '19:00',
+    duration: 180,
+    bgcolor: 'teal-2',
+    icon: 'fas fa-utensils',
+  },
+])
+
+// convert the events into a map of lists keyed by date
+const eventsMap = computed(() => {
+  const map: { [key: string]: Event[] } = {}
+  events.value.forEach((event) => {
+    if (!map[event.date]) {
+      map[event.date] = []
     }
-  },
-
-  computed: {
-    // convert the events into a map of lists keyed by date
-    eventsMap() {
-      const map = {}
-      // this.events.forEach(event => (map[ event.date ] = map[ event.date ] || []).push(event))
-      this.events.forEach((event) => {
-        if (!map[event.date]) {
-          map[event.date] = []
+    map[event.date]!.push(event)
+    if (event.days) {
+      let timestamp = parseTimestamp(event.date)
+      let days = event.days
+      do {
+        if (timestamp) {
+          timestamp = addToDate(timestamp, { day: 1 })
+          if (!map[timestamp.date]) {
+            map[timestamp.date] = []
+          }
+          map[timestamp.date]!.push(event)
         }
-        map[event.date].push(event)
-        if (event.days) {
-          let timestamp = parseTimestamp(event.date)
-          let days = event.days
-          do {
-            timestamp = addToDate(timestamp, { day: 1 })
-            if (!map[timestamp.date]) {
-              map[timestamp.date] = []
-            }
-            map[timestamp.date].push(event)
-          } while (--days > 0)
-        }
-      })
-      return map
-    },
-  },
-
-  methods: {
-    badgeClasses(event, type) {
-      const isHeader = type === 'header'
-      return {
-        [`text-white bg-${event.bgcolor}`]: true,
-        'full-width': !isHeader && (!event.side || event.side === 'full'),
-        'left-side': !isHeader && event.side === 'left',
-        'right-side': !isHeader && event.side === 'right',
-        'rounded-border': true,
-      }
-    },
-
-    badgeStyles(event, type, timeStartPos = undefined, timeDurationHeight = undefined) {
-      const s = {}
-      if (timeStartPos && timeDurationHeight) {
-        s.top = timeStartPos(event.time) + 'px'
-        s.height = timeDurationHeight(event.duration) + 'px'
-      }
-      s['align-items'] = 'flex-start'
-      return s
-    },
-
-    getEvents(dt) {
-      // get all events for the specified date
-      const events = this.eventsMap[dt] || []
-
-      if (events.length === 1) {
-        events[0].side = 'full'
-      } else if (events.length === 2) {
-        // this example does no more than 2 events per day
-        // check if the two events overlap and if so, select
-        // left or right side alignment to prevent overlap
-        const startTime = addToDate(parsed(events[0].date), { minute: parseTime(events[0].time) })
-        const endTime = addToDate(startTime, { minute: events[0].duration })
-        const startTime2 = addToDate(parsed(events[1].date), {
-          minute: parseTime(events[1].time),
-        })
-        const endTime2 = addToDate(startTime2, { minute: events[1].duration })
-        if (
-          isBetweenDates(startTime2, startTime, endTime, true) ||
-          isBetweenDates(endTime2, startTime, endTime, true)
-        ) {
-          events[0].side = 'left'
-          events[1].side = 'right'
-        } else {
-          events[0].side = 'full'
-          events[1].side = 'full'
-        }
-      }
-
-      return events
-    },
-
-    scrollToEvent(event) {
-      this.$refs.calendar.scrollToTime(event.time, 350)
-    },
-
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickTime(data) {
-      console.log('onClickTime', data)
-    },
-    onClickInterval(data) {
-      console.log('onClickInterval', data)
-    },
-    onClickHeadIntervals(data) {
-      console.log('onClickHeadIntervals', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-  },
+      } while (--days > 0)
+    }
+  })
+  return map
 })
+
+function badgeClasses(event: Event, type: string) {
+  const isHeader = type === 'header'
+  return {
+    [`text-white bg-${event.bgcolor}`]: true,
+    'full-width': !isHeader && (!event.side || event.side === 'full'),
+    'left-side': !isHeader && event.side === 'left',
+    'right-side': !isHeader && event.side === 'right',
+    'rounded-border': true,
+  }
+}
+
+function badgeStyles(
+  event: Event,
+  _type: string,
+  timeStartPos?: (time: string) => number,
+  timeDurationHeight?: (minutes: number) => number,
+) {
+  const s: { [key: string]: string } = {}
+  if (timeStartPos && timeDurationHeight) {
+    s.top = timeStartPos(event.time) + 'px'
+    s.height = timeDurationHeight(event.duration) + 'px'
+  }
+  s['align-items'] = 'flex-start'
+  return s
+}
+
+function getEvents(dt: string): Event[] {
+  // get all events for the specified date
+  const events = eventsMap.value[dt] || []
+
+  if (events.length === 1 && events[0]) {
+    events[0].side = 'full'
+  } else if (events.length === 2 && events[0] && events[1]) {
+    // this example does no more than 2 events per day
+    // check if the two events overlap and if so, select
+    // left or right side alignment to prevent overlap
+    const startTimestamp = parsed(events[0].date)
+    if (startTimestamp) {
+      const startTime = addToDate(startTimestamp, { minute: parseTime(events[0].time) })
+      const endTime = addToDate(startTime, { minute: events[0].duration })
+      const startTime2 = addToDate(parsed(events[1].date)!, {
+        minute: parseTime(events[1].time),
+      })
+      const endTime2 = addToDate(startTime2, { minute: events[1].duration })
+      if (
+        isBetweenDates(startTime2, startTime, endTime, true) ||
+        isBetweenDates(endTime2, startTime, endTime, true)
+      ) {
+        events[0].side = 'left'
+        events[1].side = 'right'
+      } else {
+        events[0].side = 'full'
+        events[1].side = 'full'
+      }
+    }
+  }
+
+  return events
+}
+
+function scrollToEvent(event: Event) {
+  if (calendar.value) {
+    calendar.value.scrollToTime(event.time, 350)
+  }
+}
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickTime(data: Timestamp) {
+  console.log('onClickTime', data)
+}
+function onClickInterval(data: Timestamp) {
+  console.log('onClickInterval', data)
+}
+function onClickHeadIntervals(data: Timestamp) {
+  console.log('onClickHeadIntervals', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>
 
-<style lang="sass" scoped>
-.my-event
-  position: absolute
-  font-size: 12px
-  justify-content: center
-  margin: 0 1px
-  text-overflow: ellipsis
-  overflow: hidden
-  cursor: pointer
+<style lang="scss" scoped>
+.my-event {
+  position: absolute;
+  font-size: 12px;
+  justify-content: center;
+  margin: 0 1px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
+}
 
-.title
-  position: relative
-  display: flex
-  justify-content: center
-  align-items: center
-  height: 100%
+.title {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
 
-.text-white
-  color: white
+.text-white {
+  color: white;
+}
 
-.bg-blue
-  background: blue
+.bg-blue {
+  background: blue;
+}
 
-.bg-green
-  background: green
+.bg-green {
+  background: green;
+}
 
-.bg-orange
-  background: orange
+.bg-orange {
+  background: orange;
+}
 
-.bg-red
-  background: red
+.bg-red {
+  background: red;
+}
 
-.bg-teal
-  background: teal
+.bg-teal {
+  background: teal;
+}
 
-.bg-grey
-  background: grey
+.bg-grey {
+  background: grey;
+}
 
-.bg-purple
-  background: purple
+.bg-purple {
+  background: purple;
+}
 
-.full-width
-  left: 0
-  width: calc(100% - 2px)
+.full-width {
+  left: 0;
+  width: calc(100% - 2px);
+}
 
-.left-side
-  left: 0
-  width: calc(50% - 3px)
+.left-side {
+  left: 0;
+  width: calc(50% - 3px);
+}
 
-.right-side
-  left: 50%
-  width: calc(50% - 3px)
+.right-side {
+  left: 50%;
+  width: calc(50% - 3px);
+}
 
-.rounded-border
-  border-radius: 2px
+.rounded-border {
+  border-radius: 2px;
+}
 </style>

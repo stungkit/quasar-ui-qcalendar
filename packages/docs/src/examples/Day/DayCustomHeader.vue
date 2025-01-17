@@ -12,7 +12,7 @@
           </button>
           <div class="dates-holder">
             <transition :name="transition" appear>
-              <div :key="parsedStart.date" class="internal-dates-holder">
+              <div v-if="parsedStart" :key="parsedStart.date" class="internal-dates-holder">
                 <div v-for="day in days" :key="day.date" :style="dayStyle">
                   <button
                     tabindex="0"
@@ -67,7 +67,7 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import {
   QCalendarDay,
   addToDate,
@@ -78,248 +78,236 @@ import {
   getWeekdaySkips,
   parseTimestamp,
   today,
-} from '@quasar/quasar-ui-qcalendar/src'
+  Timestamp,
+} from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.scss'
 
-import { defineComponent, ref, reactive, computed } from 'vue'
+import { ref, reactive, computed } from 'vue'
+import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'DayCustomHeader',
-  components: {
-    QCalendarDay,
-  },
-  setup() {
-    const selectedDate = ref(today()),
-      calendar = ref(null),
-      weekdays = reactive([0, 1, 2, 3, 4, 5, 6]),
-      locale = ref('en-US'),
-      monthFormatter = monthFormatterFunc(),
-      dayFormatter = dayFormatterFunc(),
-      weekdayFormatter = weekdayFormatterFunc(),
-      transitionPrev = ref('slide-left'),
-      transitionNext = ref('slide-right'),
-      transition = ref('')
+const calendar = ref<IQCalendarDay>()
 
-    const weekdaySkips = computed(() => {
-      return getWeekdaySkips(weekdays)
-    })
+const selectedDate = ref(today())
+const weekdays = reactive([0, 1, 2, 3, 4, 5, 6])
+const locale = ref('en-US')
+const monthFormatter = monthFormatterFunc()
+const dayFormatter = dayFormatterFunc()
+const weekdayFormatter = weekdayFormatterFunc()
+const transitionPrev = ref('slide-left')
+const transitionNext = ref('slide-right')
+const transition = ref('')
 
-    const parsedStart = computed(() => {
-      if (selectedDate.value) {
-        return getStartOfWeek(parseTimestamp(selectedDate.value), weekdays, today2.value)
-      }
-      return undefined
-    })
-
-    const parsedEnd = computed(() => {
-      if (selectedDate.value) {
-        return getEndOfWeek(parseTimestamp(selectedDate.value), weekdays, today2.value)
-      }
-      return undefined
-    })
-
-    const today2 = computed(() => {
-      return parseTimestamp(today())
-    })
-
-    const days = computed(() => {
-      if (parsedStart.value && parsedEnd.value) {
-        return createDayList(parsedStart.value, parsedEnd.value, today2.value, weekdaySkips.value)
-      }
-      return []
-    })
-
-    const dayStyle = computed(() => {
-      const width = 100 / weekdays.length + '%'
-      return {
-        width,
-      }
-    })
-
-    function onPrev() {
-      const ts = addToDate(parsedStart.value, { day: -7 })
-      selectedDate.value = ts.date
-      transition.value = 'q-calendar--' + transitionPrev.value
-    }
-
-    function onNext() {
-      const ts = addToDate(parsedStart.value, { day: 7 })
-      selectedDate.value = ts.date
-      transition.value = 'q-calendar--' + transitionNext.value
-    }
-
-    function dayClass(day) {
-      return {
-        'date-button': true,
-        'selected-date-button': selectedDate.value === day.date,
-      }
-    }
-
-    function monthFormatterFunc() {
-      const longOptions = { timeZone: 'UTC', month: 'long' }
-      const shortOptions = { timeZone: 'UTC', month: 'short' }
-
-      return createNativeLocaleFormatter(locale.value, (_tms, short) =>
-        short ? shortOptions : longOptions,
-      )
-    }
-
-    function weekdayFormatterFunc() {
-      const longOptions = { timeZone: 'UTC', weekday: 'long' }
-      const shortOptions = { timeZone: 'UTC', weekday: 'short' }
-
-      return createNativeLocaleFormatter(locale.value, (_tms, short) =>
-        short ? shortOptions : longOptions,
-      )
-    }
-
-    function dayFormatterFunc() {
-      const longOptions = { timeZone: 'UTC', day: '2-digit' }
-      const shortOptions = { timeZone: 'UTC', day: 'numeric' }
-
-      return createNativeLocaleFormatter(locale.value, (_tms, short) =>
-        short ? shortOptions : longOptions,
-      )
-    }
-
-    function onMoved(data) {
-      console.log('onMoved', data)
-    }
-    function onChange(data) {
-      console.log('onChange', data)
-    }
-    function onClickDate(data) {
-      console.log('onClickDate', data)
-    }
-    function onClickTime(data) {
-      console.log('onClickTime', data)
-    }
-    function onClickInterval(data) {
-      console.log('onClickInterval', data)
-    }
-    function onClickHeadIntervals(data) {
-      console.log('onClickHeadIntervals', data)
-    }
-    function onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    }
-
-    return {
-      selectedDate,
-      calendar,
-      locale,
-      monthFormatter,
-      dayFormatter,
-      weekdayFormatter,
-      transitionPrev,
-      transitionNext,
-      transition,
-      parsedStart,
-      days,
-      dayStyle,
-      onPrev,
-      onNext,
-      dayClass,
-      onMoved,
-      onChange,
-      onClickDate,
-      onClickTime,
-      onClickInterval,
-      onClickHeadIntervals,
-      onClickHeadDay,
-    }
-  },
+const weekdaySkips = computed(() => {
+  return getWeekdaySkips(weekdays)
 })
+
+const parsedStart = computed(() => {
+  if (selectedDate.value) {
+    const parsedDate = parseTimestamp(selectedDate.value)
+    if (parsedDate) {
+      return today2.value ? getStartOfWeek(parsedDate, weekdays, today2.value) : undefined
+    }
+  }
+  return undefined
+})
+
+const parsedEnd = computed(() => {
+  if (selectedDate.value) {
+    const parsedDate = parseTimestamp(selectedDate.value)
+    if (parsedDate) {
+      return today2.value ? getEndOfWeek(parsedDate, weekdays, today2.value) : undefined
+    }
+  }
+  return undefined
+})
+
+const today2 = computed(() => {
+  return parseTimestamp(today())
+})
+
+const days = computed(() => {
+  if (parsedStart.value && parsedEnd.value) {
+    if (today2.value) {
+      return createDayList(parsedStart.value, parsedEnd.value, today2.value, weekdaySkips.value)
+    }
+  }
+  return []
+})
+
+const dayStyle = computed(() => {
+  const width = 100 / weekdays.length + '%'
+  return {
+    width,
+  }
+})
+
+function onPrev() {
+  if (parsedStart.value) {
+    const ts = addToDate(parsedStart.value, { day: -7 })
+    selectedDate.value = ts.date
+    transition.value = 'q-calendar--' + transitionPrev.value
+  }
+}
+
+function onNext() {
+  if (parsedStart.value) {
+    const ts = addToDate(parsedStart.value, { day: 7 })
+    selectedDate.value = ts.date
+    transition.value = 'q-calendar--' + transitionNext.value
+  }
+}
+
+function dayClass(day: Timestamp) {
+  return {
+    'date-button': true,
+    'selected-date-button': selectedDate.value === day.date,
+  }
+}
+
+function monthFormatterFunc() {
+  const longOptions = { timeZone: 'UTC', month: 'long' } as const
+  const shortOptions = { timeZone: 'UTC', month: 'short' } as const
+
+  return createNativeLocaleFormatter(locale.value, (_tms, short) =>
+    short ? shortOptions : longOptions,
+  )
+}
+
+function weekdayFormatterFunc() {
+  const longOptions = { timeZone: 'UTC', weekday: 'long' } as const
+  const shortOptions = { timeZone: 'UTC', weekday: 'short' } as const
+
+  return createNativeLocaleFormatter(locale.value, (_tms, short) =>
+    short ? shortOptions : longOptions,
+  )
+}
+
+function dayFormatterFunc() {
+  const longOptions = { timeZone: 'UTC', day: '2-digit' } as const
+  const shortOptions = { timeZone: 'UTC', day: 'numeric' } as const
+
+  return createNativeLocaleFormatter(locale.value, (_tms, short) =>
+    short ? shortOptions : longOptions,
+  )
+}
+
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickTime(data: Timestamp) {
+  console.log('onClickTime', data)
+}
+function onClickInterval(data: Timestamp) {
+  console.log('onClickInterval', data)
+}
+function onClickHeadIntervals(data: Timestamp) {
+  console.log('onClickHeadIntervals', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>
 
-<style lang="sass" scoped>
-.title-bar
-  position: relative
-  width: 100%
-  height: 70px
-  background: #3f51b5
-  // display: flex
-  // flex-direction: row
-  // flex: 1 0 100%
-  // justify-content: space-between
-  // align-items: center
-  overflow: hidden
-  border-radius: 3px
-  user-select: none
+<style lang="scss" scoped>
+.title-bar {
+  position: relative;
+  width: 100%;
+  height: 70px;
+  background: #3f51b5;
+  // display: flex;
+  // flex-direction: row;
+  // flex: 1 0 100%;
+  // justify-content: space-between;
+  // align-items: center;
+  overflow: hidden;
+  border-radius: 3px;
+  user-select: none;
+}
 
-.dates-holder
-  position: relative
-  width: 100%
-  align-items: center
-  display: flex
-  justify-content: space-between
-  color: #fff
-  overflow: hidden
-  user-select: none
+.dates-holder {
+  position: relative;
+  width: 100%;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  overflow: hidden;
+  user-select: none;
+}
 
-.internal-dates-holder
-  position: relative
-  width: 100%
-  display: inline-flex
-  flex: 1 1 100%
-  flex-direction: row
-  justify-content: space-between
-  overflow: hidden
-  user-select: none
+.internal-dates-holder {
+  position: relative;
+  width: 100%;
+  display: inline-flex;
+  flex: 1 1 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  overflow: hidden;
+  user-select: none;
+}
 
-.direction-button
-  background: #3f51b5
-  color: white
-  width: 40px
-  max-width: 50px !important
+.direction-button {
+  background: #3f51b5;
+  color: white;
+  width: 40px;
+  max-width: 50px !important;
+}
 
-.direction-button__left
-  &:before
-    content: '<'
-    display: inline-flex
-    flex-direction: column
-    justify-content: center
-    height: 100%
-    font-weight: 900
-    font-size: 3em
+.direction-button__left:before {
+  content: '<';
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  font-weight: 900;
+  font-size: 3em;
+}
 
-.direction-button__right
-  &:before
-    content: '>'
-    display: inline-flex
-    flex-direction: column
-    justify-content: center
-    height: 100%
-    font-weight: 900
-    font-size: 3em
+.direction-button__right:before {
+  content: '>';
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  font-weight: 900;
+  font-size: 3em;
+}
 
-.date-button
-  color: white
-  background: #3f51b5
-  z-index: 2
-  height: 100%
-  outline: 0
-  cursor: pointer
-  border-radius: 3px
-  display: inline-flex
-  flex: 1 0 auto
-  flex-direction: column
-  align-items: stretch
-  position: relative
-  border: 0
-  vertical-align: middle
-  padding: 0
-  font-size: 14px
-  line-height: 1.715em
-  text-decoration: none
-  font-weight: 500
-  text-transform: uppercase
-  text-align: center
-  user-select: none
+.date-button {
+  color: white;
+  background: #3f51b5;
+  z-index: 2;
+  height: 100%;
+  outline: 0;
+  cursor: pointer;
+  border-radius: 3px;
+  display: inline-flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+  border: 0;
+  vertical-align: middle;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.715em;
+  text-decoration: none;
+  font-weight: 500;
+  text-transform: uppercase;
+  text-align: center;
+  user-select: none;
+}
 
-.selected-date-button
-  color: #3f51b5 !important
-  background: white !important
+.selected-date-button {
+  color: #3f51b5 !important;
+  background: white !important;
+}
 </style>

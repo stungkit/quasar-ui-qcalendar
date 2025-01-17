@@ -2,7 +2,15 @@
   <div class="subcontent">
     <div style="display: flex; justify-content: center; align-items: center; flex-wrap: nowrap">
       <div class="q-pt-lg" style="display: flex; max-width: 280px; width: 100%">
-        <q-input v-model="selectedDate" filled mask="####-##-##" :rules="[isoDateRe]">
+        <q-input
+          v-model="selectedDate"
+          filled
+          mask="####-##-##"
+          :rules="[
+            /// @ts-expect-error ignore for now
+            isoDateRe,
+          ]"
+        >
           <template #append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy ref="qDateProxy" cover transition-show="scale" transition-hide="scale">
@@ -44,66 +52,68 @@
   </div>
 </template>
 
-<script>
-import { QCalendarMonth, today, getMonthFormatter } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import { QCalendarMonth, today, getMonthFormatter, Timestamp } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.scss'
 
-import { defineComponent } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-const monthFormatter = getMonthFormatter()
+const calendar = ref<IQCalendarMonth>(),
+  monthFormatter = getMonthFormatter(),
+  selectedDate = ref(today()),
+  isoDateRe = /\d{4}-[01]\d-[0-3]\d/,
+  month = ref('')
 
-export default defineComponent({
-  name: 'MiniModeQInput',
-  components: {
-    NavigationBar,
-    QCalendarMonth,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      isoDateRe: /\d{4}-[01]\d-[0-3]\d/,
-      month: '',
-    }
-  },
-  created() {
-    const parts = this.selectedDate.split('-')
-    this.month = monthFormatter(parseInt(parts[1], 10) - 1)
-  },
-  methods: {
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-      this.month = monthFormatter(data.days[8].month - 1)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickDay(data) {
-      console.log('onClickDay', data)
-    },
-    onClickWorkweek(data) {
-      console.log('onClickWorkweek', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-    onClickHeadWorkweek(data) {
-      console.log('onClickHeadWorkweek', data)
-    },
-  },
+onBeforeMount(() => {
+  const parts = selectedDate.value.split('-')
+  if (parts[1]) {
+    /// @ts-expect-error ignore for now
+    month.value = monthFormatter(parseInt(parts[1], 10) - 1)
+  }
 })
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+  if (data.days[8]) {
+    /// @ts-expect-error ignore for now
+    month.value = monthFormatter(data.days[8].month - 1)
+  }
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickDay(data: Timestamp) {
+  console.log('onClickDay', data)
+}
+function onClickWorkweek(data: Timestamp) {
+  console.log('onClickWorkweek', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
+function onClickHeadWorkweek(data: Timestamp) {
+  console.log('onClickHeadWorkweek', data)
+}
 </script>

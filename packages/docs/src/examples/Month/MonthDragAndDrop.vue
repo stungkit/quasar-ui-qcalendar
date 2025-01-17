@@ -97,181 +97,201 @@
   </div>
 </template>
 
-<script>
-import { QCalendarMonth, today } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import { QCalendarMonth, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.scss'
 
-import { defineComponent } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'MonthDragAndDrop',
-  components: {
-    NavigationBar,
-    QCalendarMonth,
+interface Event {
+  id: number
+  type?: number
+  name: string
+  date?: string
+  time?: string
+  allDay?: boolean
+  weekday?: number
+}
+
+const calendar = ref<IQCalendarMonth>(),
+  selectedDate = ref(today()),
+  dragItems = reactive<Event[]>([
+    {
+      id: 1,
+      name: 'Appointment',
+    },
+    {
+      id: 2,
+      name: 'Reminder',
+    },
+    {
+      id: 3,
+      name: 'Task',
+    },
+  ]),
+  defaultEvent: Event = {
+    id: 0,
+    type: 0,
+    name: '',
+    date: '',
+    time: '',
+    allDay: false,
   },
-  data() {
-    return {
-      selectedDate: today(),
-      dragItems: [
-        {
-          id: 1,
-          name: 'Appointment',
-        },
-        {
-          id: 2,
-          name: 'Reminder',
-        },
-        {
-          id: 3,
-          name: 'Task',
-        },
-      ],
-      defaultEvent: {
-        id: 0,
-        type: 0,
-        name: '',
-        date: '',
-        time: '',
-        allDay: false,
-      },
-      events: [],
+  events = reactive<Event[]>([])
+
+// convert the events into a map of lists keyed by date or weekday
+interface EventsMap {
+  [key: string]: Event[]
+}
+
+const eventsMap = computed<EventsMap>(() => {
+  const map: EventsMap = {}
+  events.forEach((event) => {
+    const key = event.date || event.weekday?.toString()
+    if (key) {
+      if (!map[key]) {
+        map[key] = []
+      }
+      map[key].push(event)
     }
-  },
-
-  computed: {
-    // convert the events into a map of lists keyed by date or weekday
-    eventsMap() {
-      const map = {}
-      if (this.events.length > 0) {
-        this.events.forEach((event) =>
-          (map[event.date || event.weekday] = map[event.date || event.weekday] || []).push(event),
-        )
-      }
-      console.log('eventsMap', map)
-      return map
-    },
-  },
-
-  methods: {
-    onDragStart(e, item) {
-      console.log('onDragStart called')
-      e.dataTransfer.dropEffect = 'copy'
-      e.dataTransfer.effectAllowed = 'move'
-      e.dataTransfer.setData('ID', item.id)
-    },
-
-    onDragEnter(e /*, type, scope*/) {
-      console.log('onDragEnter')
-      e.preventDefault()
-      return true
-    },
-
-    onDragOver(e /*, type, scope*/) {
-      console.log('onDragOver')
-      e.preventDefault()
-      return true
-    },
-
-    onDragLeave(/*e, type, scope*/) {
-      console.log('onDragLeave')
-      return false
-    },
-
-    onDrop(e, type, scope) {
-      console.log('onDrop')
-      const itemID = parseInt(e.dataTransfer.getData('ID'), 10)
-      const event = { ...this.defaultEvent }
-      event.id = this.events.length + 1
-      const item = this.dragItems.filter((item) => item.id === itemID)
-      event.type = item[0].id
-      event.name = item[0].name
-      event.weekday = scope.timestamp.weekday
-      if (type === 'day') {
-        event.date = scope.timestamp.date
-        event.time = scope.timestamp.time
-      } else {
-        // head-day
-        event.allDay = true
-      }
-      this.events.push(event)
-      return false
-    },
-
-    getEvents(timestamp) {
-      const events = this.eventsMap[timestamp.date]
-      if (!events) return []
-      return events
-    },
-
-    getWeekdayEvents(weekday) {
-      const events = this.eventsMap[weekday]
-      if (!events) return []
-      return events
-    },
-
-    hasEvents(timestamp) {
-      return this.getEvents(timestamp).length > 0
-    },
-
-    hasWeekdayEvents(weekday) {
-      return this.getWeekdayEvents(weekday).length > 0
-    },
-
-    onDayClass({ scope }) {
-      return {
-        droppable: scope.droppable === true,
-      }
-    },
-
-    onWeekdayClass({ scope }) {
-      return {
-        droppable: scope.droppable === true,
-      }
-    },
-
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickDay(data) {
-      console.log('onClickDay', data)
-    },
-    onClickWorkweek(data) {
-      console.log('onClickWorkweek', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-    onClickHeadWorkweek(data) {
-      console.log('onClickHeadWorkweek', data)
-    },
-    // this method is used only to print the scope to dev tools
-    printScope(scope) {
-      console.log('scope:', scope)
-      return true
-    },
-  },
+  })
+  console.log('eventsMap', map)
+  return map
 })
+
+function onDragStart(e: DragEvent, item: Event) {
+  console.log('onDragStart called')
+  e.dataTransfer!.dropEffect = 'copy'
+  e.dataTransfer!.effectAllowed = 'move'
+  e.dataTransfer!.setData('ID', item.id.toString())
+}
+
+function onDragEnter(e: DragEvent /*, type, scope*/) {
+  console.log('onDragEnter')
+  e.preventDefault()
+  return true
+}
+
+function onDragOver(e: DragEvent /*, type, scope*/) {
+  console.log('onDragOver')
+  e.preventDefault()
+  return true
+}
+
+function onDragLeave(/*e, type, scope*/) {
+  console.log('onDragLeave')
+  return false
+}
+
+interface Scope {
+  timestamp: Timestamp
+  droppable: boolean
+}
+
+function onDrop(e: DragEvent, type: string, scope: Scope) {
+  console.log('onDrop')
+  const itemID = parseInt(e.dataTransfer!.getData('ID'), 10)
+  const event = { ...defaultEvent }
+  event.id = events.length + 1
+  const item = dragItems.filter((item) => item.id === itemID)
+  if (item[0]) {
+    event.type = item[0].id
+    event.name = item[0].name
+  }
+  event.weekday = scope.timestamp.weekday
+  if (type === 'day') {
+    event.date = scope.timestamp.date
+    event.time = scope.timestamp.time
+  } else {
+    // head-day
+    event.allDay = true
+  }
+  events.push(event)
+  return false
+}
+
+function getEvents(timestamp: Timestamp) {
+  const events = eventsMap.value[timestamp.date]
+  if (!events) return []
+  return events
+}
+
+function getWeekdayEvents(weekday: number) {
+  const events = eventsMap.value[weekday]
+  if (!events) return []
+  return events
+}
+
+function hasEvents(timestamp: Timestamp) {
+  return getEvents(timestamp).length > 0
+}
+
+function hasWeekdayEvents(weekday: number) {
+  return getWeekdayEvents(weekday).length > 0
+}
+
+function onDayClass(scope: Scope) {
+  return {
+    droppable: scope.droppable === true,
+  }
+}
+
+function onWeekdayClass(scope: Scope) {
+  return {
+    droppable: scope.droppable === true,
+  }
+}
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickDay(data: Timestamp) {
+  console.log('onClickDay', data)
+}
+function onClickWorkweek(data: Timestamp) {
+  console.log('onClickWorkweek', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
+function onClickHeadWorkweek(data: Timestamp) {
+  console.log('onClickHeadWorkweek', data)
+}
+
+// this method is used only to print the scope to dev tools
+function printScope(scope: Scope): boolean {
+  console.log('scope:', scope)
+  return true
+}
 </script>
 
-<style lang="sass">
-.droppable
-  box-shadow: inset 0 0 0 1px rgba(0,140,200,.8)
+<style lang="scss">
+.droppable {
+  box-shadow: inset 0 0 0 1px rgba(0, 140, 200, 0.8);
+}
 </style>

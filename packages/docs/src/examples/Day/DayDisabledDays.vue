@@ -46,74 +46,72 @@
   </div>
 </template>
 
-<script>
-import { QCalendarDay, addToDate, parseTimestamp, today } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import {
+  QCalendarDay,
+  addToDate,
+  parseTimestamp,
+  today,
+  Timestamp,
+} from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.scss'
 
-import { defineComponent } from 'vue'
+import { ref, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'DayDisabledDays',
-  components: {
-    NavigationBar,
-    QCalendarDay,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-    }
-  },
-  computed: {
-    disabledDays() {
-      const days = []
-      const ts = parseTimestamp(today())
-      // make next 4 days, after today, disabled
-      Array.from(Array(4)).forEach((_, i) => {
-        days.push(addToDate(ts, { day: i + 1 }).date)
-      })
-      return days
-    },
+const calendar = ref<IQCalendarDay>()
 
-    disabledDaysRange() {
-      // create the range for example 2
-      // Note: this is an array, within an array
-      return [[this.disabledDays[0], this.disabledDays[this.disabledDays.length - 1]]]
-    },
-  },
-  methods: {
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickTime(data) {
-      console.log('onClickTime', data)
-    },
-    onClickInterval(data) {
-      console.log('onClickInterval', data)
-    },
-    onClickHeadIntervals(data) {
-      console.log('onClickHeadIntervals', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-  },
+const selectedDate = ref(today())
+
+const disabledDays = computed(() => {
+  const ts = parseTimestamp(today())
+  // make next 4 days, after today, disabled
+  return Array.from({ length: 4 }, (_, i) => addToDate(ts!, { day: i + 1 }).date)
 })
+
+const disabledDaysRange = computed(() => {
+  // create the range for example 2
+  // Note: this is an array, within an array
+  return [[disabledDays.value[0], disabledDays.value[disabledDays.value.length - 1]]]
+})
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickTime(data: Timestamp) {
+  console.log('onClickTime', data)
+}
+function onClickInterval(data: Timestamp) {
+  console.log('onClickInterval', data)
+}
+function onClickHeadIntervals(data: Timestamp) {
+  console.log('onClickHeadIntervals', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>

@@ -43,183 +43,181 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import {
   QCalendarDay,
   addToDate,
   parseTimestamp,
   getStartOfWeek,
   today,
-} from '@quasar/quasar-ui-qcalendar/src'
+  Timestamp,
+} from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.scss'
 
-import { defineComponent, ref, computed, onBeforeMount } from 'vue'
+import { ref, reactive, computed, onBeforeMount } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'WeelSlotHeadDaysEvents',
-  components: {
-    NavigationBar,
-    QCalendarDay,
+interface Event {
+  id: number
+  title: string
+  details: string
+  date: string
+  days: number
+  allDay: boolean
+  bgcolor: string
+}
+
+const calendar = ref<IQCalendarDay>()
+const selectedDate = ref(today())
+const weekdays = ref([0, 1, 2, 3, 4, 5, 6])
+// we only need 2 events for this example
+const events = reactive<Event[]>([
+  {
+    id: 1,
+    title: 'Vacation',
+    details: 'Time at the cabin',
+    date: '',
+    days: 2,
+    allDay: true,
+    bgcolor: 'orange',
   },
-  setup() {
-    const calendar = ref(null)
-    const selectedDate = ref(today())
-    const weekdays = [0, 1, 2, 3, 4, 5, 6]
-    // we only need 2 events for this example
-    const events = [
-      {
-        id: 1,
-        title: 'Vacation',
-        details: 'Time at the cabin',
-        date: '',
-        days: 2,
-        allDay: true,
-        bgcolor: 'orange',
-      },
-      {
-        id: 2,
-        title: 'Training',
-        details: 'Javascript 101',
-        date: '',
-        days: 2,
-        allDay: true,
-        bgcolor: 'green',
-      },
-    ]
-
-    const allDayEventsMap = computed(() => {
-      const map = {}
-      if (events.length > 0) {
-        events.forEach(
-          (event) => event.allDay === true && (map[event.date] = map[event.date] || []).push(event),
-        )
-      }
-      return map
-    })
-
-    const parsedCellWidth = computed(() => {
-      return 100 / weekdays.length
-    })
-
-    onBeforeMount(() => {
-      // set up dates for example events
-      let start = getStartOfWeek(parseTimestamp(today()), weekdays)
-      events[0].date = start.date
-      start = addToDate(start, { day: 4 })
-      events[1].date = start.date
-    })
-
-    function badgeClasses(event) {
-      return {
-        [`text-white bg-${event.bgcolor}`]: true,
-        'rounded-border': true,
-      }
-    }
-
-    function badgeStyles(day, event) {
-      const s = {}
-      s.left = day.weekday === 0 ? 0 : day.weekday * this.parsedCellWidth + '%'
-      s.top = 0
-      s.bottom = 0
-      s.width = event.days * this.parsedCellWidth + '%'
-      return s
-    }
-
-    function onToday() {
-      calendar.value.moveToToday()
-    }
-    function onPrev() {
-      calendar.value.prev()
-    }
-    function onNext() {
-      calendar.value.next()
-    }
-
-    function onMoved(data) {
-      console.log('onMoved', data)
-    }
-    function onChange(data) {
-      console.log('onChange', data)
-    }
-    function onClickDate(data) {
-      console.log('onClickDate', data)
-    }
-    function onClickTime(data) {
-      console.log('onClickTime', data)
-    }
-    function onClickInterval(data) {
-      console.log('onClickInterval', data)
-    }
-    function onClickHeadIntervals(data) {
-      console.log('onClickHeadIntervals', data)
-    }
-    function onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    }
-
-    return {
-      calendar,
-      selectedDate,
-      weekdays,
-      events,
-      allDayEventsMap,
-      parsedCellWidth,
-      badgeClasses,
-      badgeStyles,
-      onToday,
-      onPrev,
-      onNext,
-      onMoved,
-      onChange,
-      onClickDate,
-      onClickTime,
-      onClickInterval,
-      onClickHeadIntervals,
-      onClickHeadDay,
-    }
+  {
+    id: 2,
+    title: 'Training',
+    details: 'Javascript 101',
+    date: '',
+    days: 2,
+    allDay: true,
+    bgcolor: 'green',
   },
+])
+
+const allDayEventsMap = computed(() => {
+  const map: { [key: string]: typeof events } = {}
+  if (events.length > 0) {
+    events.forEach(
+      (event) => event.allDay === true && (map[event.date] = map[event.date] || []).push(event),
+    )
+  }
+  return map
 })
+
+const parsedCellWidth = computed(() => {
+  return 100 / weekdays.value.length
+})
+
+onBeforeMount(() => {
+  // set up dates for example events
+  const todayTimestamp = parseTimestamp(today())
+  if (todayTimestamp) {
+    let start = getStartOfWeek(todayTimestamp, weekdays.value)
+    events[0]!.date = start.date
+    start = addToDate(start, { day: 4 })
+    events[1]!.date = start.date
+  }
+})
+
+function badgeClasses(event: Event) {
+  return {
+    [`text-white bg-${event.bgcolor}`]: true,
+    'rounded-border': true,
+  }
+}
+
+function badgeStyles(day: Timestamp, event: Event) {
+  const s: Record<string, any> = {}
+  s.left = day.weekday === 0 ? 0 : day.weekday * parsedCellWidth.value + '%'
+  s.top = 0
+  s.bottom = 0
+  s.width = event.days * parsedCellWidth.value + '%'
+  return s
+}
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickTime(data: Timestamp) {
+  console.log('onClickTime', data)
+}
+function onClickInterval(data: Timestamp) {
+  console.log('onClickInterval', data)
+}
+function onClickHeadIntervals(data: Timestamp) {
+  console.log('onClickHeadIntervals', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>
 
-<style lang="sass" scoped>
-.inner-row
-  height: 20px
-  position: absolute
-  top: 0
-  right: 0
-  left: 0
-  display: flex
-  flex-direction: row
-  align-items: center
-  vertical-align: middle
+<style lang="scss" scoped>
+.inner-row {
+  height: 20px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  vertical-align: middle;
+}
 
-.my-event
-  position: absolute
-  font-size: 12px
-  justify-content: center
-  text-overflow: ellipsis
-  overflow: hidden
-  cursor: pointer
+.my-event {
+  position: absolute;
+  font-size: 12px;
+  justify-content: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
+}
 
-.title
-  position: relative
-  display: flex
-  justify-content: center
-  align-items: center
-  height: 100%
+.title {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
 
-.text-white
-  color: white
+.text-white {
+  color: white;
+}
 
-.bg-green
-  background: green
+.bg-green {
+  background: green;
+}
 
-.bg-orange
-  background: orange
+.bg-orange {
+  background: orange;
+}
 
-.rounded-border
-  border-radius: 2px
+.rounded-border {
+  border-radius: 2px;
+}
 </style>

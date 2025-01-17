@@ -86,370 +86,358 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import {
   QCalendarTask,
   today,
   isBetweenDates,
   parsed,
   padNumber,
-} from '@quasar/quasar-ui-qcalendar/src/QCalendarTask'
+  Timestamp,
+} from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTask.scss'
 
-import { defineComponent } from 'vue'
+import { ref, reactive, computed, onBeforeMount } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarTask as IQCalendarTask } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'TaskDark',
-  components: {
-    NavigationBar,
-    QCalendarTask,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      startDate: today(),
-      endDate: today(),
-      tasks: [
+interface Logged {
+  date: string
+  logged: number
+}
+interface Task {
+  icon: string
+  title: string
+  key: string
+  logged: Logged[]
+}
+
+const calendar = ref<IQCalendarTask>(),
+  selectedDate = ref(today()),
+  startDate = ref(today()),
+  endDate = ref(today()),
+  tasks = reactive([
+    {
+      title: 'Task 1',
+      key: 'TSK-584',
+      logged: [
+        { date: '2021-03-02', logged: 0.5 },
+        { date: '2021-03-05', logged: 2.0 },
+      ],
+    },
+    {
+      title: 'Task 2',
+      key: 'TSK-592',
+      logged: [
+        { date: '2021-03-06', logged: 3.5 },
+        { date: '2021-03-08', logged: 4.0 },
+      ],
+    },
+    {
+      title: 'Task 3',
+      key: 'TSK-593',
+      logged: [
+        { date: '2021-03-10', logged: 9 },
+        { date: '2021-03-11', logged: 4.8 },
+      ],
+      expanded: false,
+      children: [
         {
-          title: 'Task 1',
-          key: 'TSK-584',
+          title: 'Subtask 3.1',
+          key: 'TSK-593.1',
           logged: [
-            { date: '2021-03-02', logged: 0.5 },
-            { date: '2021-03-05', logged: 2.0 },
+            { date: '2021-03-10', logged: 4.5 },
+            { date: '2021-03-11', logged: 2.4 },
           ],
         },
         {
-          title: 'Task 2',
-          key: 'TSK-592',
-          height: 40,
+          title: 'Subtask 3.2',
+          key: 'TSK-593.2',
           logged: [
-            { date: '2021-03-06', logged: 3.5 },
-            { date: '2021-03-08', logged: 4.0 },
-          ],
-        },
-        {
-          title: 'Task 3',
-          key: 'TSK-593',
-          logged: [
-            { date: '2021-03-10', logged: 9 },
-            { date: '2021-03-11', logged: 4.8 },
-          ],
-          expanded: false,
-          children: [
-            {
-              title: 'Subtask 3.1',
-              key: 'TSK-593.1',
-              height: 40,
-              logged: [
-                { date: '2021-03-10', logged: 4.5 },
-                { date: '2021-03-11', logged: 2.4 },
-              ],
-            },
-            {
-              title: 'Subtask 3.2',
-              key: 'TSK-593.2',
-              height: 40,
-              logged: [
-                { date: '2021-03-10', logged: 4.5 },
-                { date: '2021-03-11', logged: 2.4 },
-              ],
-            },
-          ],
-        },
-        {
-          title: 'Task 4',
-          key: 'TSK-594',
-          logged: [
-            { date: '2021-03-14', logged: 6.5 },
-            { date: '2021-03-15', logged: 2.0 },
-          ],
-        },
-        {
-          title: 'Task 5',
-          key: 'TSK-595',
-          logged: [
-            { date: '2021-03-12', logged: 1.5 },
-            { date: '2021-03-18', logged: 2.0 },
-          ],
-        },
-        {
-          title: 'Task 6',
-          key: 'TSK-596',
-          logged: [
-            { date: '2021-03-13', logged: 1.5 },
-            { date: '2021-03-23', logged: 3.5 },
-          ],
-        },
-        {
-          title: 'Task 7',
-          key: 'TSK-597',
-          logged: [
-            { date: '2021-03-19', logged: 0.75 },
-            { date: '2021-03-26', logged: 2.25 },
-          ],
-        },
-        {
-          title: 'Task 8',
-          key: 'TSK-598',
-          logged: [
-            { date: '2021-03-21', logged: 1.5 },
-            { date: '2021-03-22', logged: 4.0 },
-          ],
-        },
-        {
-          title: 'Task 9',
-          key: 'TSK-599',
-          logged: [
-            { date: '2021-03-26', logged: 6.5 },
-            { date: '2021-03-27', logged: 3.5 },
-          ],
-        },
-        {
-          title: 'Task 10',
-          key: 'TSK-600',
-          logged: [
-            { date: '2021-03-12', logged: 0.5 },
-            { date: '2021-03-14', logged: 2.0 },
-            { date: '2021-03-28', logged: 4.5 },
-            { date: '2021-03-30', logged: 1.0 },
+            { date: '2021-03-10', logged: 4.5 },
+            { date: '2021-03-11', logged: 2.4 },
           ],
         },
       ],
-      footerTasks: [{ title: 'TOTALS' }],
-    }
-  },
-  computed: {
-    /**
-     * Returns tasks between startDate and endDate (captured via onChange event)
-     */
-    parsedTasks() {
-      const start = parsed(this.startDate)
-      const end = parsed(this.endDate)
-      const tasks = []
-
-      for (let i = 0; i < this.tasks.length; ++i) {
-        const task = this.tasks[i]
-        for (let j = 0; j < task.logged.length; ++j) {
-          const loggedTimestamp = parsed(task.logged[j].date)
-          if (isBetweenDates(loggedTimestamp, start, end)) {
-            tasks.push(task)
-            break
-          }
-        }
-      }
-
-      return tasks
     },
-  },
-  beforeMount() {
-    // adjust all the dates for the current month
-    const date = new Date()
-    const year = date.getFullYear()
-    const month = padNumber(date.getMonth() + 1, 2)
-
-    const updateTask = (task) => {
-      task.logged.forEach((logged) => {
-        // get last 2 digits from current date (day)
-        const day = logged.date.slice(-2)
-        logged.date = [year, padNumber(month, 2), padNumber(day, 2)].join('-')
-      })
-    }
-
-    this.tasks.forEach((task) => {
-      updateTask(task)
-      if (task.children !== void 0) {
-        task.children.forEach((child) => {
-          updateTask(child)
-        })
-      }
-    })
-  },
-  methods: {
-    getLogged(date, logged) {
-      const val = []
-      for (let index = 0; index < logged.length; ++index) {
-        if (logged[index].date === date) {
-          val.push({ logged: logged[index].logged })
-          break
-        }
-      }
-      return val
+    {
+      title: 'Task 4',
+      key: 'TSK-594',
+      logged: [
+        { date: '2021-03-14', logged: 6.5 },
+        { date: '2021-03-15', logged: 2.0 },
+      ],
     },
+    {
+      title: 'Task 5',
+      key: 'TSK-595',
+      logged: [
+        { date: '2021-03-12', logged: 1.5 },
+        { date: '2021-03-18', logged: 2.0 },
+      ],
+    },
+    {
+      title: 'Task 6',
+      key: 'TSK-596',
+      logged: [
+        { date: '2021-03-13', logged: 1.5 },
+        { date: '2021-03-23', logged: 3.5 },
+      ],
+    },
+    {
+      title: 'Task 7',
+      key: 'TSK-597',
+      logged: [
+        { date: '2021-03-19', logged: 0.75 },
+        { date: '2021-03-26', logged: 2.25 },
+      ],
+    },
+    {
+      title: 'Task 8',
+      key: 'TSK-598',
+      logged: [
+        { date: '2021-03-21', logged: 1.5 },
+        { date: '2021-03-22', logged: 4.0 },
+      ],
+    },
+    {
+      title: 'Task 9',
+      key: 'TSK-599',
+      logged: [
+        { date: '2021-03-26', logged: 6.5 },
+        { date: '2021-03-27', logged: 3.5 },
+      ],
+    },
+    {
+      title: 'Task 10',
+      key: 'TSK-600',
+      logged: [
+        { date: '2021-03-12', logged: 0.5 },
+        { date: '2021-03-14', logged: 2.0 },
+        { date: '2021-03-28', logged: 4.5 },
+        { date: '2021-03-30', logged: 1.0 },
+      ],
+    },
+  ]),
+  footerTasks = ref([{ title: 'TOTALS' }])
 
-    getLoggedSummary(date) {
-      let total = 0
-
-      const reducer = (accumulator, currentValue) => {
-        if (date === currentValue.date) {
-          return accumulator + currentValue.logged
-        }
-        return accumulator
-      }
-
-      for (const index in this.tasks) {
-        const task = this.tasks[index]
-        total += task.logged.reduce(reducer, 0)
-      }
-
-      return total
-    },
-
-    /**
-     * Sums up the amount of time spent on a task
-     * This only sums it up if the logged date falls
-     * between the start and end times
-     */
-    sum(start, end, task) {
-      const reducer = (accumulator, currentValue) => {
-        const loggedTimestamp = parsed(currentValue.date)
-        if (isBetweenDates(loggedTimestamp, start, end)) {
-          return accumulator + currentValue.logged
-        }
-        return accumulator
-      }
-      return task.logged.reduce(reducer, 0)
-    },
-
-    /**
-     * Determines if the passed in task has logged time
-     * between the start and end times
-     */
-    getTasks(start, end, task) {
-      const tasks = []
-
-      for (let index = 0; index < task.logged.length; ++index) {
-        const loggedTimestamp = parsed(task.logged[index].date)
-        if (isBetweenDates(loggedTimestamp, start, end)) {
-          tasks.push(task)
-          break
-        }
-      }
-      return tasks
-    },
-
-    weekdayClass(/*data*/) {
-      return {
-        'task__weekday--style': true,
-      }
-    },
-
-    dayClass(/*data*/) {
-      return {
-        'task__day--style': true,
-      }
-    },
-
-    footerDayClass(/*data*/) {
-      return {
-        'task__footer--day__style': true,
-      }
-    },
-
-    /**
-     * Sums up the amount of time spent for all tasks
-     * between the start and end dates
-     */
-    totals(start, end) {
-      let total = 0
-      const reducer = (accumulator, currentValue) => {
-        const loggedTimestamp = parsed(currentValue.date)
-        if (isBetweenDates(loggedTimestamp, start, end)) {
-          return accumulator + currentValue.logged
-        }
-        return accumulator
-      }
-
-      for (const task in this.tasks) {
-        total += this.tasks[task].logged.reduce(reducer, 0)
-      }
-
-      return total
-    },
-
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-      this.startDate = data.start
-      this.endDate = data.end
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickDay(data) {
-      console.log('onClickDay', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-  },
+/**
+ * Returns tasks between startDate and endDate (captured via onChange event)
+ */
+const parsedTasks = computed(() => {
+  const start = parsed(startDate.value)
+  const end = parsed(endDate.value)
+  return tasks.filter((task) =>
+    task.logged.some((log) => {
+      const parsedDate = parsed(log.date)
+      return parsedDate && start && end && isBetweenDates(parsedDate, start, end)
+    }),
+  )
 })
+
+onBeforeMount(() => {
+  // adjust all the dates for the current month
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = padNumber(date.getMonth() + 1, 2)
+  tasks.forEach((task) => {
+    task.logged.forEach((logged) => {
+      // get last 2 digits from current date (day)
+      const day = logged.date.slice(-2)
+      logged.date = [year, padNumber(Number(month), 2), padNumber(Number(day), 2)].join('-')
+    })
+  })
+})
+
+function getLogged(date: string, logged: Logged[]) {
+  const log = logged.find((log) => log.date === date)
+  return log ? [{ logged: log.logged }] : []
+}
+
+function getLoggedSummary(date: string): number {
+  return tasks.reduce((total, task) => {
+    return (
+      total +
+      task.logged.reduce((accumulator, log) => {
+        return date === log.date ? accumulator + log.logged : accumulator
+      }, 0)
+    )
+  }, 0)
+}
+
+/**
+ * Sums up the amount of time spent on a task
+ * This only sums it up if the logged date falls
+ * between the start and end times
+ */
+function sum(start: Timestamp, end: Timestamp, task: Task) {
+  return task.logged.reduce((accumulator, currentValue) => {
+    const loggedTimestamp = parsed(currentValue.date)
+    return loggedTimestamp && isBetweenDates(loggedTimestamp, start, end)
+      ? accumulator + currentValue.logged
+      : accumulator
+  }, 0)
+}
+
+/**
+ * Determines if the passed in task has logged time
+ * between the start and end times
+ */
+function getTasks(start: Timestamp, end: Timestamp, task: Task): Task[] {
+  const tasks: Task[] = []
+
+  const hasLoggedInRange = task.logged.some((log) => {
+    const loggedTimestamp = parsed(log.date)
+    return loggedTimestamp !== null && isBetweenDates(loggedTimestamp, start, end)
+  })
+
+  if (hasLoggedInRange) {
+    tasks.push(task)
+  }
+
+  return tasks
+}
+
+function weekdayClass(/*data*/) {
+  return {
+    'task__weekday--style': true,
+  }
+}
+
+function dayClass(/*data*/) {
+  return {
+    'task__day--style': true,
+  }
+}
+
+function footerDayClass(/*data*/) {
+  return {
+    'task__footer--day__style': true,
+  }
+}
+
+/**
+ * Sums up the amount of time spent for all tasks
+ * between the start and end dates
+ */
+function totals(start: Timestamp, end: Timestamp) {
+  const reducer = (accumulator: number, currentValue: { date: string; logged: number }) => {
+    const loggedTimestamp = parsed(currentValue.date)
+    return loggedTimestamp !== null && isBetweenDates(loggedTimestamp, start, end)
+      ? accumulator + currentValue.logged
+      : accumulator
+  }
+
+  return tasks.reduce((total, task) => total + task.logged.reduce(reducer, 0), 0)
+}
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: string; end: string; days: Timestamp[] }) {
+  console.log('onChange', data)
+  startDate.value = data.start
+  endDate.value = data.end
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickDay(data: Timestamp) {
+  console.log('onClickDay', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>
 
-<style lang="sass" scoped>
-.header
-  display: flex
-  justify-content: space-between
-  align-items: center
-  width: 100%
-  padding: 2px
-  font-size: .9em
-  .issue
-    display: flex
-    justify-content: flex-start
-    align-items: center
-    width: 80%
-  .key
-    display: flex
-    justify-content: center
-    width: 80px
-  .logged
-    display: flex
-    justify-content: flex-end
-    width: 80px
-.summary
-  display: flex
-  justify-content: space-between
-  align-items: center
-  padding: 2px
-  font-size: .9em
-  font-weight: 700
-  width: 100%
-  .title
-    display: flex
-    justify-content: flex-start
-  .total
-    display: flex
-    justify-content: flex-end
-.logged-time
-  display: flex
-  justify-content: center
-  align-items: center
-  padding: 0
-  margin: 0
-  height: 100%
+<style lang="scss" scoped>
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 2px;
+  font-size: 0.9em;
+
+  .issue {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 80%;
+  }
+
+  .key {
+    display: flex;
+    justify-content: center;
+    width: 80px;
+  }
+
+  .logged {
+    display: flex;
+    justify-content: flex-end;
+    width: 80px;
+  }
+}
+
+.summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px;
+  font-size: 0.9em;
+  font-weight: 700;
+  width: 100%;
+
+  .title {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .total {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.logged-time {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
 </style>
 
-<style lang="sass">
-.task__weekday--style
-  font-size: 0.8em
-  font-weight: 600
-.task__day--style
-  font-size: 0.8em
-.task__footer--day__style
-  font-size: 0.8em
-  font-weight: 600
+<style lang="scss">
+.task__weekday--style {
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.task__day--style {
+  font-size: 0.8em;
+}
+
+.task__footer--day__style {
+  font-size: 0.8em;
+  font-weight: 600;
+}
 </style>

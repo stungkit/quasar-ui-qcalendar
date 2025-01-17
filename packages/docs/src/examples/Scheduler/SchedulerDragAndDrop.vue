@@ -49,7 +49,7 @@
             <div
               v-if="
                 allDayEventsMap[scope.timestamp.date] &&
-                allDayEventsMap[scope.timestamp.date].length > 0
+                (allDayEventsMap[scope.timestamp.date] ?? []).length > 0
               "
               style="
                 display: flex;
@@ -112,201 +112,222 @@
   </div>
 </template>
 
-<script>
-import { QCalendarScheduler, today } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import { QCalendarScheduler, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarScheduler.scss'
 
-import { defineComponent } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarScheduler as IQCalendarScheduler } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'SchedulerDragAndDrop',
-  components: {
-    NavigationBar,
-    QCalendarScheduler,
+interface Resource {
+  id: number
+  label: string
+}
+
+interface Item {
+  id: number
+  name: string
+}
+
+interface Event {
+  id: number
+  type: number
+  name: string
+  date: string
+  time: string
+  allDay: boolean
+  resource: Resource
+}
+
+const calendar = ref<IQCalendarScheduler>(),
+  selectedDate = ref(today()),
+  resources = reactive<Resource[]>([
+    { id: 1, label: 'John' },
+    { id: 2, label: 'Mary' },
+    { id: 3, label: 'Susan' },
+    { id: 4, label: 'Olivia' },
+    { id: 5, label: 'Board Room' },
+    { id: 6, label: 'Room-1' },
+    { id: 7, label: 'Room-2' },
+  ]),
+  dragItems = reactive<Item[]>([
+    {
+      id: 1,
+      name: 'Appointment',
+    },
+    {
+      id: 2,
+      name: 'Reminder',
+    },
+    {
+      id: 3,
+      name: 'Task',
+    },
+  ]),
+  defaultEvent = {
+    id: 0,
+    type: 0,
+    name: '',
+    date: '',
+    time: '',
+    allDay: false,
+    resource: { id: 0, label: '' },
   },
-  data() {
-    return {
-      selectedDate: today(),
-      resources: [
-        { id: 1, label: 'John' },
-        { id: 2, label: 'Mary' },
-        { id: 3, label: 'Susan' },
-        { id: 4, label: 'Olivia' },
-        { id: 5, label: 'Board Room' },
-        { id: 6, label: 'Room-1' },
-        { id: 7, label: 'Room-2' },
-      ],
-      dragItems: [
-        {
-          id: 1,
-          name: 'Appointment',
-        },
-        {
-          id: 2,
-          name: 'Reminder',
-        },
-        {
-          id: 3,
-          name: 'Task',
-        },
-      ],
-      defaultEvent: {
-        id: 0,
-        type: 0,
-        name: '',
-        date: '',
-        time: '',
-        allDay: false,
-        resource: {},
-      },
-      events: [],
-    }
-  },
-  computed: {
-    // convert the events into a map of lists keyed by date
-    eventsMap() {
-      const map = {}
-      if (this.events.length > 0) {
-        this.events.forEach((event) => (map[event.date] = map[event.date] || []).push(event))
-      }
-      console.log('eventsMap', map)
-      return map
-    },
+  events = reactive<Event[]>([])
 
-    allDayEventsMap() {
-      const map = {}
-      if (this.events.length > 0) {
-        this.events.forEach(
-          (event) => event.allDay === true && (map[event.date] = map[event.date] || []).push(event),
-        )
-      }
-      return map
-    },
-  },
-  methods: {
-    onDragStart(e, item) {
-      console.log('onDragStart called')
-      e.dataTransfer.dropEffect = 'copy'
-      e.dataTransfer.effectAllowed = 'move'
-      e.dataTransfer.setData('ID', item.id)
-    },
-
-    onDragEnter(e, type /*, scope*/) {
-      console.log('onDragEnter')
-      if (type === 'day' || type === 'head-day') {
-        e.preventDefault()
-        return true
-      }
-    },
-
-    onDragOver(e, type /*, scope*/) {
-      console.log('onDragOver')
-      if (type === 'day' || type === 'head-day') {
-        e.preventDefault()
-        return true
-      }
-    },
-
-    onDragLeave(e, type /*, scope*/) {
-      console.log('onDragLeave')
-      if (type === 'day' || type === 'head-day') {
-        return false
-      }
-    },
-
-    onDrop(e, type, scope) {
-      console.log('onDrop', scope)
-      if (type === 'day' || type === 'head-day') {
-        const itemID = parseInt(e.dataTransfer.getData('ID'), 10)
-        const event = { ...this.defaultEvent }
-        event.id = this.events.length + 1
-        const item = this.dragItems.filter((item) => item.id === itemID)
-        event.type = item[0].id
-        event.name = item[0].name
-        event.date = scope.timestamp.date
-        event.resource = scope.resource
-        if (type === 'head-day') {
-          event.allDay = true
-        }
-        this.events.push(event)
-        return false
-      }
-    },
-
-    getEvents(timestamp, resource) {
-      if (resource) {
-        const events = this.eventsMap[timestamp.date]
-        if (events) {
-          return events.filter((item) => {
-            if (item.resource) {
-              return item.date === timestamp.date && item.resource.id === resource.id
-            }
-            return item.date === timestamp.date
-          })
-        }
-      }
-      return []
-    },
-
-    hasEvents(timestamp, resource) {
-      return this.getEvents(timestamp, resource).length > 0
-    },
-
-    onDayClass({ scope }) {
-      return {
-        droppable: scope.droppable === true,
-      }
-    },
-
-    onWeekdayClass({ scope }) {
-      return {
-        droppable: scope.droppable === true,
-      }
-    },
-
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickDayResource(data) {
-      console.log('onClickDayResource', data)
-    },
-    onClickResource(data) {
-      console.log('onClickResource', data)
-    },
-    onClickHeadResources(data) {
-      console.log('onClickHeadResources', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-    // this method is used only to print the scope to dev tools
-    printScope(scope) {
-      console.log('scope:', scope)
-      return true
-    },
-  },
+// convert the events into a map of lists keyed by date
+const eventsMap = computed(() => {
+  const map: { [key: string]: Event[] } = {}
+  if (events.length > 0) {
+    events.forEach((event) => (map[event.date] = map[event.date] || []).push(event))
+  }
+  console.log('eventsMap', map)
+  return map
 })
+
+const allDayEventsMap = computed(() => {
+  const map: { [key: string]: Event[] } = {}
+  if (events.length > 0) {
+    events.forEach(
+      (event) => event.allDay === true && (map[event.date] = map[event.date] || []).push(event),
+    )
+  }
+  return map
+})
+
+function onDragStart(e: DragEvent, item: Item) {
+  console.log('onDragStart called')
+  if (e.dataTransfer) {
+    e.dataTransfer.dropEffect = 'copy'
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('ID', String(item.id))
+  }
+}
+
+function onDragEnter(e: MouseEvent, type: string /*, scope*/) {
+  console.log('onDragEnter')
+  if (type === 'day' || type === 'head-day') {
+    e.preventDefault()
+    return true
+  }
+}
+
+function onDragOver(e: MouseEvent, type: string /*, scope*/) {
+  console.log('onDragOver')
+  if (type === 'day' || type === 'head-day') {
+    e.preventDefault()
+    return true
+  }
+}
+
+function onDragLeave(e: MouseEvent, type: string /*, scope*/) {
+  console.log('onDragLeave')
+  if (type === 'day' || type === 'head-day') {
+    return false
+  }
+}
+
+interface DropScope {
+  timestamp: Timestamp
+  resource: Resource
+}
+
+function onDrop(e: DragEvent, type: string, scope: DropScope) {
+  console.log('onDrop', scope)
+  if (type === 'day' || type === 'head-day') {
+    if (!e.dataTransfer) {
+      return
+    }
+    const itemID = parseInt(e.dataTransfer.getData('ID'), 10)
+    const event: Event = { ...defaultEvent }
+    event.id = events.length + 1
+    const item = dragItems.filter((item) => item.id === itemID)
+    event.type = item[0]!.id
+    event.name = item[0]!.name
+    event.date = scope.timestamp.date
+    event.resource = scope.resource
+    if (type === 'head-day') {
+      event.allDay = true
+    }
+    events.push(event)
+    return false
+  }
+}
+
+function getEvents(timestamp: Timestamp, resource: Resource) {
+  if (resource) {
+    const events = eventsMap.value[timestamp.date]
+    if (events) {
+      return events.filter((item) => {
+        if (item.resource) {
+          return item.date === timestamp.date && item.resource.id === resource.id
+        }
+        return item.date === timestamp.date
+      })
+    }
+  }
+  return []
+}
+
+function hasEvents(timestamp: Timestamp, resource: Resource) {
+  return getEvents(timestamp, resource).length > 0
+}
+
+function onDayClass({ scope }: { scope: { droppable: boolean } }) {
+  return {
+    droppable: scope.droppable === true,
+  }
+}
+
+function onWeekdayClass({ scope }: { scope: { droppable: boolean } }) {
+  return {
+    droppable: scope.droppable === true,
+  }
+}
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickDayResource(data: Timestamp) {
+  console.log('onClickDayResource', data)
+}
+function onClickResource(data: Timestamp) {
+  console.log('onClickResource', data)
+}
+function onClickHeadResources(data: Timestamp) {
+  console.log('onClickHeadResources', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>
 
-<style lang="sass">
-.droppable
-  box-shadow: inset 0 0 0 1px rgba(0,140,200,.8)
+<style lang="scss">
+.droppable {
+  box-shadow: inset 0 0 0 1px rgba(0, 140, 200, 0.8);
+}
 </style>

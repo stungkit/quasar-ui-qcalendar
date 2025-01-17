@@ -34,188 +34,198 @@
   </div>
 </template>
 
-<script>
-import { QCalendarScheduler, today } from '@quasar/quasar-ui-qcalendar/src/QCalendarScheduler'
+<script setup lang="ts">
+import { QCalendarScheduler, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarScheduler.scss'
 
-import { defineComponent } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarScheduler as IQCalendarScheduler } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'SchedulerSlotResourceDays',
-  components: {
-    NavigationBar,
-    QCalendarScheduler,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      resourceWidth: 100,
-      resourceHeight: 70,
-      resourceMinHeight: 20,
-      locale: 'en-US',
-      resources: [
-        { id: '1', name: 'John' },
+interface Event {
+  dow: number
+  title: string
+  range?: number
+}
+
+interface Scope {
+  resource: { id: string }
+  cellWidth: string
+}
+
+interface Resource {
+  id: string
+  name: string
+  expanded?: boolean
+  children?: Resource[]
+}
+
+const calendar = ref<IQCalendarScheduler>(),
+  selectedDate = ref(today()),
+  resources = reactive<Resource[]>([
+    { id: '1', name: 'John' },
+    {
+      id: '2',
+      name: 'Board Room',
+      expanded: false,
+      children: [
+        { id: '2.1', name: 'Room-1' },
         {
-          id: '2',
-          name: 'Board Room',
+          id: '2.2',
+          name: 'Room-2',
           expanded: false,
           children: [
-            { id: '2.1', name: 'Room-1' },
-            {
-              id: '2.2',
-              name: 'Room-2',
-              expanded: false,
-              children: [
-                { id: '2.2.1', name: 'Partition-A' },
-                { id: '2.2.2', name: 'Partition-B' },
-                { id: '2.2.3', name: 'Partition-C' },
-              ],
-            },
+            { id: '2.2.1', name: 'Partition-A' },
+            { id: '2.2.2', name: 'Partition-B' },
+            { id: '2.2.3', name: 'Partition-C' },
           ],
         },
-        { id: '3', name: 'Mary' },
-        { id: '4', name: 'Susan' },
-        { id: '5', name: 'Olivia' },
       ],
-      events: {
-        1: [
-          // John
-          { dow: 1, title: 'Gym' },
-          { dow: 3, title: 'Meeting: Olivia' },
-          { dow: 4, title: 'Training', range: 2 },
-        ],
-        2: [
-          // Board room
-        ],
-        2.1: [
-          // Room-1
-          { dow: 2, title: 'Board Meeting', range: 2 },
-        ],
-        2.2: [
-          // Room-2
-        ],
-        '2.2.1': [
-          // Partition-A
-          { dow: 4, title: 'Corporate Training', range: 2 },
-        ],
-        '2.2.2': [
-          // Partition-B
-        ],
-        '2.2.3': [
-          // Partition-C
-        ],
-        3: [
-          // Mary
-          { dow: 4, title: 'Corporate Training', range: 2 },
-          // { start: '12:00', title: 'Lunch', duration: 60 }
-        ],
-        4: [
-          // Susan
-          { dow: 4, title: 'Corporate Training', range: 2 },
-          // { start: '12:00', title: 'Lunch', duration: 60 }
-        ],
-        5: [
-          // Olivia
-          { dow: 4, title: 'Corporate Training', range: 2 },
-          { dow: 3, title: 'Meeting: John' },
-        ],
-      },
-    }
-  },
-  computed: {
-    styles() {
-      return {
-        '--calendar-resources-width': 150 + 'px',
-      }
     },
-  },
-  methods: {
-    getEvents(scope) {
-      const events = []
-      if (this.events[scope.resource.id]) {
-        // get events for the specified resource
-        const resourceEvents = this.events[scope.resource.id]
-        // make sure we have events
-        if (resourceEvents && resourceEvents.length > 0) {
-          // for each event figure out start position and width
-          for (let x = 0; x < resourceEvents.length; ++x) {
-            events.push({
-              left: this.getLeft(scope, resourceEvents[x]),
-              width: this.getWidth(scope, resourceEvents[x]),
-              title: resourceEvents[x].title,
-            })
-          }
-        }
-      }
-      return events
-    },
+    { id: '3', name: 'Mary' },
+    { id: '4', name: 'Susan' },
+    { id: '5', name: 'Olivia' },
+  ]),
+  events = reactive<Record<string, Event[]>>({
+    '1': [
+      // John
+      { dow: 1, title: 'Gym' },
+      { dow: 3, title: 'Meeting: Olivia' },
+      { dow: 4, title: 'Training', range: 2 },
+    ],
+    '2': [
+      // Board room
+    ],
+    '2.1': [
+      // Room-1
+      { dow: 2, title: 'Board Meeting', range: 2 },
+    ],
+    '2.2': [
+      // Room-2
+    ],
+    '2.2.1': [
+      // Partition-A
+      { dow: 4, title: 'Corporate Training', range: 2 },
+    ],
+    '2.2.2': [
+      // Partition-B
+    ],
+    '2.2.3': [
+      // Partition-C
+    ],
+    '3': [
+      // Mary
+      { dow: 4, title: 'Corporate Training', range: 2 },
+      // { start: '12:00', title: 'Lunch', duration: 60 }
+    ],
+    '4': [
+      // Susan
+      { dow: 4, title: 'Corporate Training', range: 2 },
+      // { start: '12:00', title: 'Lunch', duration: 60 }
+    ],
+    '5': [
+      // Olivia
+      { dow: 4, title: 'Corporate Training', range: 2 },
+      { dow: 3, title: 'Meeting: John' },
+    ],
+  })
 
-    getStyle(event) {
-      return {
-        position: 'absolute',
-        background: 'white',
-        left: event.left,
-        width: event.width,
-      }
-    },
-    getLeft(scope, event) {
-      const left = event.dow * parseFloat(scope.cellWidth)
-      const val = left + (scope.cellWidth.endsWith('%') ? '%' : 'px')
-      return val
-    },
-    getWidth(scope, event) {
-      const width = (event.range ? event.range : 1) * parseFloat(scope.cellWidth)
-      const val = width + (scope.cellWidth.endsWith('%') ? '%' : 'px')
-      return val
-    },
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onResourceExpanded(data) {
-      console.log('onResourceExpanded', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickDayResource(data) {
-      console.log('onClickDayResource', data)
-    },
-    onClickResource(data) {
-      console.log('onClickResource', data)
-    },
-    onClickHeadResources(data) {
-      console.log('onClickHeadResources', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-  },
+const styles = computed(() => {
+  return {
+    '--calendar-resources-width': 150 + 'px',
+  }
 })
+
+function getEvents(scope: Scope): { left: string; width: string; title: string }[] {
+  const evts: { left: string; width: string; title: string }[] = []
+  if (events[scope.resource.id]) {
+    // get events for the specified resource
+    const resourceEvents: Event[] = events[scope.resource.id] || []
+    // make sure we have events
+    if (resourceEvents && resourceEvents.length > 0) {
+      // for each event figure out start position and width
+      for (let x = 0; x < resourceEvents.length; ++x) {
+        evts.push({
+          left: getLeft(scope, resourceEvents[x]!),
+          width: getWidth(scope, resourceEvents[x]!),
+          title: resourceEvents[x]!.title,
+        })
+      }
+    }
+  }
+  return evts
+}
+function getStyle(event: { left: string; width: string }): Record<string, string> {
+  return {
+    position: 'absolute',
+    background: 'white',
+    left: event.left,
+    width: event.width,
+  }
+}
+function getLeft(scope: Scope, event: Event): string {
+  const left = event.dow * parseFloat(scope.cellWidth)
+  const val = left + (scope.cellWidth.endsWith('%') ? '%' : 'px')
+  return val
+}
+
+function getWidth(scope: Scope, event: Event): string {
+  const width = (event.range ? event.range : 1) * parseFloat(scope.cellWidth)
+  const val = width + (scope.cellWidth.endsWith('%') ? '%' : 'px')
+  return val
+}
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onResourceExpanded(data: Timestamp) {
+  console.log('onResourceExpanded', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickDayResource(data: Timestamp) {
+  console.log('onClickDayResource', data)
+}
+function onClickResource(data: Timestamp) {
+  console.log('onClickResource', data)
+}
+function onClickHeadResources(data: Timestamp) {
+  console.log('onClickHeadResources', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>
 
-<style lang="sass" scoped>
-.my-resource-header
-  display: flex
-  flex-direction: column
-  flex: 1
-  justify-content: center
-  align-items: center
-  position: relative
-  font-size: 14px
-  font-weight: 700
+<style lang="scss" scoped>
+.my-resource-header {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: 14px;
+  font-weight: 700;
+}
 </style>

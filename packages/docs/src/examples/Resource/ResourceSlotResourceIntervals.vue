@@ -34,161 +34,180 @@
   </div>
 </template>
 
-<script>
-import { QCalendarResource, today } from '@quasar/quasar-ui-qcalendar/src/QCalendarResource'
+<script setup lang="ts">
+import { QCalendarResource, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarResource.scss'
 
-import { defineComponent } from 'vue'
+import { ref, reactive } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarResource as IQCalendarResource } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'ResourceSlotResourceIntervals',
-  components: {
-    NavigationBar,
-    QCalendarResource,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      locale: 'en-US',
-      resources: [
-        { id: '1', name: 'John' },
+interface Resource {
+  id: string
+  name: string
+  expanded?: boolean
+  children?: Resource[]
+}
+
+interface Event {
+  start: string
+  title: string
+  duration: number
+}
+const calendar = ref<IQCalendarResource>(),
+  selectedDate = ref(today()),
+  resources = reactive<Resource[]>([
+    { id: '1', name: 'John' },
+    {
+      id: '2',
+      name: 'Board Room',
+      expanded: false,
+      children: [
+        { id: '2.1', name: 'Room-1' },
         {
-          id: '2',
-          name: 'Board Room',
+          id: '2.2',
+          name: 'Room-2',
           expanded: false,
           children: [
-            { id: '2.1', name: 'Room-1' },
-            {
-              id: '2.2',
-              name: 'Room-2',
-              expanded: false,
-              children: [
-                { id: '2.2.1', name: 'Partition-A' },
-                { id: '2.2.2', name: 'Partition-B' },
-                { id: '2.2.3', name: 'Partition-C' },
-              ],
-            },
+            { id: '2.2.1', name: 'Partition-A' },
+            { id: '2.2.2', name: 'Partition-B' },
+            { id: '2.2.3', name: 'Partition-C' },
           ],
         },
-        { id: '3', name: 'Mary' },
-        { id: '4', name: 'Susan' },
-        { id: '5', name: 'Olivia' },
       ],
-      events: {
-        1: [
-          // John
-          { start: '06:00', title: 'Gym', duration: 90 },
-          {
-            start: '08:00',
-            title: 'Corporate Training - Partition A (Train new hires)',
-            duration: 240,
-          },
-          { start: '12:00', title: 'Lunch', duration: 60 },
-        ],
-        2: [
-          // Board room
-        ],
-        2.1: [
-          // Room-1
-          { start: '08:00', title: 'Board Meeting', duration: 120 },
-        ],
-        2.2: [
-          // Room-2
-        ],
-        '2.2.1': [
-          // Partition-A
-          { start: '08:00', title: 'Corporate Training', duration: 240 },
-        ],
-        '2.2.2': [
-          // Partition-B
-        ],
-        '2.2.3': [
-          // Partition-C
-        ],
-        3: [
-          // Mary
-          { start: '08:00', title: 'Corporate Training - Partition A', duration: 240 },
-          { start: '12:00', title: 'Lunch', duration: 60 },
-        ],
-        4: [
-          // Susan
-          { start: '08:00', title: 'Corporate Training - Partition A', duration: 240 },
-          { start: '12:00', title: 'Lunch', duration: 60 },
-        ],
-        5: [
-          // Olivia
-          { start: '08:00', title: 'Corporate Training - Partition A', duration: 240 },
-          { start: '12:00', title: 'Lunch', duration: 60 },
-        ],
+    },
+    { id: '3', name: 'Mary' },
+    { id: '4', name: 'Susan' },
+    { id: '5', name: 'Olivia' },
+  ]),
+  events = reactive<Record<string, Event[]>>({
+    1: [
+      // John
+      { start: '06:00', title: 'Gym', duration: 90 },
+      {
+        start: '08:00',
+        title: 'Corporate Training - Partition A (Train new hires)',
+        duration: 240,
       },
+      { start: '12:00', title: 'Lunch', duration: 60 },
+    ],
+    2: [
+      // Board room
+    ],
+    2.1: [
+      // Room-1
+      { start: '08:00', title: 'Board Meeting', duration: 120 },
+    ],
+    2.2: [
+      // Room-2
+    ],
+    '2.2.1': [
+      // Partition-A
+      { start: '08:00', title: 'Corporate Training', duration: 240 },
+    ],
+    '2.2.2': [
+      // Partition-B
+    ],
+    '2.2.3': [
+      // Partition-C
+    ],
+    3: [
+      // Mary
+      { start: '08:00', title: 'Corporate Training - Partition A', duration: 240 },
+      { start: '12:00', title: 'Lunch', duration: 60 },
+    ],
+    4: [
+      // Susan
+      { start: '08:00', title: 'Corporate Training - Partition A', duration: 240 },
+      { start: '12:00', title: 'Lunch', duration: 60 },
+    ],
+    5: [
+      // Olivia
+      { start: '08:00', title: 'Corporate Training - Partition A', duration: 240 },
+      { start: '12:00', title: 'Lunch', duration: 60 },
+    ],
+  })
+
+interface Scope {
+  resource: Resource
+  timeStartPosX: (time: string) => number
+  timeDurationWidth: (duration: number) => number
+}
+
+interface EventWithPosition {
+  left: number
+  width: number
+  title: string
+}
+
+function getEvents(scope: Scope): EventWithPosition[] {
+  const evts: EventWithPosition[] = []
+  if (events[scope.resource.id]) {
+    // get events for the specified resource
+    const resourceEvents = events[scope.resource.id]
+    // make sure we have events
+    if (resourceEvents && resourceEvents.length > 0) {
+      // for each events figure out start position and width
+      for (let x = 0; x < resourceEvents.length; ++x) {
+        evts.push({
+          left: scope.timeStartPosX(resourceEvents[x]!.start),
+          width: scope.timeDurationWidth(resourceEvents[x]!.duration),
+          title: resourceEvents[x]!.title,
+        })
+      }
     }
-  },
-  methods: {
-    getEvents(scope) {
-      const events = []
-      if (this.events[scope.resource.id]) {
-        // get events for the specified resource
-        const resourceEvents = this.events[scope.resource.id]
-        // make sure we have events
-        if (resourceEvents && resourceEvents.length > 0) {
-          // for each events figure out start position and width
-          for (let x = 0; x < resourceEvents.length; ++x) {
-            events.push({
-              left: scope.timeStartPosX(resourceEvents[x].start),
-              width: scope.timeDurationWidth(resourceEvents[x].duration),
-              title: resourceEvents[x].title,
-            })
-          }
-        }
-      }
-      return events
-    },
+  }
+  return evts
+}
 
-    getStyle(event) {
-      return {
-        position: 'absolute',
-        background: 'white',
-        left: event.left + 'px',
-        width: event.width + 'px',
-      }
-    },
+function getStyle(event: EventWithPosition): Record<string, string> {
+  return {
+    position: 'absolute',
+    background: 'white',
+    left: event.left + 'px',
+    width: event.width + 'px',
+  }
+}
 
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onResourceExpanded(data) {
-      console.log('onResourceExpanded', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickTime(data) {
-      console.log('onClickTime', data)
-    },
-    onClickResource(data) {
-      console.log('onClickResource', data)
-    },
-    onClickHeadResources(data) {
-      console.log('onClickHeadResources', data)
-    },
-    onClickInterval(data) {
-      console.log('onClickInterval', data)
-    },
-  },
-})
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onResourceExpanded(data: Timestamp) {
+  console.log('onResourceExpanded', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickTime(data: Timestamp) {
+  console.log('onClickTime', data)
+}
+function onClickResource(data: Timestamp) {
+  console.log('onClickResource', data)
+}
+function onClickHeadResources(data: Timestamp) {
+  console.log('onClickHeadResources', data)
+}
+function onClickInterval(data: Timestamp) {
+  console.log('onClickInterval', data)
+}
 </script>

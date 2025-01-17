@@ -26,84 +26,77 @@
   </div>
 </template>
 
-<script>
-import { QCalendarMonth, addToDate, parseTimestamp, today } from '@quasar/quasar-ui-qcalendar/src'
+<script setup lang="ts">
+import {
+  QCalendarMonth,
+  addToDate,
+  parseTimestamp,
+  today,
+  Timestamp,
+} from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.scss'
 
-import { defineComponent, ref, computed } from 'vue'
+import { ref, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'MiniModeDisabledBeforeAfter',
-  components: {
-    NavigationBar,
-    QCalendarMonth,
-  },
-  setup() {
-    const selectedDate = ref(today()),
-      calendar = ref(null)
+const calendar = ref<IQCalendarMonth>()
+const selectedDate = ref(today())
 
-    const disabledBefore = computed(() => {
-      let ts = parseTimestamp(today())
-      ts = addToDate(ts, { day: -1 })
-      return ts.date
-    })
-
-    const disabledAfter = computed(() => {
-      let ts = parseTimestamp(today())
-      ts = addToDate(ts, { day: 1 })
-      return ts.date
-    })
-
-    function onToday() {
-      calendar.value.moveToToday()
-    }
-    function onPrev() {
-      calendar.value.prev()
-    }
-    function onNext() {
-      calendar.value.next()
-    }
-    function onMoved(data) {
-      console.log('onMoved', data)
-    }
-    function onChange(data) {
-      console.log('onChange', data)
-    }
-    function onClickDate(data) {
-      console.log('onClickDate', data)
-    }
-    function onClickDay(data) {
-      console.log('onClickDay', data)
-    }
-    function onClickWorkweek(data) {
-      console.log('onClickWorkweek', data)
-    }
-    function onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    }
-    function onClickHeadWorkweek(data) {
-      console.log('onClickHeadWorkweek', data)
-    }
-
-    return {
-      selectedDate,
-      calendar,
-      disabledBefore,
-      disabledAfter,
-      onToday,
-      onPrev,
-      onNext,
-      onMoved,
-      onChange,
-      onClickDate,
-      onClickDay,
-      onClickWorkweek,
-      onClickHeadDay,
-      onClickHeadWorkweek,
-    }
-  },
+const disabledBefore = computed(() => {
+  let ts = parseTimestamp(today())
+  if (ts) {
+    ts = addToDate(ts, { day: -1 })
+    return ts.date
+  }
+  return ''
 })
+
+const disabledAfter = computed(() => {
+  let ts = parseTimestamp(today())
+  if (ts) {
+    ts = addToDate(ts, { day: 1 })
+    return ts.date
+  }
+  return ''
+})
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickDay(data: Timestamp) {
+  console.log('onClickDay', data)
+}
+function onClickWorkweek(data: Timestamp) {
+  console.log('onClickWorkweek', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
+function onClickHeadWorkweek(data: Timestamp) {
+  console.log('onClickHeadWorkweek', data)
+}
 </script>

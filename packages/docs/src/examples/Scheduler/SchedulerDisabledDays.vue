@@ -44,88 +44,80 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import {
   QCalendarScheduler,
   addToDate,
   parseTimestamp,
   today,
-} from '@quasar/quasar-ui-qcalendar/src'
+  Timestamp,
+} from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarScheduler.scss'
 
-import { defineComponent } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarScheduler as IQCalendarScheduler } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'SchedulerDisabledDays',
-  components: {
-    NavigationBar,
-    QCalendarScheduler,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      resources: [
-        { id: 1, label: 'John' },
-        { id: 2, label: 'Mary' },
-        { id: 3, label: 'Susan' },
-        { id: 4, label: 'Olivia' },
-        { id: 5, label: 'Board Room' },
-        { id: 6, label: 'Room-1' },
-        { id: 7, label: 'Room-2' },
-      ],
-    }
-  },
-  computed: {
-    disabledDays() {
-      const days = []
-      const ts = parseTimestamp(today())
-      // make next 4 days, after today, disabled
-      Array.from(Array(4)).forEach((_, i) => {
-        days.push(addToDate(ts, { day: i + 1 }).date)
-      })
-      return days
-    },
+const calendar = ref<IQCalendarScheduler>(),
+  selectedDate = ref(today()),
+  resources = reactive([
+    { id: 1, label: 'John' },
+    { id: 2, label: 'Mary' },
+    { id: 3, label: 'Susan' },
+    { id: 4, label: 'Olivia' },
+    { id: 5, label: 'Board Room' },
+    { id: 6, label: 'Room-1' },
+    { id: 7, label: 'Room-2' },
+  ])
 
-    disabledDaysRange() {
-      // create the range for example 2
-      // Note: this is an array, within an array
-      return [[this.disabledDays[0], this.disabledDays[this.disabledDays.length - 1]]]
-    },
-  },
-  methods: {
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickDayResource(data) {
-      console.log('onClickDayResource', data)
-    },
-    onClickResource(data) {
-      console.log('onClickResource', data)
-    },
-    onClickHeadResources(data) {
-      console.log('onClickHeadResources', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-  },
+const disabledDays = computed(() => {
+  const ts = parseTimestamp(today())
+  // make next 4 days, after today, disabled
+  return Array.from({ length: 4 }, (_, i) => addToDate(ts!, { day: i + 1 }).date)
 })
+
+const disabledDaysRange = computed(() => {
+  // create the range for example 2
+  // Note: this is an array, within an array
+  return [[disabledDays.value[0], disabledDays.value[disabledDays.value.length - 1]]]
+})
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickDayResource(data: Timestamp) {
+  console.log('onClickDayResource', data)
+}
+function onClickResource(data: Timestamp) {
+  console.log('onClickResource', data)
+}
+function onClickHeadResources(data: Timestamp) {
+  console.log('onClickHeadResources', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
 </script>

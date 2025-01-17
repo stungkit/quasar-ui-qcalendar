@@ -26,86 +26,82 @@
   </div>
 </template>
 
-<script>
-import { QCalendarResource, today } from '@quasar/quasar-ui-qcalendar/src/QCalendarResource'
+<script setup lang="ts">
+import { QCalendarResource, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarResource.scss'
 
-import { defineComponent } from 'vue'
+import { ref, reactive } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarResource as IQCalendarResource } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-export default defineComponent({
-  name: 'ResourceCustomHeight',
-  components: {
-    NavigationBar,
-    QCalendarResource,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      resources: [
-        { id: '1', name: 'John', height: 20 },
+const calendar = ref<IQCalendarResource>(),
+  selectedDate = ref(today()),
+  resources = reactive([
+    { id: '1', name: 'John', height: 20 },
+    {
+      id: '2',
+      name: 'Board Room',
+      height: 40,
+      expanded: false,
+      children: [
+        { id: '2.1', name: 'Room-1', height: 20 },
         {
-          id: '2',
-          name: 'Board Room',
+          id: '2.2',
+          name: 'Room-2',
           height: 40,
           expanded: false,
           children: [
-            { id: '2.1', name: 'Room-1', height: 20 },
-            {
-              id: '2.2',
-              name: 'Room-2',
-              height: 40,
-              expanded: false,
-              children: [
-                { id: '2.2.1', name: 'Partition-A', height: 20 },
-                { id: '2.2.2', name: 'Partition-B', height: 20 },
-                { id: '2.2.2', name: 'Partition-C', height: 20 },
-              ],
-            },
+            { id: '2.2.1', name: 'Partition-A', height: 20 },
+            { id: '2.2.2', name: 'Partition-B', height: 20 },
+            { id: '2.2.2', name: 'Partition-C', height: 20 },
           ],
         },
-        { id: '3', name: 'Mary' },
-        { id: '4', name: 'Susan' },
-        { id: '5', name: 'Olivia' },
       ],
-    }
-  },
-  methods: {
-    onToday() {
-      this.$refs.calendar.moveToToday()
     },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onResourceExpanded(data) {
-      console.log('onResourceExpanded', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickTime(data) {
-      console.log('onClickTime', data)
-    },
-    onClickResource(data) {
-      console.log('onClickResource', data)
-    },
-    onClickHeadResources(data) {
-      console.log('onClickHeadResources', data)
-    },
-    onClickInterval(data) {
-      console.log('onClickInterval', data)
-    },
-  },
-})
+    { id: '3', name: 'Mary' },
+    { id: '4', name: 'Susan' },
+    { id: '5', name: 'Olivia' },
+  ])
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onResourceExpanded(data: Timestamp) {
+  console.log('onResourceExpanded', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickTime(data: Timestamp) {
+  console.log('onClickTime', data)
+}
+function onClickResource(data: Timestamp) {
+  console.log('onClickResource', data)
+}
+function onClickHeadResources(data: Timestamp) {
+  console.log('onClickHeadResources', data)
+}
+function onClickInterval(data: Timestamp) {
+  console.log('onClickInterval', data)
+}
 </script>

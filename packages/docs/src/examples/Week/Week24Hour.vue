@@ -2,15 +2,19 @@
   <div class="subcontent">
     <navigation-bar @today="onToday" @prev="onPrev" @next="onNext" />
 
+    <div class="q-ma-sm row justify-center">
+      <q-toggle v-model="hour24" label="24-hour Format" />
+    </div>
+
     <div class="row justify-center">
       <div style="display: flex; max-width: 800px; width: 100%; height: 400px">
         <q-calendar-day
           ref="calendar"
           v-model="selectedDate"
           view="week"
-          :interval-height="100"
-          animated
+          :hour24-format="hour24"
           bordered
+          animated
           @change="onChange"
           @moved="onMoved"
           @click-date="onClickDate"
@@ -35,7 +39,8 @@ import NavigationBar from 'components/NavigationBar.vue'
 import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
 
 const calendar = ref<IQCalendarDay>(),
-  selectedDate = ref(today())
+  selectedDate = ref(today()),
+  hour24 = ref(true)
 
 function onToday() {
   if (calendar.value) {

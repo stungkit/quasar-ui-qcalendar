@@ -62,7 +62,7 @@ const calendar = ref<IQCalendarAgenda>()
 const selectedDate = ref(today())
 const selectedTheme = ref<Theme>({})
 
-const themes: Record<string, Theme> = reactive({
+const themes = reactive<Record<string, Theme>>({
   default: {},
   teal: {
     '--calendar-scrollbar-track': '#4db6ac',
@@ -494,7 +494,7 @@ function onNext() {
 function onMoved(data: Timestamp) {
   console.log('onMoved', data)
 }
-function onChange(data: Timestamp) {
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
   console.log('onChange', data)
 }
 function onClickDate(data: Timestamp) {

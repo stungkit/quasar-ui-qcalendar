@@ -42,254 +42,270 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import {
   QCalendarMonth,
   addToDate,
   parseDate,
   parseTimestamp,
   today,
-} from '@quasar/quasar-ui-qcalendar/src'
+  Timestamp,
+} from '@quasar/quasar-ui-qcalendar'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.scss'
 
-import { defineComponent } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
 // The function below is used to set up our demo data
 const CURRENT_DAY = new Date()
-function getCurrentDay(day) {
+function getCurrentDay(day: number) {
   const newDay = new Date(CURRENT_DAY)
   newDay.setDate(day)
   const tm = parseDate(newDay)
-  return tm.date
+  return tm!.date
 }
 
-export default defineComponent({
-  name: 'MonthSlotDay',
-  components: {
-    NavigationBar,
-    QCalendarMonth,
-  },
-  data() {
-    return {
-      selectedDate: today(),
-      events: [
-        {
-          id: 1,
-          title: '1st of the Month',
-          details: 'Everything is funny as long as it is happening to someone else',
-          date: getCurrentDay(1),
-          bgcolor: 'orange',
-        },
-        {
-          id: 2,
-          title: 'Sisters Birthday',
-          details: 'Buy a nice present',
-          date: getCurrentDay(4),
-          bgcolor: 'green',
-          icon: 'fas fa-birthday-cake',
-        },
-        {
-          id: 3,
-          title: 'Meeting',
-          details: 'Time to pitch my idea to the company',
-          date: getCurrentDay(10),
-          time: '10:00',
-          duration: 120,
-          bgcolor: 'red',
-          icon: 'fas fa-handshake',
-        },
-        {
-          id: 4,
-          title: 'Lunch',
-          details: 'Company is paying!',
-          date: getCurrentDay(10),
-          time: '11:30',
-          duration: 90,
-          bgcolor: 'teal',
-          icon: 'fas fa-hamburger',
-        },
-        {
-          id: 5,
-          title: 'Visit mom',
-          details: 'Always a nice chat with mom',
-          date: getCurrentDay(20),
-          time: '17:00',
-          duration: 90,
-          bgcolor: 'grey',
-          icon: 'fas fa-car',
-        },
-        {
-          id: 6,
-          title: 'Conference',
-          details: 'Teaching Javascript 101',
-          date: getCurrentDay(22),
-          time: '08:00',
-          duration: 540,
-          bgcolor: 'blue',
-          icon: 'fas fa-chalkboard-teacher',
-        },
-        {
-          id: 7,
-          title: 'Girlfriend',
-          details: 'Meet GF for dinner at Swanky Restaurant',
-          date: getCurrentDay(22),
-          time: '19:00',
-          duration: 180,
-          bgcolor: 'teal',
-          icon: 'fas fa-utensils',
-        },
-        {
-          id: 8,
-          title: 'Rowing',
-          details: 'Stay in shape!',
-          date: getCurrentDay(27),
-          bgcolor: 'purple',
-          icon: 'rowing',
-          days: 2,
-        },
-        {
-          id: 9,
-          title: 'Fishing',
-          details: 'Time for some weekend R&R',
-          date: getCurrentDay(27),
-          bgcolor: 'purple',
-          icon: 'fas fa-fish',
-          days: 2,
-        },
-        {
-          id: 10,
-          title: 'Vacation',
-          details: "Trails and hikes, going camping! Don't forget to bring bear spray!",
-          date: getCurrentDay(29),
-          bgcolor: 'purple',
-          icon: 'fas fa-plane',
-          days: 5,
-        },
-      ],
-    }
-  },
-  computed: {
-    eventsMap() {
-      const map = {}
-      if (this.events.length > 0) {
-        this.events.forEach((event) => {
-          ;(map[event.date] = map[event.date] || []).push(event)
-          if (event.days !== undefined) {
-            let timestamp = parseTimestamp(event.date)
-            let days = event.days
-            // add a new event for each day
-            // skip 1st one which would have been done above
-            do {
-              timestamp = addToDate(timestamp, { day: 1 })
-              if (!map[timestamp.date]) {
-                map[timestamp.date] = []
-              }
-              map[timestamp.date].push(event)
-              // already accounted for 1st day
-            } while (--days > 1)
+interface Event {
+  id: number
+  title: string
+  details: string
+  date: string
+  time?: string
+  duration?: number
+  bgcolor?: string
+  icon?: string
+  days?: number
+}
+
+const calendar = ref<IQCalendarMonth>(),
+  selectedDate = ref(today()),
+  events = reactive<Event[]>([
+    {
+      id: 1,
+      title: '1st of the Month',
+      details: 'Everything is funny as long as it is happening to someone else',
+      date: getCurrentDay(1),
+      bgcolor: 'orange',
+    },
+    {
+      id: 2,
+      title: 'Sisters Birthday',
+      details: 'Buy a nice present',
+      date: getCurrentDay(4),
+      bgcolor: 'green',
+      icon: 'fas fa-birthday-cake',
+    },
+    {
+      id: 3,
+      title: 'Meeting',
+      details: 'Time to pitch my idea to the company',
+      date: getCurrentDay(10),
+      time: '10:00',
+      duration: 120,
+      bgcolor: 'red',
+      icon: 'fas fa-handshake',
+    },
+    {
+      id: 4,
+      title: 'Lunch',
+      details: 'Company is paying!',
+      date: getCurrentDay(10),
+      time: '11:30',
+      duration: 90,
+      bgcolor: 'teal',
+      icon: 'fas fa-hamburger',
+    },
+    {
+      id: 5,
+      title: 'Visit mom',
+      details: 'Always a nice chat with mom',
+      date: getCurrentDay(20),
+      time: '17:00',
+      duration: 90,
+      bgcolor: 'grey',
+      icon: 'fas fa-car',
+    },
+    {
+      id: 6,
+      title: 'Conference',
+      details: 'Teaching Javascript 101',
+      date: getCurrentDay(22),
+      time: '08:00',
+      duration: 540,
+      bgcolor: 'blue',
+      icon: 'fas fa-chalkboard-teacher',
+    },
+    {
+      id: 7,
+      title: 'Girlfriend',
+      details: 'Meet GF for dinner at Swanky Restaurant',
+      date: getCurrentDay(22),
+      time: '19:00',
+      duration: 180,
+      bgcolor: 'teal',
+      icon: 'fas fa-utensils',
+    },
+    {
+      id: 8,
+      title: 'Rowing',
+      details: 'Stay in shape!',
+      date: getCurrentDay(27),
+      bgcolor: 'purple',
+      icon: 'rowing',
+      days: 2,
+    },
+    {
+      id: 9,
+      title: 'Fishing',
+      details: 'Time for some weekend R&R',
+      date: getCurrentDay(27),
+      bgcolor: 'purple',
+      icon: 'fas fa-fish',
+      days: 2,
+    },
+    {
+      id: 10,
+      title: 'Vacation',
+      details: "Trails and hikes, going camping! Don't forget to bring bear spray!",
+      date: getCurrentDay(29),
+      bgcolor: 'purple',
+      icon: 'fas fa-plane',
+      days: 5,
+    },
+  ])
+
+const eventsMap = computed<Record<string, Event[]>>(() => {
+  const map: Record<string, Event[]> = {}
+  if (events.length > 0) {
+    events.forEach((event) => {
+      ;(map[event.date] = map[event.date] || []).push(event)
+      if (event.days !== undefined) {
+        let timestamp = parseTimestamp(event.date)
+        let days = event.days
+        // add a new event for each day, skip the first one which is already added
+        while (--days > 0) {
+          timestamp = addToDate(timestamp!, { day: 1 })
+          if (!map[timestamp.date]) {
+            map[timestamp.date] = []
           }
-        })
+          map[timestamp.date]!.push(event)
+        }
       }
-      console.log(map)
-      return map
-    },
-  },
-  methods: {
-    badgeClasses(event /*, type*/) {
-      return {
-        [`text-white bg-${event.bgcolor}`]: true,
-        'rounded-border': true,
-      }
-    },
-
-    badgeStyles(/*day, event*/) {
-      const s = {}
-      // s.left = day.weekday === 0 ? 0 : (day.weekday * this.parsedCellWidth) + '%'
-      // s.top = 0
-      // s.bottom = 0
-      // s.width = (event.days * this.parsedCellWidth) + '%'
-      return s
-    },
-
-    onToday() {
-      this.$refs.calendar.moveToToday()
-    },
-    onPrev() {
-      this.$refs.calendar.prev()
-    },
-    onNext() {
-      this.$refs.calendar.next()
-    },
-    onMoved(data) {
-      console.log('onMoved', data)
-    },
-    onChange(data) {
-      console.log('onChange', data)
-    },
-    onClickDate(data) {
-      console.log('onClickDate', data)
-    },
-    onClickDay(data) {
-      console.log('onClickDay', data)
-    },
-    onClickWorkweek(data) {
-      console.log('onClickWorkweek', data)
-    },
-    onClickHeadDay(data) {
-      console.log('onClickHeadDay', data)
-    },
-    onClickHeadWorkweek(data) {
-      console.log('onClickHeadWorkweek', data)
-    },
-  },
+    })
+  }
+  console.log(map)
+  return map
 })
+function badgeClasses(event: Event, _type: string) {
+  return {
+    [`text-white bg-${event.bgcolor}`]: true,
+    'rounded-border': true,
+  }
+}
+
+function badgeStyles(_event: Event, _type: string) {
+  const s = {}
+  // s.left = day.weekday === 0 ? 0 : (day.weekday * this.parsedCellWidth) + '%'
+  // s.top = 0
+  // s.bottom = 0
+  // s.width = (event.days * this.parsedCellWidth) + '%'
+  return s
+}
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
+function onMoved(data: Timestamp) {
+  console.log('onMoved', data)
+}
+function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] }) {
+  console.log('onChange', data)
+}
+function onClickDate(data: Timestamp) {
+  console.log('onClickDate', data)
+}
+function onClickDay(data: Timestamp) {
+  console.log('onClickDay', data)
+}
+function onClickWorkweek(data: Timestamp) {
+  console.log('onClickWorkweek', data)
+}
+function onClickHeadDay(data: Timestamp) {
+  console.log('onClickHeadDay', data)
+}
+function onClickHeadWorkweek(data: Timestamp) {
+  console.log('onClickHeadWorkweek', data)
+}
 </script>
 
-<style lang="sass" scoped>
-.my-event
-  position: relative
-  font-size: 12px
-  width: 100%
-  margin: 1px 0 0 0
-  justify-content: center
-  text-overflow: ellipsis
-  overflow: hidden
-  cursor: pointer
+<style lang="scss" scoped>
+.my-event {
+  position: relative;
+  font-size: 12px;
+  width: 100%;
+  margin: 1px 0 0 0;
+  justify-content: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  cursor: pointer;
+}
 
-.title
-  position: relative
-  display: flex
-  justify-content: center
-  align-items: center
-  height: 100%
+.title {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
 
-.text-white
-  color: white
+.text-white {
+  color: white;
+}
 
-.bg-blue
-  background: blue
+.bg-blue {
+  background: blue;
+}
 
-.bg-green
-  background: green
+.bg-green {
+  background: green;
+}
 
-.bg-orange
-  background: orange
+.bg-orange {
+  background: orange;
+}
 
-.bg-red
-  background: red
+.bg-red {
+  background: red;
+}
 
-.bg-teal
-  background: teal
+.bg-teal {
+  background: teal;
+}
 
-.bg-grey
-  background: grey
+.bg-grey {
+  background: grey;
+}
 
-.bg-purple
-  background: purple
+.bg-purple {
+  background: purple;
+}
 
-.rounded-border
-  border-radius: 2px
+.rounded-border {
+  border-radius: 2px;
+}
 </style>

@@ -134,496 +134,484 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref, computed, reactive, onBeforeMount } from 'vue'
+<script setup lang="ts">
+import { ref, computed, reactive, onBeforeMount } from 'vue'
 import {
   QCalendar,
   today,
   padNumber,
   isBetweenDates,
   parsed,
+  Timestamp,
 } from '@quasar/quasar-ui-qcalendar/src'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
 import '@quasar/quasar-ui-qcalendar/src/QCalendar.scss'
 
 import NavigationBar from 'components/NavigationBar.vue'
+import { type QCalendar as IQCalendar } from '@quasar/quasar-ui-qcalendar/dist/types'
 
 import Done from '@carbon/icons-vue/es/checkmark--outline/16'
 import Pending from '@carbon/icons-vue/es/pending/16'
 import Blocking from '@carbon/icons-vue/es/undefined/16'
 
-export default defineComponent({
-  name: 'CalendarAll',
-  components: {
-    NavigationBar,
-    QCalendar,
-    Done,
-    Pending,
-    Blocking,
-  },
-  setup() {
-    const selectedCalendar = ref('day'),
-      selectedView = ref('day'),
-      calendar = ref(null),
-      selectedDate = ref(today()),
-      resources = reactive([
-        { id: '1', name: 'John' },
+interface Logged {
+  date: string
+  logged: number
+}
+interface Task {
+  icon: string
+  title: string
+  key: string
+  logged: Logged[]
+}
+interface AgendaItem {
+  time: string
+  avatar?: string
+  desc?: string
+}
+
+const calendar = ref<IQCalendar>(),
+  selectedCalendar = ref('day'),
+  selectedView = ref('day'),
+  selectedDate = ref(today()),
+  resources = reactive([
+    { id: '1', name: 'John' },
+    {
+      id: '2',
+      name: 'Board Room',
+      expanded: false,
+      children: [
+        { id: '2.1', name: 'Room-1' },
         {
-          id: '2',
-          name: 'Board Room',
+          id: '2.2',
+          name: 'Room-2',
           expanded: false,
           children: [
-            { id: '2.1', name: 'Room-1' },
-            {
-              id: '2.2',
-              name: 'Room-2',
-              expanded: false,
-              children: [
-                { id: '2.2.1', name: 'Partition-A' },
-                { id: '2.2.2', name: 'Partition-B' },
-                { id: '2.2.3', name: 'Partition-C' },
-              ],
-            },
+            { id: '2.2.1', name: 'Partition-A' },
+            { id: '2.2.2', name: 'Partition-B' },
+            { id: '2.2.3', name: 'Partition-C' },
           ],
         },
-        { id: '3', name: 'Mary' },
-        { id: '4', name: 'Susan' },
-        { id: '5', name: 'Olivia' },
-      ]),
-      startDate = ref(today()),
-      endDate = ref(today()),
-      tasks = reactive([
-        {
-          icon: 'done',
-          title: 'Task 1',
-          key: 'TSK-584',
-          logged: [
-            { date: '2021-03-02', logged: 0.5 },
-            { date: '2021-03-05', logged: 2.0 },
-          ],
-        },
-        {
-          icon: 'pending',
-          title: 'Task 2',
-          key: 'TSK-592',
-          logged: [
-            { date: '2021-03-06', logged: 3.5 },
-            { date: '2021-03-08', logged: 4.0 },
-          ],
-        },
-        {
-          icon: 'pending',
-          title: 'Task 3',
-          key: 'TSK-593',
-          logged: [
-            { date: '2021-03-10', logged: 4.5 },
-            { date: '2021-03-11', logged: 2.4 },
-          ],
-        },
-        {
-          icon: 'done',
-          title: 'Task 4',
-          key: 'TSK-594',
-          logged: [
-            { date: '2021-03-14', logged: 6.5 },
-            { date: '2021-03-15', logged: 2.0 },
-          ],
-        },
-        {
-          icon: 'pending',
-          title: 'Task 5',
-          key: 'TSK-595',
-          logged: [
-            { date: '2021-03-12', logged: 1.5 },
-            { date: '2021-03-18', logged: 2.0 },
-          ],
-        },
-        {
-          icon: 'blocking',
-          title: 'Task 6',
-          key: 'TSK-596',
-          logged: [
-            { date: '2021-03-13', logged: 1.5 },
-            { date: '2021-03-23', logged: 3.5 },
-          ],
-        },
-        {
-          icon: 'pending',
-          title: 'Task 7',
-          key: 'TSK-597',
-          logged: [
-            { date: '2021-03-19', logged: 0.75 },
-            { date: '2021-03-26', logged: 2.25 },
-          ],
-        },
-        {
-          icon: 'done',
-          title: 'Task 8',
-          key: 'TSK-598',
-          logged: [
-            { date: '2021-03-21', logged: 1.5 },
-            { date: '2021-03-22', logged: 4.0 },
-          ],
-        },
-        {
-          icon: 'pending',
-          title: 'Task 9',
-          key: 'TSK-599',
-          logged: [
-            { date: '2021-03-26', logged: 6.5 },
-            { date: '2021-03-27', logged: 3.5 },
-          ],
-        },
-        {
-          icon: 'blocking',
-          title: 'Task 10',
-          key: 'TSK-600',
-          logged: [
-            { date: '2021-03-12', logged: 0.5 },
-            { date: '2021-03-14', logged: 2.0 },
-            { date: '2021-03-28', logged: 4.5 },
-            { date: '2021-03-30', logged: 1.0 },
-          ],
-        },
-      ]),
-      titleTasks = reactive([{ label: 'TITLE' }, { label: 'SUBTITLE' }]),
-      footerTasks = reactive([{ title: 'TOTALS' }]),
-      agenda = {
-        // value represents day of the week
-        1: [
-          {
-            time: '08:00',
-            avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-            desc: 'Meeting with CEO',
-          },
-          {
-            time: '08:30',
-            avatar: 'https://cdn.quasar.dev/img/avatar.png',
-            desc: 'Meeting with HR',
-          },
-          {
-            time: '10:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar1.jpg',
-            desc: 'Meeting with Karen',
-          },
-        ],
-        2: [
-          {
-            time: '11:30',
-            avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
-            desc: 'Meeting with Alisha',
-          },
-          {
-            time: '17:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
-            desc: 'Meeting with Sarah',
-          },
-        ],
-        3: [
-          {
-            time: '08:00',
-            desc: 'Stand-up SCRUM',
-            avatar: 'https://cdn.quasar.dev/img/material.png',
-          },
-          {
-            time: '09:00',
-            avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-          },
-          {
-            time: '10:00',
-            desc: 'Sprint planning',
-            avatar: 'https://cdn.quasar.dev/img/material.png',
-          },
-          {
-            time: '13:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar1.jpg',
-          },
-        ],
-        4: [
-          {
-            time: '09:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
-          },
-          {
-            time: '10:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
-          },
-          {
-            time: '13:00',
-            avatar: 'https://cdn.quasar.dev/img/material.png',
-          },
-        ],
-        5: [
-          {
-            time: '08:00',
-            avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-          },
-          {
-            time: '09:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
-          },
-          {
-            time: '09:30',
-            avatar: 'https://cdn.quasar.dev/img/avatar4.jpg',
-          },
-          {
-            time: '10:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar5.jpg',
-          },
-          {
-            time: '11:30',
-            avatar: 'https://cdn.quasar.dev/img/material.png',
-          },
-          {
-            time: '13:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar6.jpg',
-          },
-          {
-            time: '13:30',
-            avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
-          },
-          {
-            time: '14:00',
-            avatar: 'https://cdn.quasar.dev/img/linux-avatar.png',
-          },
-          {
-            time: '14:30',
-            avatar: 'https://cdn.quasar.dev/img/avatar.png',
-          },
-          {
-            time: '15:00',
-            avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-          },
-          {
-            time: '15:30',
-            avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
-          },
-          {
-            time: '16:00',
-            avatar: 'https://cdn.quasar.dev/img/avatar6.jpg',
-          },
-        ],
-      }
+      ],
+    },
+    { id: '3', name: 'Mary' },
+    { id: '4', name: 'Susan' },
+    { id: '5', name: 'Olivia' },
+  ]),
+  startDate = ref(today()),
+  endDate = ref(today()),
+  tasks = reactive([
+    {
+      icon: 'done',
+      title: 'Task 1',
+      key: 'TSK-584',
+      logged: [
+        { date: '2021-03-02', logged: 0.5 },
+        { date: '2021-03-05', logged: 2.0 },
+      ],
+    },
+    {
+      icon: 'pending',
+      title: 'Task 2',
+      key: 'TSK-592',
+      logged: [
+        { date: '2021-03-06', logged: 3.5 },
+        { date: '2021-03-08', logged: 4.0 },
+      ],
+    },
+    {
+      icon: 'pending',
+      title: 'Task 3',
+      key: 'TSK-593',
+      logged: [
+        { date: '2021-03-10', logged: 4.5 },
+        { date: '2021-03-11', logged: 2.4 },
+      ],
+    },
+    {
+      icon: 'done',
+      title: 'Task 4',
+      key: 'TSK-594',
+      logged: [
+        { date: '2021-03-14', logged: 6.5 },
+        { date: '2021-03-15', logged: 2.0 },
+      ],
+    },
+    {
+      icon: 'pending',
+      title: 'Task 5',
+      key: 'TSK-595',
+      logged: [
+        { date: '2021-03-12', logged: 1.5 },
+        { date: '2021-03-18', logged: 2.0 },
+      ],
+    },
+    {
+      icon: 'blocking',
+      title: 'Task 6',
+      key: 'TSK-596',
+      logged: [
+        { date: '2021-03-13', logged: 1.5 },
+        { date: '2021-03-23', logged: 3.5 },
+      ],
+    },
+    {
+      icon: 'pending',
+      title: 'Task 7',
+      key: 'TSK-597',
+      logged: [
+        { date: '2021-03-19', logged: 0.75 },
+        { date: '2021-03-26', logged: 2.25 },
+      ],
+    },
+    {
+      icon: 'done',
+      title: 'Task 8',
+      key: 'TSK-598',
+      logged: [
+        { date: '2021-03-21', logged: 1.5 },
+        { date: '2021-03-22', logged: 4.0 },
+      ],
+    },
+    {
+      icon: 'pending',
+      title: 'Task 9',
+      key: 'TSK-599',
+      logged: [
+        { date: '2021-03-26', logged: 6.5 },
+        { date: '2021-03-27', logged: 3.5 },
+      ],
+    },
+    {
+      icon: 'blocking',
+      title: 'Task 10',
+      key: 'TSK-600',
+      logged: [
+        { date: '2021-03-12', logged: 0.5 },
+        { date: '2021-03-14', logged: 2.0 },
+        { date: '2021-03-28', logged: 4.5 },
+        { date: '2021-03-30', logged: 1.0 },
+      ],
+    },
+  ]),
+  titleTasks = ref([{ label: 'TITLE' }, { label: 'SUBTITLE' }]),
+  footerTasks = ref([{ title: 'TOTALS' }]),
+  agenda = reactive<Record<number, AgendaItem[]>>({
+    // value represents day of the week
+    1: [
+      {
+        time: '08:00',
+        avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+        desc: 'Meeting with CEO',
+      },
+      {
+        time: '08:30',
+        avatar: 'https://cdn.quasar.dev/img/avatar.png',
+        desc: 'Meeting with HR',
+      },
+      {
+        time: '10:00',
+        avatar: 'https://cdn.quasar.dev/img/avatar1.jpg',
+        desc: 'Meeting with Karen',
+      },
+    ],
+    2: [
+      {
+        time: '11:30',
+        avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
+        desc: 'Meeting with Alisha',
+      },
+      {
+        time: '17:00',
+        avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
+        desc: 'Meeting with Sarah',
+      },
+    ],
+    3: [
+      {
+        time: '08:00',
+        desc: 'Stand-up SCRUM',
+        avatar: 'https://cdn.quasar.dev/img/material.png',
+      },
+      {
+        time: '09:00',
+        avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+      },
+      {
+        time: '10:00',
+        desc: 'Sprint planning',
+        avatar: 'https://cdn.quasar.dev/img/material.png',
+      },
+      {
+        time: '13:00',
+        avatar: 'https://cdn.quasar.dev/img/avatar1.jpg',
+      },
+    ],
+    4: [
+      {
+        time: '09:00',
+        avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
+      },
+      {
+        time: '10:00',
+        avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
+      },
+      {
+        time: '13:00',
+        avatar: 'https://cdn.quasar.dev/img/material.png',
+      },
+    ],
+    5: [
+      {
+        time: '08:00',
+        avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+      },
+      {
+        time: '09:00',
+        avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
+      },
+      {
+        time: '09:30',
+        avatar: 'https://cdn.quasar.dev/img/avatar4.jpg',
+      },
+      {
+        time: '10:00',
+        avatar: 'https://cdn.quasar.dev/img/avatar5.jpg',
+      },
+      {
+        time: '11:30',
+        avatar: 'https://cdn.quasar.dev/img/material.png',
+      },
+      {
+        time: '13:00',
+        avatar: 'https://cdn.quasar.dev/img/avatar6.jpg',
+      },
+      {
+        time: '13:30',
+        avatar: 'https://cdn.quasar.dev/img/avatar3.jpg',
+      },
+      {
+        time: '14:00',
+        avatar: 'https://cdn.quasar.dev/img/linux-avatar.png',
+      },
+      {
+        time: '14:30',
+        avatar: 'https://cdn.quasar.dev/img/avatar.png',
+      },
+      {
+        time: '15:00',
+        avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+      },
+      {
+        time: '15:30',
+        avatar: 'https://cdn.quasar.dev/img/avatar2.jpg',
+      },
+      {
+        time: '16:00',
+        avatar: 'https://cdn.quasar.dev/img/avatar6.jpg',
+      },
+    ],
+  })
 
-    const parsedTasks = computed(() => {
-      const start = parsed(startDate.value)
-      const end = parsed(endDate.value)
-      const t = []
-
-      for (let i = 0; i < tasks.length; ++i) {
-        const task = tasks[i]
-        for (let j = 0; j < task.logged.length; ++j) {
-          const loggedTimestamp = parsed(task.logged[j].date)
-          if (isBetweenDates(loggedTimestamp, start, end)) {
-            t.push(task)
-            break
-          }
-        }
-      }
-      return t
-    })
-
-    onBeforeMount(() => {
-      // adjust all the dates for the current month so examples don't expire
-      const date = new Date()
-      const year = date.getFullYear()
-      const month = padNumber(date.getMonth() + 1, 2)
-      tasks.forEach((task) => {
-        task.logged.forEach((logged) => {
-          // get last 2 digits from current date (day)
-          const day = logged.date.slice(-2)
-          logged.date = [year, padNumber(month, 2), padNumber(day, 2)].join('-')
-        })
-      })
-    })
-
-    function onChange(data) {
-      startDate.value = data.start
-      endDate.value = data.end
-    }
-
-    function getLogged(date, logged) {
-      const val = []
-      for (let index = 0; index < logged.length; ++index) {
-        if (logged[index].date === date) {
-          val.push({ logged: logged[index].logged })
-          break
-        }
-      }
-      return val
-    }
-
-    function getLoggedSummary(date) {
-      let total = 0
-
-      const reducer = (accumulator, currentValue) => {
-        if (date === currentValue.date) {
-          return accumulator + currentValue.logged
-        }
-        return accumulator
-      }
-
-      for (const index in tasks) {
-        const task = tasks[index]
-        total += task.logged.reduce(reducer, 0)
-      }
-
-      return total
-    }
-
-    /**
-     * Sums up the amount of time spent on a task
-     * This only sums it up if the logged date falls
-     * between the start and end times
-     */
-    function sum(start, end, task) {
-      const reducer = (accumulator, currentValue) => {
-        const loggedTimestamp = parsed(currentValue.date)
-        if (isBetweenDates(loggedTimestamp, start, end)) {
-          return accumulator + currentValue.logged
-        }
-        return accumulator
-      }
-      return task.logged.reduce(reducer, 0)
-    }
-
-    /**
-     * Determines if the passed in task has logged time
-     * between the start and end times
-     */
-    function getTasks(start, end, task) {
-      const tasks = []
-
-      for (let index = 0; index < task.logged.length; ++index) {
-        const loggedTimestamp = parsed(task.logged[index].date)
-        if (isBetweenDates(loggedTimestamp, start, end)) {
-          tasks.push(task)
-          break
-        }
-      }
-      return tasks
-    }
-
-    /**
-     * Sums up the amount of time spent for all tasks
-     * between the start and end dates
-     */
-    function totals(start, end) {
-      let total = 0
-      const reducer = (accumulator, currentValue) => {
-        const loggedTimestamp = parsed(currentValue.date)
-        if (isBetweenDates(loggedTimestamp, start, end)) {
-          return accumulator + currentValue.logged
-        }
-        return accumulator
-      }
-
-      for (const task in tasks) {
-        total += tasks[task].logged.reduce(reducer, 0)
-      }
-
-      return total
-    }
-
-    function getAgenda(day) {
-      return this.agenda[parseInt(day.weekday, 10)]
-    }
-
-    function onToday() {
-      calendar.value.moveToToday()
-    }
-    function onPrev() {
-      calendar.value.prev()
-    }
-    function onNext() {
-      calendar.value.next()
-    }
-
-    return {
-      selectedCalendar,
-      selectedView,
-      selectedDate,
-      calendar,
-      resources,
-      onToday,
-      onPrev,
-      onNext,
-      onChange,
-      // tasks
-      parsedTasks,
-      titleTasks,
-      footerTasks,
-      getLogged,
-      getLoggedSummary,
-      sum,
-      getTasks,
-      totals,
-      // agenda
-      agenda,
-      getAgenda,
-    }
-  },
+const parsedTasks = computed(() => {
+  const start = parsed(startDate.value)
+  const end = parsed(endDate.value)
+  return tasks.filter((task) =>
+    task.logged.some((log) => {
+      const parsedDate = parsed(log.date)
+      return parsedDate && start && end && isBetweenDates(parsedDate, start, end)
+    }),
+  )
 })
+
+onBeforeMount(() => {
+  // adjust all the dates for the current month
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = padNumber(date.getMonth() + 1, 2)
+  tasks.forEach((task) => {
+    task.logged.forEach((logged) => {
+      // get last 2 digits from current date (day)
+      const day = logged.date.slice(-2)
+      logged.date = [year, padNumber(Number(month), 2), padNumber(Number(day), 2)].join('-')
+    })
+  })
+})
+
+function onChange(data: { start: string; end: string; days: Timestamp[] }) {
+  startDate.value = data.start
+  endDate.value = data.end
+}
+
+function getLogged(date: string, logged: Logged[]) {
+  const log = logged.find((log) => log.date === date)
+  return log ? [{ logged: log.logged }] : []
+}
+
+function getLoggedSummary(date: string): number {
+  return tasks.reduce((total, task) => {
+    return (
+      total +
+      task.logged.reduce((accumulator, log) => {
+        return date === log.date ? accumulator + log.logged : accumulator
+      }, 0)
+    )
+  }, 0)
+}
+
+/**
+ * Sums up the amount of time spent on a task
+ * This only sums it up if the logged date falls
+ * between the start and end times
+ */
+function sum(start: Timestamp, end: Timestamp, task: Task) {
+  return task.logged.reduce((accumulator, currentValue) => {
+    const loggedTimestamp = parsed(currentValue.date)
+    return loggedTimestamp && isBetweenDates(loggedTimestamp, start, end)
+      ? accumulator + currentValue.logged
+      : accumulator
+  }, 0)
+}
+
+/**
+ * Determines if the passed in task has logged time
+ * between the start and end times
+ */
+function getTasks(start: Timestamp, end: Timestamp, task: Task): Task[] {
+  const tasks: Task[] = []
+
+  const hasLoggedInRange = task.logged.some((log) => {
+    const loggedTimestamp = parsed(log.date)
+    return loggedTimestamp !== null && isBetweenDates(loggedTimestamp, start, end)
+  })
+
+  if (hasLoggedInRange) {
+    tasks.push(task)
+  }
+
+  return tasks
+}
+
+/**
+ * Sums up the amount of time spent for all tasks
+ * between the start and end dates
+ */
+function totals(start: Timestamp, end: Timestamp) {
+  const reducer = (accumulator: number, currentValue: { date: string; logged: number }) => {
+    const loggedTimestamp = parsed(currentValue.date)
+    return loggedTimestamp !== null && isBetweenDates(loggedTimestamp, start, end)
+      ? accumulator + currentValue.logged
+      : accumulator
+  }
+
+  return tasks.reduce((total, task) => total + task.logged.reduce(reducer, 0), 0)
+}
+
+function getAgenda(day: Timestamp) {
+  return agenda[Number(day.weekday)]
+}
+
+function onToday() {
+  if (calendar.value) {
+    calendar.value.moveToToday()
+  }
+}
+function onPrev() {
+  if (calendar.value) {
+    calendar.value.prev()
+  }
+}
+function onNext() {
+  if (calendar.value) {
+    calendar.value.next()
+  }
+}
 </script>
 
-<style lang="sass" scoped>
-.header
-  display: flex
-  justify-content: space-between
-  align-items: center
-  width: 100%
-  padding: 2px
-  font-size: .9em
-  .issue
-    display: flex
-    justify-content: flex-start
-    align-items: center
-    width: 80%
-  .key
-    display: flex
-    justify-content: center
-    width: 80px
-  .logged
-    display: flex
-    justify-content: flex-end
-    width: 80px
-.summary
-  display: flex
-  justify-content: space-between
-  align-items: center
-  padding: 2px
-  font-size: .9em
-  font-weight: 700
-  width: 100%
-  .title
-    display: flex
-    justify-content: flex-start
-  .total
-    display: flex
-    justify-content: flex-end
-.done
-  color: blue
-.pending
-  color: green
-.blocking
-  color: red
-.logged-time
-  display: flex
-  justify-content: center
-  align-items: center
-  padding: 0
-  margin: 0
-  height: 100%
+<style lang="scss" scoped>
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 2px;
+  font-size: 0.9em;
+
+  .issue {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 80%;
+  }
+
+  .key {
+    display: flex;
+    justify-content: center;
+    width: 80px;
+  }
+
+  .logged {
+    display: flex;
+    justify-content: flex-end;
+    width: 80px;
+  }
+}
+
+.summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px;
+  font-size: 0.9em;
+  font-weight: 700;
+  width: 100%;
+
+  .title {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .total {
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.done {
+  color: blue;
+}
+
+.pending {
+  color: green;
+}
+
+.blocking {
+  color: red;
+}
+
+.logged-time {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
 </style>
 
-<style lang="sass">
-.task__weekday--style
-  font-size: 0.8em !important
-  font-weight: 600
-.task__day--style
-  font-size: 0.8em !important
-.task__footer--day__style
-  font-size: 0.8em !important
-  font-weight: 600
+<style lang="scss">
+.task__weekday--style {
+  font-size: 0.8em !important;
+  font-weight: 600;
+}
+
+.task__day--style {
+  font-size: 0.8em !important;
+}
+
+.task__footer--day__style {
+  font-size: 0.8em !important;
+  font-weight: 600;
+}
 </style>
