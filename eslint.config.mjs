@@ -44,7 +44,14 @@ export default [
       '@typescript-eslint': eslintPlugin,
     },
     rules: {
-      'no-unused-vars': 'off',
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+          varsIgnorePattern: '^_',
+        },
+      ],
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
