@@ -1,6 +1,6 @@
 ---
 title: What is QCalendar
-desc: Everything you need for a complete Calendar solution
+desc: Everything You Need for a Complete Calendar Solution
 keys: All about QCalendar
 ---
 
@@ -10,9 +10,9 @@ Please note that the codepen links, in the documentation examples, do not work a
 And, if you're looking to help out, check out our [Call to action](/contributing/call-to-action) in the **Contributing** section.
 :::
 
-> If you are looking for a **Migration Guide** from v3 to v4, go [here](/help/migration-guide) in the **Help** section.
+> If you are looking for a **Migration Guide** from v3 to v4, go [here](/other/migration-guide) in the **Help** section.
 
-## Everything you need for a complete Calendar solution
+## Everything You Need for a Complete Calendar Solution
 
 QCalendar allows for viewing of **day** (1-6 days), **week**, **monthly**, **scheduler**, **agenda**, **resource** and **task** views. Painstaking care has been given to make almost every aspect of QCalendar configurable and/or modifiable in some way and control given to the developer.
 
@@ -22,13 +22,14 @@ The guiding philosophy has been to empower the developer and allow them to do wh
 
 QCalendar is actually an accumulation of several other dedicated components and exported methods:
 
+1. QCalendar (wrapper)
 1. QCalendarDay
-2. QCalendarMonth
-3. QCalendarAgenda
-4. QCalendarResource
-5. QCalendarScheduler
-6. QCalendarTask
-7. Timestamp (dedicated code for creating calendars)
+1. QCalendarMonth
+1. QCalendarAgenda
+1. QCalendarResource
+1. QCalendarScheduler
+1. QCalendarTask
+1. Timestamp (dedicated code for creating calendars)
 
 ## Features
 
