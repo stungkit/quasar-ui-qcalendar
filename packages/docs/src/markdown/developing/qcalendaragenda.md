@@ -69,7 +69,7 @@ The current date has been set to tomorrow via the `now` property.
 This is a rudimentary Planner using QCalendarAgenda.
 
 ::: tip
-On this page, you can try out the <em>Drag &amp; Drop</em>.
+On this example, you can try out the <em>Drag &amp; Drop</em>.
 :::
 
 <MarkdownExample title="Planner" file="AgendaPlanner" no-github no-edit />
