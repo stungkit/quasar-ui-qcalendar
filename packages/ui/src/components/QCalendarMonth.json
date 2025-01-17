@@ -2485,8 +2485,16 @@
         "time": {
           "type": "String",
           "desc": "The time in which to scoll to. If the time is already visible on the viewport, this function will have no affect.",
+          "required": true,
           "examples": [
             "09:00"
+          ]
+        },
+        "duration": {
+          "type": "Number",
+          "desc": "The amount of time in milliseconds to do the scroll",
+          "examples": [
+            "200"
           ]
         }
       }

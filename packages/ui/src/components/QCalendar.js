@@ -106,12 +106,12 @@ export default defineComponent({
       return calendar.value.widthToMinutes(width)
     }
 
-    function scrollToTime(time) {
-      return calendar.value.scrollToTime(time)
+    function scrollToTime(time, duration = 0) {
+      return calendar.value.scrollToTime(time, duration)
     }
 
-    function scrollToTimeX(time) {
-      return calendar.value.scrollToTimeX(time)
+    function scrollToTimeX(time, duration = 0) {
+      return calendar.value.scrollToTimeX(time, duration)
     }
 
     // expose public methods
