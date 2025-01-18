@@ -1,18 +1,24 @@
-/*global console process __dirname */
-const fs = require('fs')
-const path = require('path')
-const zlib = require('zlib')
-const { green, blue, red, magenta, yellow, underline } = require('kolorist')
+/*global console process */
+import fs from 'fs'
+import path from 'path'
+import zlib from 'zlib'
+import { green, blue, red, magenta, yellow, underline } from 'kolorist'
+import { table } from 'table'
+import { fileURLToPath } from 'url'
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
+
+const { name, version } = require('../package.json')
+
+// Convert __dirname to ES module equivalent
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const kebabRegex = /[A-Z\u00C0-\u00D6\u00D8-\u00DE]/g
 const tableData = []
 
-const { version, name } = require('../package.json')
-
 process.on('exit', (code) => {
   if (code === 0 && tableData.length > 0) {
-    const { table } = require('table')
-
     tableData.sort((a, b) => {
       return a[0] === b[0] ? (a[1] < b[1] ? -1 : 1) : a[0] < b[0] ? -1 : 1
     })
@@ -43,7 +49,7 @@ function getSize(code) {
   return (code.length / 1024).toFixed(2) + 'kb'
 }
 
-module.exports.createFolder = function (folder) {
+export function createFolder(folder) {
   const dir = path.join(__dirname, '..', folder)
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir)
@@ -92,7 +98,7 @@ function getDestinationInfo(dest) {
   process.exit(1)
 }
 
-module.exports.writeFile = function (dest, code, zip) {
+export function writeFile(dest, code, zip) {
   const { banner, tableEntryType, toTable } = getDestinationInfo(dest)
 
   const fileSize = getSize(code)
@@ -124,7 +130,7 @@ module.exports.writeFile = function (dest, code, zip) {
   })
 }
 
-module.exports.readFile = function (file) {
+export function readFile(file) {
   return fs.readFileSync(file, 'utf-8')
 }
 
@@ -133,8 +139,8 @@ function logError(err) {
   console.log()
 }
 
-module.exports.logError = logError
+export { logError }
 
-module.exports.kebabCase = function (str) {
+export function kebabCase(str) {
   return str.replace(kebabRegex, (match) => '-' + match.toLowerCase()).substring(1)
 }

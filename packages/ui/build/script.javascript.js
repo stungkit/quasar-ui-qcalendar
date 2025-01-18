@@ -1,20 +1,21 @@
-/*global console process __dirname */
+/*global console process */
 process.env.BABEL_ENV = 'production'
 
-const path = require('path')
-// const fs = require('fs')
-// const fse = require('fs-extra')
-const rollup = require('rollup')
-const uglify = require('uglify-js')
-// const buble = require('@rollup/plugin-buble')
-const json = require('@rollup/plugin-json')
-const { nodeResolve } = require('@rollup/plugin-node-resolve')
+import path from 'path'
+import { URL } from 'url'
+// import fs from 'fs'
+// import fse from 'fs-extra'
+import * as rollup from 'rollup'
+import uglify from 'uglify-js'
+// import buble from '@rollup/plugin-buble'
+import json from '@rollup/plugin-json'
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 
-const buildConf = require('./config.cjs')
-const buildUtils = require('./utils.cjs')
+import buildConf from './config.js'
+import * as buildUtils from './utils.js'
 
 function pathResolve(_path) {
-  return path.resolve(__dirname, _path)
+  return path.resolve(path.dirname(new URL(import.meta.url).pathname), _path)
 }
 
 const rollupPluginsModern = [nodeResolve(), json()]

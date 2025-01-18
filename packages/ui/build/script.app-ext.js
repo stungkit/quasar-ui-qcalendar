@@ -1,15 +1,19 @@
-/*global console __dirname */
-const fs = require('fs'),
-  path = require('path'),
-  root = path.resolve(__dirname, '../..'),
-  resolvePath = (file) => path.resolve(root, file),
-  { blue } = require('kolorist')
+/*global console */
+import fs from 'fs'
+import path from 'path'
+import { blue } from 'kolorist'
+
+import { fileURLToPath } from 'url'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const root = path.resolve(__dirname, '../..')
+const resolvePath = (file) => path.resolve(root, file)
 
 const writeJson = function (file, json) {
   return fs.writeFileSync(file, JSON.stringify(json, null, 2) + '\n', 'utf-8')
 }
 
-module.exports.syncAppExt = function (both = true) {
+export function syncAppExt(both = true) {
   // make sure this project has an app-extension project
   const appExtDir = resolvePath('app-extension')
   if (!fs.existsSync(appExtDir)) {
@@ -23,11 +27,11 @@ module.exports.syncAppExt = function (both = true) {
   }
 
   // get version and name from ui package.json
-  const { name, version } = require(resolvePath(resolvePath('ui/package.json')))
+  const { name, version } = JSON.parse(fs.readFileSync(resolvePath('ui/package.json'), 'utf-8'))
 
   // read app-ext package.json
   const appExtFile = resolvePath('app-extension/package.json')
-  const appExtJson = require(appExtFile)
+  const appExtJson = JSON.parse(fs.readFileSync(appExtFile, 'utf-8'))
   let finished = false
 
   // sync version numbers

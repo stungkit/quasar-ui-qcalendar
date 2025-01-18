@@ -1,14 +1,19 @@
-/*global console process __dirname */
+/*global console process */
 /* eslint-disable array-bracket-spacing */
-const path = require('path')
-const sass = require('sass-embedded')
-const postcss = require('postcss')
-const cssnano = require('cssnano')
-const rtl = require('rtlcss')
-const autoprefixer = require('autoprefixer')
+import path from 'path'
+import { compileAsync } from 'sass-embedded'
+import postcss from 'postcss'
+import cssnano from 'cssnano'
+import rtl from 'rtlcss'
+import autoprefixer from 'autoprefixer'
+import { fileURLToPath } from 'url'
 
-const buildConf = require('./config.cjs')
-const buildUtils = require('./utils.cjs')
+import buildConf from './config.js'
+import * as buildUtils from './utils.js'
+
+// Convert __dirname to ES module equivalent
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const postCssCompiler = postcss([autoprefixer])
 const postCssRtlCompiler = postcss([rtl({})])
@@ -51,36 +56,29 @@ function resolve(_path) {
   return path.resolve(__dirname, '..', _path)
 }
 
-function generate(src, dest) {
+async function generate(src, dest) {
   src = resolve(src)
   dest = resolve(dest)
 
-  return new Promise((resolve, reject) => {
-    sass.render({ file: src, includePaths: ['node_modules'] }, (err, result) => {
-      if (err) {
-        reject(err)
-        return
-      }
+  try {
+    const result = await compileAsync(src, { loadPaths: ['node_modules'] })
+    let code = buildConf.banner + result.css
 
-      resolve(result.css)
+    code = await postCssCompiler.process(code, { from: void 0 })
+    code.warnings().forEach((warn) => {
+      console.warn(warn.toString())
     })
-  })
-    .then((code) => buildConf.banner + code)
-    .then((code) => postCssCompiler.process(code, { from: void 0 }))
-    .then((code) => {
-      code.warnings().forEach((warn) => {
-        console.warn(warn.toString())
-      })
-      return code.css
-    })
-    .then((code) =>
-      Promise.all([
-        generateUMD(dest, code),
-        postCssRtlCompiler
-          .process(code, { from: void 0 })
-          .then((code) => generateUMD(dest, code.css, '.rtl')),
-      ]),
-    )
+
+    await Promise.all([
+      generateUMD(dest, code.css),
+      postCssRtlCompiler
+        .process(code.css, { from: void 0 })
+        .then((code) => generateUMD(dest, code.css, '.rtl')),
+    ])
+  } catch (err) {
+    console.error(err)
+    process.exit(1)
+  }
 }
 
 function generateUMD(dest, code, ext = '') {
