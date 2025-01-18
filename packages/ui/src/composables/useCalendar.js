@@ -1,3 +1,4 @@
+/* global console */
 /**
  * The main QCalendar wrapper
  * All others are a child to this one

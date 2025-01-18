@@ -1,3 +1,4 @@
+/* global document window */
 import { onBeforeUnmount, watch } from 'vue'
 
 import useEvents from './useEvents.js'
@@ -33,14 +34,14 @@ export default function (
     focusRef,
     focusValue,
     datesRef,
-    days,
+    // days,
     parsedView,
-    parsedValue,
+    // parsedValue,
     emittedValue,
     weekdaySkips,
     direction,
     times,
-  }
+  },
 ) {
   // pgUp -> 33, pgDown -> 34, end -> 35, home -> 36
   // left -> 37, up -> 38, right -> 39, down -> 40
@@ -57,11 +58,10 @@ export default function (
     (val) => {
       if (val === true) {
         startNavigation()
-      }
- else {
+      } else {
         endNavigation()
       }
-    }
+    },
   )
 
   // check at start up what should be happening
@@ -100,8 +100,8 @@ export default function (
     if (document) {
       const el = document.activeElement
       if (
-        el !== document.body
-        && rootRef.value.contains(el) === true
+        el !== document.body &&
+        rootRef.value.contains(el) === true
         // required for iOS and desktop Safari
         // && el.contains(rootRef.value) === false
       ) {
@@ -117,28 +117,27 @@ export default function (
   // so retry until we get it (or count expires)
   function tryFocus() {
     let count = 0
-    const interval = setInterval(() => {
-      if (datesRef.value[ focusRef.value ]) {
-        datesRef.value[ focusRef.value ].focus()
-        if (++count === 50 || document.activeElement === datesRef.value[ focusRef.value ]) {
-          clearInterval(interval)
+    const interval = window.setInterval(() => {
+      if (datesRef.value[focusRef.value]) {
+        datesRef.value[focusRef.value].focus()
+        if (++count === 50 || document.activeElement === datesRef.value[focusRef.value]) {
+          window.clearInterval(interval)
         }
-      }
- else {
-        clearInterval(interval)
+      } else {
+        window.clearInterval(interval)
       }
     }, 250)
   }
 
   function onKeyDown(e) {
-    if (canNavigate(e) && isKeyCode(e, [ 33, 34, 35, 36, 37, 38, 39, 40 ])) {
+    if (canNavigate(e) && isKeyCode(e, [33, 34, 35, 36, 37, 38, 39, 40])) {
       e.stopPropagation()
       e.preventDefault()
     }
   }
 
   function onKeyUp(e) {
-    if (canNavigate(e) && isKeyCode(e, [ 33, 34, 35, 36, 37, 38, 39, 40 ])) {
+    if (canNavigate(e) && isKeyCode(e, [33, 34, 35, 36, 37, 38, 39, 40])) {
       switch (e.keyCode) {
         case 33:
           onPgUp(e)
@@ -168,7 +167,7 @@ export default function (
     }
   }
 
-  function onUpArrow(e) {
+  function onUpArrow(/*e*/) {
     let tm = copyTimestamp(focusValue.value)
     // console.log(tm)
 
@@ -179,8 +178,11 @@ export default function (
         emittedValue.value = tm.date
         return
       }
-    }
- else if (parsedView.value === 'day' || parsedView.value === 'week' || parsedView.value === 'month-interval') {
+    } else if (
+      parsedView.value === 'day' ||
+      parsedView.value === 'week' ||
+      parsedView.value === 'month-interval'
+    ) {
       tm = addToDate(tm, { minute: parseInt(props.intervalMinutes) })
     }
 
@@ -189,7 +191,7 @@ export default function (
     focusRef.value = tm.date
   }
 
-  function onDownArrow(e) {
+  function onDownArrow(/*e*/) {
     let tm = copyTimestamp(focusValue.value)
     // console.log(tm)
 
@@ -200,8 +202,11 @@ export default function (
         emittedValue.value = tm.date
         return
       }
-    }
- else if (parsedView.value === 'day' || parsedView.value === 'week' || parsedView.value === 'month-interval') {
+    } else if (
+      parsedView.value === 'day' ||
+      parsedView.value === 'week' ||
+      parsedView.value === 'month-interval'
+    ) {
       tm = addToDate(tm, { minute: parseInt(props.intervalMinutes) })
     }
 
@@ -214,27 +219,25 @@ export default function (
    * Sets focus on previous day/week/month. Takes into account weekdaySkips. Applies to all calendars.
    * @param {KeyboardEvent} e The keyboard event
    */
-  function onLeftArrow(e) {
+  function onLeftArrow(/*e*/) {
     let tm = copyTimestamp(focusValue.value)
     direction.value = 'prev'
 
     do {
       tm = addToDate(tm, { day: -1 })
-    } while (weekdaySkips.value[ tm.weekday ] === 0)
+    } while (weekdaySkips.value[tm.weekday] === 0)
 
     if (parsedView.value === 'month' || parsedView.value === 'month-interval') {
       if (focusValue.value.month !== tm.month) {
         emittedValue.value = tm.date
         return
       }
-    }
- else if (parsedView.value === 'week') {
+    } else if (parsedView.value === 'week') {
       if (tm.weekday > focusValue.value.weekday) {
         emittedValue.value = tm.date
         return
       }
-    }
- else if (parsedView.value === 'day') {
+    } else if (parsedView.value === 'day') {
       emittedValue.value = tm.date
       return
     }
@@ -246,27 +249,25 @@ export default function (
    * Sets focus on next day/week/month. Takes into account weekdaySkips. Applies to all calendars.
    * @param {KeyboardEvent} e The keyboard event
    */
-  function onRightArrow(e) {
+  function onRightArrow(/*e*/) {
     let tm = copyTimestamp(focusValue.value)
     direction.value = 'next'
 
     do {
       tm = addToDate(tm, { day: 1 })
-    } while (weekdaySkips.value[ tm.weekday ] === 0)
+    } while (weekdaySkips.value[tm.weekday] === 0)
 
     if (parsedView.value === 'month' || parsedView.value === 'month-interval') {
       if (focusValue.value.month !== tm.month) {
         emittedValue.value = tm.date
         return
       }
-    }
- else if (parsedView.value === 'week') {
+    } else if (parsedView.value === 'week') {
       if (tm.weekday < focusValue.value.weekday) {
         emittedValue.value = tm.date
         return
       }
-    }
- else if (parsedView.value === 'day') {
+    } else if (parsedView.value === 'day') {
       emittedValue.value = tm.date
       return
     }
@@ -274,20 +275,18 @@ export default function (
     focusRef.value = tm.date
   }
 
-  function onPgUp(e) {
+  function onPgUp(/*e*/) {
     let tm = copyTimestamp(focusValue.value)
 
     if (parsedView.value === 'month' || parsedView.value === 'month-interval') {
       tm = addToDate(tm, { month: -1 })
       const next = tm.day <= 15 ? 1 : -1
-      while (weekdaySkips.value[ tm.weekday ] === 0) {
+      while (weekdaySkips.value[tm.weekday] === 0) {
         tm = addToDate(tm, { day: next })
       }
-    }
- else if (parsedView.value === 'day') {
+    } else if (parsedView.value === 'day') {
       tm = addToDate(tm, { day: -1 })
-    }
- else if (parsedView.value === 'week') {
+    } else if (parsedView.value === 'week') {
       tm = addToDate(tm, { day: -7 })
     }
 
@@ -296,20 +295,18 @@ export default function (
     focusRef.value = tm.date
   }
 
-  function onPgDown(e) {
+  function onPgDown(/*e*/) {
     let tm = copyTimestamp(focusValue.value)
 
     if (parsedView.value === 'month' || parsedView.value === 'month-interval') {
       tm = addToDate(tm, { month: 1 })
       const next = tm.day <= 15 ? 1 : -1
-      while (weekdaySkips.value[ tm.weekday ] === 0) {
+      while (weekdaySkips.value[tm.weekday] === 0) {
         tm = addToDate(tm, { day: next })
       }
-    }
- else if (parsedView.value === 'day') {
+    } else if (parsedView.value === 'day') {
       tm = addToDate(tm, { day: 1 })
-    }
- else if (parsedView.value === 'week') {
+    } else if (parsedView.value === 'week') {
       tm = addToDate(tm, { day: 7 })
     }
 
@@ -318,17 +315,16 @@ export default function (
     focusRef.value = tm.date
   }
 
-  function onHome(e) {
+  function onHome(/*e*/) {
     let tm = copyTimestamp(focusValue.value)
 
     if (parsedView.value === 'month' || parsedView.value === 'month-interval') {
       tm = getStartOfMonth(tm)
-    }
- else if (parsedView.value === 'week') {
+    } else if (parsedView.value === 'week') {
       tm = getStartOfWeek(tm, props.weekdays, times.today)
     }
 
-    while (weekdaySkips.value[ tm.weekday ] === 0) {
+    while (weekdaySkips.value[tm.weekday] === 0) {
       tm = addToDate(tm, { day: -1 })
     }
 
@@ -336,17 +332,16 @@ export default function (
     focusRef.value = tm.date
   }
 
-  function onEnd(e) {
+  function onEnd(/*e*/) {
     let tm = copyTimestamp(focusValue.value)
 
     if (parsedView.value === 'month' || parsedView.value === 'month-interval') {
       tm = getEndOfMonth(tm)
-    }
- else if (parsedView.value === 'week') {
+    } else if (parsedView.value === 'week') {
       tm = getEndOfWeek(tm, props.weekdays, times.today)
     }
 
-    while (weekdaySkips.value[ tm.weekday ] === 0) {
+    while (weekdaySkips.value[tm.weekday] === 0) {
       tm = addToDate(tm, { day: -1 })
     }
 

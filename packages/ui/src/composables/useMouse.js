@@ -1,4 +1,4 @@
-const toCamelCase = str => str.replace(/(-\w)/g, m => m[ 1 ].toUpperCase())
+/* global console */
 let $listeners, $emit
 
 /**
@@ -8,10 +8,10 @@ let $listeners, $emit
  * @param {Function} getEvent callback for event
  * @returns {Object} contents of decorated mouse events
  */
-export function getMouseEventHandlers (events, getEvent) {
+export function getMouseEventHandlers(events, getEvent) {
   const on = {}
   for (const eventName in events) {
-    const eventOptions = events[ eventName ]
+    const eventOptions = events[eventName]
 
     // convert eventName to vue camelCase (decorated)
     const eventKey = toCamelCase('on-' + eventName)
@@ -24,7 +24,7 @@ export function getMouseEventHandlers (events, getEvent) {
     }
 
     // if there is no listener for this, then don't process it
-    if ($listeners.value[ eventKey ] === undefined) continue
+    if ($listeners.value[eventKey] === undefined) continue
 
     // https://vuejs.org/v2/guide/render-function.html#Event-amp-Key-Modifiers
     // const prefix = eventOptions.passive ? '&' : ((eventOptions.once ? '~' : '') + (eventOptions.capture ? '!' : ''))
@@ -35,7 +35,10 @@ export function getMouseEventHandlers (events, getEvent) {
 
     const handler = (event) => {
       const mouseEvent = event
-      if (eventOptions.button === undefined || (mouseEvent.buttons > 0 && mouseEvent.button === eventOptions.button)) {
+      if (
+        eventOptions.button === undefined ||
+        (mouseEvent.buttons > 0 && mouseEvent.button === eventOptions.button)
+      ) {
         if (eventOptions.prevent) {
           mouseEvent.preventDefault()
         }
@@ -49,15 +52,13 @@ export function getMouseEventHandlers (events, getEvent) {
     }
 
     if (key in on) {
-      if (Array.isArray(on[ key ])) {
-        (on[ key ]).push(handler)
+      if (Array.isArray(on[key])) {
+        on[key].push(handler)
+      } else {
+        on[key] = [on[key], handler]
       }
-      else {
-        on[ key ] = [ on[ key ], handler ]
-      }
-    }
-    else {
-      on[ key ] = handler
+    } else {
+      on[key] = handler
     }
   }
 
@@ -70,7 +71,7 @@ export function getMouseEventHandlers (events, getEvent) {
  * @param {Function} getEvent The callback
  * @returns {Object} contains decorated mouse events based on listeners of that event and for each a callback
  */
-export function getDefaultMouseEventHandlers (suffix, getEvent) {
+export function getDefaultMouseEventHandlers(suffix, getEvent) {
   return getMouseEventHandlers(getMouseEventName(suffix), getEvent)
 }
 
@@ -79,18 +80,18 @@ export function getDefaultMouseEventHandlers (suffix, getEvent) {
  * @param {String} suffix
  * @returns {Object}
  */
-export function getMouseEventName (suffix) {
+export function getMouseEventName(suffix) {
   return {
-    [ 'click' + suffix ]: { event: 'click' },
-    [ 'contextmenu' + suffix ]: { event: 'contextmenu', prevent: true, result: false },
-    [ 'mousedown' + suffix ]: { event: 'mousedown' },
-    [ 'mousemove' + suffix ]: { event: 'mousemove' },
-    [ 'mouseup' + suffix ]: { event: 'mouseup' },
-    [ 'mouseenter' + suffix ]: { event: 'mouseenter' },
-    [ 'mouseleave' + suffix ]: { event: 'mouseleave' },
-    [ 'touchstart' + suffix ]: { event: 'touchstart' },
-    [ 'touchmove' + suffix ]: { event: 'touchmove' },
-    [ 'touchend' + suffix ]: { event: 'touchend' }
+    ['click' + suffix]: { event: 'click' },
+    ['contextmenu' + suffix]: { event: 'contextmenu', prevent: true, result: false },
+    ['mousedown' + suffix]: { event: 'mousedown' },
+    ['mousemove' + suffix]: { event: 'mousemove' },
+    ['mouseup' + suffix]: { event: 'mouseup' },
+    ['mouseenter' + suffix]: { event: 'mouseenter' },
+    ['mouseleave' + suffix]: { event: 'mouseleave' },
+    ['touchstart' + suffix]: { event: 'touchstart' },
+    ['touchmove' + suffix]: { event: 'touchmove' },
+    ['touchend' + suffix]: { event: 'touchend' },
   }
 }
 
@@ -99,7 +100,7 @@ export function getMouseEventName (suffix) {
  * @param {String} suffix
  * @returns {Array} the array or raw listeners (ie: 'click-day' as opposed to 'onClickDay')
  */
-export function getRawMouseEvents (suffix) {
+export function getRawMouseEvents(suffix) {
   return Object.keys(getMouseEventName(suffix))
 }
 
@@ -115,6 +116,6 @@ export default function (emit, listeners) {
     getMouseEventHandlers,
     getDefaultMouseEventHandlers,
     getMouseEventName,
-    getRawMouseEvents
+    getRawMouseEvents,
   }
 }

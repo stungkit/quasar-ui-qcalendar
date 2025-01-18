@@ -12,234 +12,225 @@ import {
   getEndOfWeek,
   parsed,
   parseTime,
-  updateMinutes,
+  // updateMinutes,
   updateRelative,
-  validateNumber
+  validateNumber,
 } from '../utils/Timestamp.js'
-import {
-  animVerticalScrollTo,
-  animHorizontalScrollTo
-} from '../utils/scroll.js'
+import { animVerticalScrollTo, animHorizontalScrollTo } from '../utils/scroll.js'
 
 export const useIntervalProps = {
   view: {
     type: String,
-    validator: v => [ 'day', 'week', 'month', 'month-interval' ].includes(v),
-    default: 'day'
+    validator: (v) => ['day', 'week', 'month', 'month-interval'].includes(v),
+    default: 'day',
   },
   shortIntervalLabel: Boolean,
   intervalHeight: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 40,
-    validator: validateNumber
+    validator: validateNumber,
   },
   intervalMinutes: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 60,
-    validator: validateNumber
+    validator: validateNumber,
   },
   intervalStart: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 0,
-    validator: validateNumber
+    validator: validateNumber,
   },
   intervalCount: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 24,
-    validator: validateNumber
+    validator: validateNumber,
   },
   intervalStyle: {
     type: Function,
-    default: null
+    default: null,
   },
   intervalClass: {
     type: Function,
-    default: null
+    default: null,
   },
   weekdayStyle: {
     type: Function,
-    default: null
+    default: null,
   },
   weekdayClass: {
     type: Function,
-    default: null
+    default: null,
   },
   showIntervalLabel: {
     type: Function,
-    default: null
+    default: null,
   },
   hour24Format: Boolean,
   timeClicksClamped: Boolean,
   dateHeader: {
     type: String,
     default: 'stacked',
-    validator: v => [ 'stacked', 'inline', 'inverted' ].includes(v)
-  }
+    validator: (v) => ['stacked', 'inline', 'inverted'].includes(v),
+  },
 }
 
 export const useSchedulerProps = {
   view: {
     type: String,
-    validator: v => [ 'day', 'week', 'month', 'month-interval' ].includes(v),
-    default: 'day'
+    validator: (v) => ['day', 'week', 'month', 'month-interval'].includes(v),
+    default: 'day',
   },
   modelResources: {
-    type: Array
+    type: Array,
     // required: true
   },
   resourceKey: {
-    type: [ String, Number ],
-    default: 'id'
+    type: [String, Number],
+    default: 'id',
   },
   resourceLabel: {
-    type: [ String, Number ],
-    default: 'label'
+    type: [String, Number],
+    default: 'label',
   },
   resourceHeight: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 0,
-    validator: validateNumber
+    validator: validateNumber,
   },
   resourceMinHeight: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 70,
-    validator: validateNumber
+    validator: validateNumber,
   },
   resourceStyle: {
     type: Function,
-    default: null
+    default: null,
   },
   resourceClass: {
     type: Function,
-    default: null
+    default: null,
   },
   weekdayStyle: {
     type: Function,
-    default: null
+    default: null,
   },
   weekdayClass: {
     type: Function,
-    default: null
+    default: null,
   },
   dayStyle: {
     type: Function,
-    default: null
+    default: null,
   },
   dayClass: {
     type: Function,
-    default: null
+    default: null,
   },
   dateHeader: {
     type: String,
     default: 'stacked',
-    validator: v => [ 'stacked', 'inline', 'inverted' ].includes(v)
-  }
+    validator: (v) => ['stacked', 'inline', 'inverted'].includes(v),
+  },
 }
 
 export const useAgendaProps = {
   view: {
     type: String,
-    validator: v => [ 'day', 'week', 'month', 'month-interval' ].includes(v),
-    default: 'day'
+    validator: (v) => ['day', 'week', 'month', 'month-interval'].includes(v),
+    default: 'day',
   },
   leftColumnOptions: {
-    type: Array
+    type: Array,
   },
   rightColumnOptions: {
-    type: Array
+    type: Array,
   },
   columnOptionsId: {
-    type: String
+    type: String,
   },
   columnOptionsLabel: {
-    type: String
+    type: String,
   },
   weekdayStyle: {
     type: Function,
-    default: null
+    default: null,
   },
   weekdayClass: {
     type: Function,
-    default: null
+    default: null,
   },
   dayStyle: {
     type: Function,
-    default: null
+    default: null,
   },
   dayClass: {
     type: Function,
-    default: null
+    default: null,
   },
   dateHeader: {
     type: String,
     default: 'stacked',
-    validator: v => [ 'stacked', 'inline', 'inverted' ].includes(v)
+    validator: (v) => ['stacked', 'inline', 'inverted'].includes(v),
   },
   dayHeight: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 0,
-    validator: validateNumber
+    validator: validateNumber,
   },
   dayMinHeight: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 40,
-    validator: validateNumber
-  }
+    validator: validateNumber,
+  },
 }
 
 export const useResourceProps = {
   modelResources: {
-    type: Array
+    type: Array,
     // required: true
   },
   resourceKey: {
-    type: [ String, Number ],
-    default: 'id'
+    type: [String, Number],
+    default: 'id',
   },
   resourceLabel: {
-    type: [ String, Number ],
-    default: 'label'
+    type: [String, Number],
+    default: 'label',
   },
   resourceHeight: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 0,
-    validator: validateNumber
+    validator: validateNumber,
   },
   resourceMinHeight: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 70,
-    validator: validateNumber
+    validator: validateNumber,
   },
   resourceStyle: {
     type: Function,
-    default: null
+    default: null,
   },
   resourceClass: {
     type: Function,
-    default: null
+    default: null,
   },
   cellWidth: {
-    type: [ Number, String ],
-    default: 100
+    type: [Number, String],
+    default: 100,
   },
   intervalHeaderHeight: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 20,
-    validator: validateNumber
+    validator: validateNumber,
   },
-  noSticky: Boolean
+  noSticky: Boolean,
 }
 
-export default function (props, {
-  weekdaySkips,
-  times,
-  scrollArea,
-  parsedStart,
-  parsedEnd,
-  maxDays,
-  size,
-  headerColumnRef
-}) {
+export default function (
+  props,
+  { weekdaySkips, times, scrollArea, parsedStart, parsedEnd, maxDays, size, headerColumnRef },
+) {
   const parsedIntervalStart = computed(() => parseInt(props.intervalStart, 10))
   const parsedIntervalMinutes = computed(() => parseInt(props.intervalMinutes, 10))
   const parsedIntervalCount = computed(() => parseInt(props.intervalCount, 10))
@@ -248,9 +239,10 @@ export default function (props, {
     let width = 0
     if (props.cellWidth) {
       width = props.cellWidth
-    }
-    else if (size.width > 0 && headerColumnRef.value) {
-      width = headerColumnRef.value.offsetWidth / (props.columnCount > 1 ? props.columnCount : maxDays.value)
+    } else if (size.width > 0 && headerColumnRef.value) {
+      width =
+        headerColumnRef.value.offsetWidth /
+        (props.columnCount > 1 ? props.columnCount : maxDays.value)
     }
     return width
   })
@@ -274,7 +266,7 @@ export default function (props, {
       props.disabledAfter,
       props.disabledWeekdays,
       props.disabledDays,
-      maxDays.value
+      maxDays.value,
     )
   })
 
@@ -282,20 +274,22 @@ export default function (props, {
    * Returns an interval list for each day
    */
   const intervals = computed(() => {
-    return days.value.map(day => createIntervalList(
-      day,
-      parsedIntervalStart.value,
-      parsedIntervalMinutes.value,
-      parsedIntervalCount.value,
-      times.now
-    ))
+    return days.value.map((day) =>
+      createIntervalList(
+        day,
+        parsedIntervalStart.value,
+        parsedIntervalMinutes.value,
+        parsedIntervalCount.value,
+        times.now,
+      ),
+    )
   })
 
-  function startOfWeek (timestamp) {
+  function startOfWeek(timestamp) {
     return getStartOfWeek(timestamp, props.weekdays, times.today)
   }
 
-  function endOfWeek (timestamp) {
+  function endOfWeek(timestamp) {
     return getEndOfWeek(timestamp, props.weekdays, times.today)
   }
 
@@ -304,7 +298,7 @@ export default function (props, {
    * @param {Array.<Timestamp>} arr
    * @param {Timestamp} timestamp
    */
-  function arrayHasDateTime (arr, timestamp) {
+  function arrayHasDateTime(arr, timestamp) {
     return arr && arr.length > 0 && arr.includes(getDateTime(timestamp))
   }
 
@@ -314,18 +308,18 @@ export default function (props, {
    * @param {Timestamp} timestamp
    * @returns {Object.<{firstDay: Boolean, betweenDays: Boolean, lastDay: Boolean}>}
    */
-  function checkIntervals (arr, timestamp) {
+  function checkIntervals(arr, timestamp) {
     const days = {
       firstDay: false,
       betweenDays: false,
-      lastDay: false
+      lastDay: false,
     }
 
     // array must have two dates ('YYYY-MM-DD HH:MM') in it
     if (arr && arr.length === 2) {
       const current = getDayTimeIdentifier(timestamp)
-      const first = getDayTimeIdentifier(parsed(arr[ 0 ]))
-      const last = getDayTimeIdentifier(parsed(arr[ 1 ]))
+      const first = getDayTimeIdentifier(parsed(arr[0]))
+      const last = getDayTimeIdentifier(parsed(arr[1]))
       days.firstDay = first === current
       days.lastDay = last === current
       days.betweenDays = first < current && last > current
@@ -333,7 +327,7 @@ export default function (props, {
     return days
   }
 
-  function getIntervalClasses (interval, selectedDays = [], startEndDays = []) {
+  function getIntervalClasses(interval, selectedDays = [], startEndDays = []) {
     const isSelected = arrayHasDateTime(selectedDays, interval)
     const { firstDay, lastDay, betweenDays } = checkIntervals(startEndDays, interval)
 
@@ -342,13 +336,13 @@ export default function (props, {
       'q-range-first': firstDay === true,
       'q-range': betweenDays === true,
       'q-range-last': lastDay === true,
-      'q-disabled-interval disabled': interval.disabled === true
+      'q-disabled-interval disabled': interval.disabled === true,
     }
   }
 
-  function getResourceClasses (interval, selectedDays = [], startEndDays = []) {
-    return []
-  }
+  // function getResourceClasses (interval, selectedDays = [], startEndDays = []) {
+  //   return []
+  // }
 
   /**
    * Returns a function that uses the locale property
@@ -356,13 +350,22 @@ export default function (props, {
    * and returns a formatted hour value from the browser
    */
   const intervalFormatter = computed(() => {
-    const longOptions = { timeZone: 'UTC', hour12: !props.hour24Format, hour: '2-digit', minute: '2-digit' }
-    const shortOptions = { timeZone: 'UTC', hour12: !props.hour24Format, hour: 'numeric', minute: '2-digit' }
+    const longOptions = {
+      timeZone: 'UTC',
+      hour12: !props.hour24Format,
+      hour: '2-digit',
+      minute: '2-digit',
+    }
+    const shortOptions = {
+      timeZone: 'UTC',
+      hour12: !props.hour24Format,
+      hour: 'numeric',
+      minute: '2-digit',
+    }
     const shortHourOptions = { timeZone: 'UTC', hour12: !props.hour24Format, hour: 'numeric' }
 
-    return createNativeLocaleFormatter(
-      props.locale,
-      (tms, short) => (short ? (tms.minute === 0 ? shortHourOptions : shortOptions) : longOptions)
+    return createNativeLocaleFormatter(props.locale, (tms, short) =>
+      short ? (tms.minute === 0 ? shortHourOptions : shortOptions) : longOptions,
     )
   })
 
@@ -376,24 +379,21 @@ export default function (props, {
   const ariaDateTimeFormatter = computed(() => {
     const longOptions = { timeZone: 'UTC', dateStyle: 'full', timeStyle: 'short' }
 
-    return createNativeLocaleFormatter(
-      props.locale,
-      (_tms) => longOptions
-    )
+    return createNativeLocaleFormatter(props.locale, (/*_tms*/) => longOptions)
   })
 
-  function showIntervalLabelDefault (interval) {
-    const first = intervals.value[ 0 ][ 0 ]
+  function showIntervalLabelDefault(interval) {
+    const first = intervals.value[0][0]
     const isFirst = first.hour === interval.hour && first.minute === interval.minute
     return !isFirst && interval.minute === 0
   }
 
-  function showResourceLabelDefault (resource) {
-  }
+  // function showResourceLabelDefault (resource) {
+  // }
 
-  function styleDefault (interval) {
-    return undefined
-  }
+  // function styleDefault (interval) {
+  //   return undefined
+  // }
 
   /**
    * Returns a Timestamp based on mouse click position on the calendar
@@ -404,15 +404,17 @@ export default function (props, {
    * @param {Boolean} clamp Whether to clamp values to nearest interval
    * @param {Timestamp*} now Optional Timestamp for now date/time
    */
-  function getTimestampAtEventInterval (e, day, clamp = false, now = undefined) {
+  function getTimestampAtEventInterval(e, day, clamp = false, now = undefined) {
     let timestamp = copyTimestamp(day)
-    const bounds = (e.currentTarget).getBoundingClientRect()
+    const bounds = e.currentTarget.getBoundingClientRect()
     const touchEvent = e
     const mouseEvent = e
     const touches = touchEvent.changedTouches || touchEvent.touches
-    const clientY = touches && touches[ 0 ] ? touches[ 0 ].clientY : mouseEvent.clientY
+    const clientY = touches && touches[0] ? touches[0].clientY : mouseEvent.clientY
     const addIntervals = (clientY - bounds.top) / parsedIntervalHeight.value
-    const addMinutes = Math.floor((clamp ? Math.floor(addIntervals) : addIntervals) * parsedIntervalMinutes.value)
+    const addMinutes = Math.floor(
+      (clamp ? Math.floor(addIntervals) : addIntervals) * parsedIntervalMinutes.value,
+    )
 
     if (addMinutes !== 0) {
       timestamp = addToDate(timestamp, { minute: addMinutes })
@@ -434,15 +436,17 @@ export default function (props, {
    * @param {Boolean} clamp Whether to clamp values to nearest interval
    * @param {Timestamp*} now Optional Timestamp for now date/time
    */
-  function getTimestampAtEvent (e, day, clamp = false, now = undefined) {
+  function getTimestampAtEvent(e, day, clamp = false, now = undefined) {
     let timestamp = copyTimestamp(day)
-    const bounds = (e.currentTarget).getBoundingClientRect()
+    const bounds = e.currentTarget.getBoundingClientRect()
     const touchEvent = e
     const mouseEvent = e
     const touches = touchEvent.changedTouches || touchEvent.touches
-    const clientY = touches && touches[ 0 ] ? touches[ 0 ].clientY : mouseEvent.clientY
+    const clientY = touches && touches[0] ? touches[0].clientY : mouseEvent.clientY
     const addIntervals = (clientY - bounds.top) / parsedIntervalHeight.value
-    const addMinutes = Math.floor((clamp ? Math.floor(addIntervals) : addIntervals) * parsedIntervalMinutes.value)
+    const addMinutes = Math.floor(
+      (clamp ? Math.floor(addIntervals) : addIntervals) * parsedIntervalMinutes.value,
+    )
 
     if (addMinutes !== 0) {
       timestamp = addToDate(timestamp, { minute: addMinutes })
@@ -464,15 +468,17 @@ export default function (props, {
    * @param {Boolean} clamp Whether to clamp values to nearest interval
    * @param {Timestamp*} now Optional Timestamp for now date/time
    */
-  function getTimestampAtEventX (e, day, clamp = false, now = undefined) {
+  function getTimestampAtEventX(e, day, clamp = false, now = undefined) {
     let timestamp = copyTimestamp(day)
-    const bounds = (e.currentTarget).getBoundingClientRect()
+    const bounds = e.currentTarget.getBoundingClientRect()
     const touchEvent = e
     const mouseEvent = e
     const touches = touchEvent.changedTouches || touchEvent.touches
-    const clientX = touches && touches[ 0 ] ? touches[ 0 ].clientX : mouseEvent.clientX
+    const clientX = touches && touches[0] ? touches[0].clientX : mouseEvent.clientX
     const addIntervals = (clientX - bounds.left) / parsedCellWidth.value
-    const addMinutes = Math.floor((clamp ? Math.floor(addIntervals) : addIntervals) * parsedIntervalMinutes.value)
+    const addMinutes = Math.floor(
+      (clamp ? Math.floor(addIntervals) : addIntervals) * parsedIntervalMinutes.value,
+    )
 
     if (addMinutes !== 0) {
       timestamp = addToDate(timestamp, { minute: addMinutes })
@@ -491,7 +497,7 @@ export default function (props, {
    * @param {Timestamp} timestamp
    * @param {Number} columnIndex
    */
-  function getScopeForSlot (timestamp, columnIndex) {
+  function getScopeForSlot(timestamp, columnIndex) {
     const scope = { timestamp }
     scope.timeStartPos = timeStartPos
     scope.timeDurationHeight = timeDurationHeight
@@ -507,7 +513,7 @@ export default function (props, {
    * @param {Timestamp} timestamp
    * @param {Number*} index
    */
-  function getScopeForSlotX (timestamp, index) {
+  function getScopeForSlotX(timestamp, index) {
     const scope = { timestamp: copyTimestamp(timestamp) }
     scope.timeStartPosX = timeStartPosX
     scope.timeDurationWidth = timeDurationWidth
@@ -523,14 +529,14 @@ export default function (props, {
    * @param {String} time in format HH:MM
    * @param {Number*} duration in milliseconds
    */
-  function scrollToTime (time, duration = 0) {
+  function scrollToTime(time, duration = 0) {
     const y = timeStartPos(time)
 
     if (y === false || !scrollArea.value) {
       return false
     }
 
-    animVerticalScrollTo (scrollArea.value, y, duration)
+    animVerticalScrollTo(scrollArea.value, y, duration)
 
     return true
   }
@@ -541,35 +547,35 @@ export default function (props, {
    * @param {String} time in format HH:MM
    * @param {Number*} duration in milliseconds
    */
-  function scrollToTimeX (time, duration = 0) {
+  function scrollToTimeX(time, duration = 0) {
     const x = timeStartPosX(time)
 
     if (x === false || !scrollArea.value) {
       return false
     }
 
-    animHorizontalScrollTo (scrollArea.value, x, duration)
+    animHorizontalScrollTo(scrollArea.value, x, duration)
 
     return true
   }
 
-  function timeDurationHeight (minutes) {
-    return minutes / parsedIntervalMinutes.value * parsedIntervalHeight.value
+  function timeDurationHeight(minutes) {
+    return (minutes / parsedIntervalMinutes.value) * parsedIntervalHeight.value
   }
 
-  function timeDurationWidth (minutes) {
-    return minutes / parsedIntervalMinutes.value * parsedCellWidth.value
+  function timeDurationWidth(minutes) {
+    return (minutes / parsedIntervalMinutes.value) * parsedCellWidth.value
   }
 
-  function heightToMinutes (height) {
-    return parseInt(height, 10) * parsedIntervalMinutes.value / parsedIntervalHeight.value
+  function heightToMinutes(height) {
+    return (parseInt(height, 10) * parsedIntervalMinutes.value) / parsedIntervalHeight.value
   }
 
-  function widthToMinutes (width) {
-    return parseInt(width, 10) * parsedIntervalMinutes.value / parsedCellWidth.value
+  function widthToMinutes(width) {
+    return (parseInt(width, 10) * parsedIntervalMinutes.value) / parsedCellWidth.value
   }
 
-  function timeStartPos (time, clamp = true) {
+  function timeStartPos(time, clamp = true) {
     const minutes = parseTime(time)
     if (minutes === false) return false
 
@@ -590,7 +596,7 @@ export default function (props, {
     return y
   }
 
-  function timeStartPosX (time, clamp = true) {
+  function timeStartPosX(time, clamp = true) {
     const minutes = parseTime(time)
     if (minutes === false) return false
 
@@ -629,10 +635,10 @@ export default function (props, {
     arrayHasDateTime,
     checkIntervals,
     getIntervalClasses,
-    getResourceClasses,
+    // getResourceClasses,
     showIntervalLabelDefault,
-    showResourceLabelDefault,
-    styleDefault,
+    // showResourceLabelDefault,
+    // styleDefault,
     getTimestampAtEventInterval,
     getTimestampAtEvent,
     getTimestampAtEventX,
@@ -645,6 +651,6 @@ export default function (props, {
     heightToMinutes,
     widthToMinutes,
     timeStartPos,
-    timeStartPosX
+    timeStartPosX,
   }
 }
