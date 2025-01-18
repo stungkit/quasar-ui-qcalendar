@@ -58,9 +58,7 @@ import {
   Timestamp,
 } from '@quasar/quasar-ui-qcalendar'
 import { indexOf } from '@quasar/quasar-ui-qcalendar/src/utils/helpers.js'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.scss'
+import '@quasar/quasar-ui-qcalendar/dist/index.css'
 
 import { ref, reactive } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'

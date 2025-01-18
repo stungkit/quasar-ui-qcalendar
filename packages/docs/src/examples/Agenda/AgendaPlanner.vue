@@ -269,10 +269,7 @@ import {
   Timestamp,
   type QCalendarAgenda as IQCalendarAgenda,
 } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarAgenda.scss'
-
+import '@quasar/quasar-ui-qcalendar/dist/index.css'
 import Checkbox from '@carbon/icons-vue/es/checkbox/24'
 import CheckboxChecked from '@carbon/icons-vue/es/checkbox--checked/24'
 import AddAlt from '@carbon/icons-vue/es/add--alt/16'

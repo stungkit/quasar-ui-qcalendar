@@ -107,9 +107,7 @@ import {
   padNumber,
   Timestamp,
 } from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTask.scss'
+import '@quasar/quasar-ui-qcalendar/dist/index.css'
 
 import { ref, reactive, computed, onBeforeMount } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'

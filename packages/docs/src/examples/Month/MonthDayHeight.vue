@@ -52,9 +52,7 @@
 
 <script setup lang="ts">
 import { QCalendarMonth, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.scss'
+import '@quasar/quasar-ui-qcalendar/dist/index.css'
 
 import { ref, computed, type CSSProperties } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'

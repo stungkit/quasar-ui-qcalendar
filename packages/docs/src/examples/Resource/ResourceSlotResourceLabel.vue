@@ -40,9 +40,7 @@
 
 <script setup lang="ts">
 import { QCalendarResource, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarResource.scss'
+import '@quasar/quasar-ui-qcalendar/dist/index.css'
 
 import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'

@@ -57,10 +57,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { QCalendarAgenda, Timestamp, today } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarAgenda.scss'
-
+import '@quasar/quasar-ui-qcalendar/dist/index.css'
 import NavigationBar from 'components/NavigationBar.vue'
 import { type QCalendarAgenda as IQCalendarAgenda } from '@quasar/quasar-ui-qcalendar/dist/types'
 
