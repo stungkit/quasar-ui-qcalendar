@@ -1443,7 +1443,9 @@
           "tsType": "TimestampFormatOptions",
           "required": true,
           "desc": "A function that passes the timestamp and a boolean, and returns an Intl.DateTimeFormatter",
-          "__exemption": [ "examples" ],
+          "__exemption": [
+            "examples"
+          ],
           "params": {
             "timestamp": {
               "type": "Object",
@@ -1483,18 +1485,24 @@
             "type": "Object",
             "tsType": "Timestamp",
             "desc": "A timestamp object",
-            "__exemption": [ "examples" ]
+            "__exemption": [
+              "examples"
+            ]
           },
           "short": {
             "type": "Boolean",
             "desc": "if true, specifies to use the short version (ie: 'Monday' to be returns as 'Mon', 'January' to be returned as 'Jan', etc)",
-            "__exemption": [ "examples" ]
+            "__exemption": [
+              "examples"
+            ]
           }
         },
         "returns": {
           "type": "String",
           "desc": "A string containing the formatted date/time",
-        "__exemption": [ "examples" ]
+          "__exemption": [
+            "examples"
+          ]
         }
       },
       "__exemption": [

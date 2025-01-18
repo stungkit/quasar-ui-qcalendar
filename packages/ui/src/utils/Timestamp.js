@@ -1,4 +1,4 @@
-/* global Intl */
+/* global Intl console */
 export const PARSE_DATETIME =
   /^(\d{4})-(\d{1,2})(-(\d{1,2}))?([^\d]+(\d{1,2}))?(:(\d{1,2}))?(:(\d{1,2}))?(.(\d{1,3}))?$/
 export const PARSE_DATE = /^(\d{4})-(\d{1,2})(-(\d{1,2}))/
@@ -19,6 +19,10 @@ export const MILLISECONDS_IN_MINUTE = 60000
 export const MILLISECONDS_IN_HOUR = 3600000
 export const MILLISECONDS_IN_DAY = 86400000
 export const MILLISECONDS_IN_WEEK = 604800000
+export const SECONDS_IN_MINUTE = 60
+export const SECONDS_IN_HOUR = 3600
+export const SECONDS_IN_DAY = 86400
+export const SECONDS_IN_WEEK = 604800
 
 /* eslint-disable no-multi-spaces */
 /**
@@ -67,10 +71,163 @@ export const TimeObject = {
 }
 /* eslint-enable no-multi-spaces */
 
-// returns YYYY-MM-dd format
+/**
+ * Validates the passed input ('YYY-MM-DD') as a date or ('YYY-MM-DD HH:MM') date time combination
+ * @param {string} input A string in the form 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM'
+ * @returns {boolean} True if parseable
+ */
+export function validateTimestamp(input) {
+  return !!PARSE_DATETIME.exec(input)
+}
+
+/**
+ * Fast low-level parser for a date string ('YYYY-MM-DD'). Does not update formatted or relative date.
+ * Use 'parseTimestamp' for formatted and relative updates
+ * @param {string} input In the form 'YYYY-MM-DD hh:mm:ss' (seconds are optional, but not used)
+ * @returns {Timestamp} This {@link Timestamp} is minimally filled in. The {@link Timestamp.date} and {@link Timestamp.time} as well as relative data will not be filled in.
+ */
+export function parsed(input) {
+  const parts = PARSE_DATETIME.exec(input)
+
+  if (!parts) return null
+
+  return {
+    date: input,
+    time:
+      padNumber(parseInt(parts[6], 10) || 0, 2) + ':' + padNumber(parseInt(parts[8], 10) || 0, 2),
+    year: parseInt(parts[1], 10),
+    month: parseInt(parts[2], 10),
+    day: parseInt(parts[4], 10) || 1,
+    hour: !isNaN(parseInt(parts[6], 10)) ? parseInt(parts[6], 10) : 0,
+    minute: !isNaN(parseInt(parts[8], 10)) ? parseInt(parts[8], 10) : 0,
+    weekday: 0,
+    doy: 0,
+    workweek: 0,
+    hasDay: !!parts[4],
+    hasTime: true, // there is always time because no time is '00:00', which is valid
+    past: false,
+    current: false,
+    future: false,
+    disabled: false,
+  }
+}
+
+/**
+ * Takes a JavaScript Date and returns a {@link Timestamp}. The {@link Timestamp} is not updated with relative information.
+ * @param {date} date JavaScript Date
+ * @param {boolean} utc If set the {@link Timestamp} will parse the Date as UTC
+ * @returns {Timestamp} A minimal {@link Timestamp} without updated or relative updates.
+ */
+export function parseDate(date, utc = false) {
+  const UTC = utc ? 'UTC' : ''
+  return updateFormatted({
+    date:
+      padNumber(date[`get${UTC}FullYear`](), 4) +
+      '-' +
+      padNumber(date[`get${UTC}Month`]() + 1, 2) +
+      '-' +
+      padNumber(date[`get${UTC}Date`](), 2),
+    time:
+      padNumber(date[`get${UTC}Hours`]() || 0, 2) +
+      ':' +
+      padNumber(date[`get${UTC}Minutes`]() || 0, 2),
+    year: date[`get${UTC}FullYear`](),
+    month: date[`get${UTC}Month`]() + 1,
+    day: date[`get${UTC}Date`](),
+    hour: date[`get${UTC}Hours`](),
+    minute: date[`get${UTC}Minutes`](),
+    weekday: 0,
+    doy: 0,
+    workweek: 0,
+    hasDay: true,
+    hasTime: true, // Date always has time, even if it is '00:00'
+    past: false,
+    current: false,
+    future: false,
+    disabled: false,
+  })
+}
+
+/**
+ * Padds a passed in number to length (converts to a string). Good for converting '5' as '05'.
+ * @param {number} x The number to pad
+ * @param {number} length The length of the required number as a string
+ * @returns {string} The padded number (as a string). (ie: 5 = '05')
+ */
+export function padNumber(x, length) {
+  let padded = String(x)
+  while (padded.length < length) {
+    padded = '0' + padded
+  }
+
+  return padded
+}
+
+/**
+ * Returns if the passed year is a leap year
+ * @param {number} year The year to check (ie: 1999, 2020)
+ * @returns {boolean} True if the year is a leap year
+ */
+export function isLeapYear(year) {
+  return ((year % 4 === 0) ^ (year % 100 === 0) ^ (year % 400 === 0)) === 1
+}
+
+/**
+ * Returns the days of the specified month in a year
+ * @param {number} year The year (ie: 1999, 2020)
+ * @param {number} month The month (zero-based)
+ * @returns {number} The number of days in the month (corrected for leap years)
+ */
+export function daysInMonth(year, month) {
+  return isLeapYear(year) ? DAYS_IN_MONTH_LEAP[month] : DAYS_IN_MONTH[month]
+}
+
+/**
+ * Returns a {@link Timestamp} of next day from passed in {@link Timestamp}
+ * @param {Timestamp} timestamp The {@link Timestamp} to use
+ * @returns {Timestamp} The modified {@link Timestamp} as the next day
+ */
+export function nextDay(timestamp) {
+  ++timestamp.day
+  timestamp.weekday = (timestamp.weekday + 1) % DAYS_IN_WEEK
+  if (
+    timestamp.day > DAYS_IN_MONTH_MIN &&
+    timestamp.day > daysInMonth(timestamp.year, timestamp.month)
+  ) {
+    timestamp.day = DAY_MIN
+    ++timestamp.month
+    if (timestamp.month > MONTH_MAX) {
+      timestamp.month = MONTH_MIN
+      ++timestamp.year
+    }
+  }
+
+  return timestamp
+}
+
+/**
+ * Returns a {@link Timestamp} of previous day from passed in {@link Timestamp}
+ * @param {Timestamp} timestamp The {@link Timestamp} to use
+ * @returns {Timestamp} The modified {@link Timestamp} as the previous day
+ */
+export function prevDay(timestamp) {
+  timestamp.day--
+  timestamp.weekday = (timestamp.weekday + 6) % DAYS_IN_WEEK
+  if (timestamp.day < DAY_MIN) {
+    timestamp.month--
+    if (timestamp.month < MONTH_MIN) {
+      timestamp.year--
+      timestamp.month = MONTH_MAX
+    }
+    timestamp.day = daysInMonth(timestamp.year, timestamp.month)
+  }
+
+  return timestamp
+}
+
 /**
  * Returns today's date
- * @returns {string} Date string in the form 'YYYY-MM-DD'
+ * @returns {string} Date string in the form 'YYYY-MM-dd'
  */
 export function today() {
   const d = new Date(),
@@ -189,15 +346,6 @@ export function parseTime(input) {
 }
 
 /**
- * Validates the passed input ('YYY-MM-DD') as a date or ('YYY-MM-DD HH:MM') date time combination
- * @param {string} input A string in the form 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM'
- * @returns {boolean} True if parseable
- */
-export function validateTimestamp(input) {
-  return !!PARSE_DATETIME.exec(input)
-}
-
-/**
  * Compares two {@link Timestamp}s for exactness
  * @param {Timestamp} ts1 The first {@link Timestamp}
  * @param {Timestamp} ts2 The second {@link Timestamp}
@@ -238,38 +386,6 @@ export function compareDateTime(ts1, ts2) {
 }
 
 /**
- * Fast low-level parser for a date string ('YYYY-MM-DD'). Does not update formatted or relative date.
- * Use 'parseTimestamp' for formatted and relative updates
- * @param {string} input In the form 'YYYY-MM-DD hh:mm:ss' (seconds are optional, but not used)
- * @returns {Timestamp} This {@link Timestamp} is minimally filled in. The {@link Timestamp.date} and {@link Timestamp.time} as well as relative data will not be filled in.
- */
-export function parsed(input) {
-  const parts = PARSE_DATETIME.exec(input)
-
-  if (!parts) return null
-
-  return {
-    date: input,
-    time:
-      padNumber(parseInt(parts[6], 10) || 0, 2) + ':' + padNumber(parseInt(parts[8], 10) || 0, 2),
-    year: parseInt(parts[1], 10),
-    month: parseInt(parts[2], 10),
-    day: parseInt(parts[4], 10) || 1,
-    hour: !isNaN(parseInt(parts[6], 10)) ? parseInt(parts[6], 10) : 0,
-    minute: !isNaN(parseInt(parts[8], 10)) ? parseInt(parts[8], 10) : 0,
-    weekday: 0,
-    doy: 0,
-    workweek: 0,
-    hasDay: !!parts[4],
-    hasTime: true, // there is always time because no time is '00:00', which is valid
-    past: false,
-    current: false,
-    future: false,
-    disabled: false,
-  }
-}
-
-/**
  * High-level parser that converts the passed in string to {@link Timestamp} and uses 'now' to update relative information.
  * @param {string} input In the form 'YYYY-MM-DD hh:mm:ss' (seconds are optional, but not used)
  * @param {Timestamp} now A {@link Timestamp} to use for relative data updates
@@ -286,42 +402,6 @@ export function parseTimestamp(input, now) {
   }
 
   return timestamp
-}
-
-/**
- * Takes a JavaScript Date and returns a {@link Timestamp}. The {@link Timestamp} is not updated with relative information.
- * @param {date} date JavaScript Date
- * @param {boolean} utc If set the {@link Timestamp} will parse the Date as UTC
- * @returns {Timestamp} A minimal {@link Timestamp} without updated or relative updates.
- */
-export function parseDate(date, utc = false) {
-  const UTC = utc ? 'UTC' : ''
-  return updateFormatted({
-    date:
-      padNumber(date[`get${UTC}FullYear`](), 4) +
-      '-' +
-      padNumber(date[`get${UTC}Month`]() + 1, 2) +
-      '-' +
-      padNumber(date[`get${UTC}Date`](), 2),
-    time:
-      padNumber(date[`get${UTC}Hours`]() || 0, 2) +
-      ':' +
-      padNumber(date[`get${UTC}Minutes`]() || 0, 2),
-    year: date[`get${UTC}FullYear`](),
-    month: date[`get${UTC}Month`]() + 1,
-    day: date[`get${UTC}Date`](),
-    hour: date[`get${UTC}Hours`](),
-    minute: date[`get${UTC}Minutes`](),
-    weekday: 0,
-    doy: 0,
-    workweek: 0,
-    hasDay: true,
-    hasTime: true, // Date always has time, even if it is '00:00'
-    past: false,
-    current: false,
-    future: false,
-    disabled: false,
-  })
 }
 
 /**
@@ -611,46 +691,12 @@ export function getWeekday(timestamp) {
 }
 
 /**
- * Returns if the passed year is a leap year
- * @param {number} year The year to check (ie: 1999, 2020)
- * @returns {boolean} True if the year is a leap year
- */
-export function isLeapYear(year) {
-  return ((year % 4 === 0) ^ (year % 100 === 0) ^ (year % 400 === 0)) === 1
-}
-
-/**
- * Returns the days of the specified month in a year
- * @param {number} year The year (ie: 1999, 2020)
- * @param {number} month The month (zero-based)
- * @returns {number} The number of days in the month (corrected for leap years)
- */
-export function daysInMonth(year, month) {
-  return isLeapYear(year) ? DAYS_IN_MONTH_LEAP[month] : DAYS_IN_MONTH[month]
-}
-
-/**
  * Makes a copy of the passed in {@link Timestamp}
  * @param {Timestamp} timestamp The original {@link Timestamp}
  * @returns {Timestamp} A copy of the original {@link Timestamp}
  */
 export function copyTimestamp(timestamp) {
   return { ...timestamp }
-}
-
-/**
- * Padds a passed in number to length (converts to a string). Good for converting '5' as '05'.
- * @param {number} x The number to pad
- * @param {number} length The length of the required number as a string
- * @returns {string} The padded number (as a string). (ie: 5 = '05')
- */
-export function padNumber(x, length) {
-  let padded = String(x)
-  while (padded.length < length) {
-    padded = '0' + padded
-  }
-
-  return padded
 }
 
 /**
@@ -686,49 +732,6 @@ export function getTime(timestamp) {
  */
 export function getDateTime(timestamp) {
   return getDate(timestamp) + ' ' + (timestamp.hasTime ? getTime(timestamp) : '00:00')
-}
-
-/**
- * Returns a {@link Timestamp} of next day from passed in {@link Timestamp}
- * @param {Timestamp} timestamp The {@link Timestamp} to use
- * @returns {Timestamp} The modified {@link Timestamp} as the next day
- */
-export function nextDay(timestamp) {
-  ++timestamp.day
-  timestamp.weekday = (timestamp.weekday + 1) % DAYS_IN_WEEK
-  if (
-    timestamp.day > DAYS_IN_MONTH_MIN &&
-    timestamp.day > daysInMonth(timestamp.year, timestamp.month)
-  ) {
-    timestamp.day = DAY_MIN
-    ++timestamp.month
-    if (timestamp.month > MONTH_MAX) {
-      timestamp.month = MONTH_MIN
-      ++timestamp.year
-    }
-  }
-
-  return timestamp
-}
-
-/**
- * Returns a {@link Timestamp} of previous day from passed in {@link Timestamp}
- * @param {Timestamp} timestamp The {@link Timestamp} to use
- * @returns {Timestamp} The modified {@link Timestamp} as the previous day
- */
-export function prevDay(timestamp) {
-  timestamp.day--
-  timestamp.weekday = (timestamp.weekday + 6) % DAYS_IN_WEEK
-  if (timestamp.day < DAY_MIN) {
-    timestamp.month--
-    if (timestamp.month < MONTH_MIN) {
-      timestamp.year--
-      timestamp.month = MONTH_MAX
-    }
-    timestamp.day = daysInMonth(timestamp.year, timestamp.month)
-  }
-
-  return timestamp
 }
 
 /**
@@ -917,6 +920,7 @@ export function createIntervalList(timestamp, first, minutes, count, now) {
  * @returns {formatter} The function has params (timestamp, short). The short is to use the short options.
  */
 export function createNativeLocaleFormatter(locale, cb) {
+  // eslint-disable-next-line no-unused-vars
   const emptyFormatter = (_t, _s) => ''
 
   /* istanbul ignore next */
@@ -1220,6 +1224,7 @@ const weekdayDateMap = {
 }
 
 export function getWeekdayFormatter() {
+  // eslint-disable-next-line no-unused-vars
   const emptyFormatter = (_d, _t) => ''
   const options = {
     long: { timeZone: 'UTC', weekday: 'long' },
@@ -1257,6 +1262,7 @@ export function getWeekdayNames(type, locale) {
 }
 
 export function getMonthFormatter() {
+  // eslint-disable-next-line no-unused-vars
   const emptyFormatter = (_m, _t) => ''
   const options = {
     long: { timeZone: 'UTC', month: 'long' },
