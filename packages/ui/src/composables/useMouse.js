@@ -1,4 +1,5 @@
 /* global console */
+const toCamelCase = (str) => str.replace(/(-\w)/g, (m) => m[1].toUpperCase())
 let $listeners, $emit
 
 /**
