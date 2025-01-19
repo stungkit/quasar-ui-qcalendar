@@ -37,25 +37,27 @@ const calendar = ref<IQCalendarMonth>(),
   selectedDates = ref<string[]>([])
 
 interface Scope {
-  timestamp: Timestamp
-  outside: boolean
+  scope: {
+    timestamp: Timestamp
+    outside: boolean
+  }
 }
 
-function onToggleDate(scope: Scope) {
+function onToggleDate({ scope }: Scope) {
   console.log('date clicked (scope)', scope)
   if (scope !== undefined) {
     toggleDate(scope)
   }
 }
 
-function onToggleDay(scope: Scope) {
+function onToggleDay({ scope }: Scope) {
   console.log('day clicked (scope)', scope)
   if (scope !== undefined) {
     toggleDate(scope)
   }
 }
 
-function toggleDate(scope: Scope) {
+function toggleDate(scope: { timestamp: Timestamp; outside: boolean }) {
   const date = scope.timestamp.date
   if (selectedDates.value.includes(date)) {
     // remove the date

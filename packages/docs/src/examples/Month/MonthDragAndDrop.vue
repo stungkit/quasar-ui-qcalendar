@@ -186,11 +186,13 @@ function onDragLeave(/*e, type, scope*/) {
 }
 
 interface Scope {
-  timestamp: Timestamp
-  droppable: boolean
+  scope: {
+    timestamp: Timestamp
+    droppable: boolean
+  }
 }
 
-function onDrop(e: DragEvent, type: string, scope: Scope) {
+function onDrop(e: DragEvent, type: string, { scope }: Scope) {
   console.log('onDrop')
   const itemID = parseInt(e.dataTransfer!.getData('ID'), 10)
   const event = { ...defaultEvent }
@@ -232,13 +234,13 @@ function hasWeekdayEvents(weekday: number) {
   return getWeekdayEvents(weekday).length > 0
 }
 
-function onDayClass(scope: Scope) {
+function onDayClass({ scope }: Scope) {
   return {
     droppable: scope.droppable === true,
   }
 }
 
-function onWeekdayClass(scope: Scope) {
+function onWeekdayClass({ scope }: Scope) {
   return {
     droppable: scope.droppable === true,
   }
@@ -282,7 +284,7 @@ function onClickHeadWorkweek(data: Timestamp) {
 }
 
 // this method is used only to print the scope to dev tools
-function printScope(scope: Scope): boolean {
+function printScope({ scope }: Scope): boolean {
   console.log('scope:', scope)
   return true
 }
