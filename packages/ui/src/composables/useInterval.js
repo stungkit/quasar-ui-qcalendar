@@ -340,9 +340,10 @@ export default function (
     }
   }
 
-  // function getResourceClasses (interval, selectedDays = [], startEndDays = []) {
-  //   return []
-  // }
+  // eslint-disable-next-line no-unused-vars
+  function getResourceClasses(interval, selectedDays = [], startEndDays = []) {
+    return []
+  }
 
   /**
    * Returns a function that uses the locale property
@@ -388,12 +389,15 @@ export default function (
     return !isFirst && interval.minute === 0
   }
 
-  // function showResourceLabelDefault (resource) {
-  // }
+  // eslint-disable-next-line no-unused-vars
+  function showResourceLabelDefault(resource) {
+    //
+  }
 
-  // function styleDefault (interval) {
-  //   return undefined
-  // }
+  // eslint-disable-next-line no-unused-vars
+  function styleDefault(interval) {
+    return undefined
+  }
 
   /**
    * Returns a Timestamp based on mouse click position on the calendar
@@ -635,10 +639,10 @@ export default function (
     arrayHasDateTime,
     checkIntervals,
     getIntervalClasses,
-    // getResourceClasses,
+    getResourceClasses,
     showIntervalLabelDefault,
-    // showResourceLabelDefault,
-    // styleDefault,
+    showResourceLabelDefault,
+    styleDefault,
     getTimestampAtEventInterval,
     getTimestampAtEvent,
     getTimestampAtEventX,
