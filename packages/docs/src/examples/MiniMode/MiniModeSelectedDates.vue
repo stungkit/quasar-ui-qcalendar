@@ -64,7 +64,6 @@ function onChange(data: { start: Timestamp; end: Timestamp; days: Timestamp[] })
 }
 function onClickDate({ scope, event }: { scope: { timestamp: Timestamp }; event: MouseEvent }) {
   console.log('onClickDate', { scope, event })
-  debugger
   if (leftClick(event)) {
     if (selectedDates.value.includes(scope.timestamp.date)) {
       // remove the date
