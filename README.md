@@ -33,39 +33,39 @@ v4.0.0
 
 **Month view with events**
 
-![QCalendar example month view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendarmonth-event-slots.png)
+![QCalendar example month view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/refs/heads/dev/packages/docs/public/qcalendarmonth-event-slots.png)
 
 **Planner example**
 
-![QCalendar example agenda view - planner](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendaragenda-planner.png)
+![QCalendar example agenda view - planner](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/refs/heads/dev/packages/docs/public/qcalendaragenda-planner.png)
 
 **Monthly Mini-mode**
 
-![QCalendar example mini-mode selection](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendarmonth-minimode-range-selection.png)
+![QCalendar example mini-mode selection](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/refs/heads/dev/packages/docs/public/qcalendarmonth-minimode-range-selection.png)
 
 **Multi-month selector (mini-mode)**
 
-![QCalendar example multi-month selection](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendar-month-view-mini-mode-multi-month-selection.png)
+![QCalendar example multi-month selection](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/refs/heads/dev/packages/docs/public/qcalendar-month-view-mini-mode-multi-month-selection.png)
 
 **Agenda view with custom content**
 
-![QCalendar example agenda view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendar-agenda-view.png)
+![QCalendar example agenda view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/refs/heads/dev/packages/docs/public/qcalendar-agenda-view.png)
 
 **Day view with events**
 
-![QCalendar example day view - events](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendar-day-view.png)
+![QCalendar example day view - events](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/refs/heads/dev/packages/docs/public/qcalendar-day-view.png)
 
 **Resource view with events**
 
-![QCalendar example resource view - events](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendar-resource-view.png)
+![QCalendar example resource view - events](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/refs/heads/dev/packages/docs/public/qcalendar-resource-view.png)
 
 **Scheduler view**
 
-![QCalendar example scheduler view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/qcalendar-scheduler-view.png)
+![QCalendar example scheduler view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/refs/heads/dev/packages/docs/public/qcalendar-scheduler-view.png)
 
 **Task view**
 
-![QCalendar task view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/packages/docs/public/QCalendarTask.png)
+![QCalendar task view](https://raw.githubusercontent.com/quasarframework/quasar-ui-qcalendar/refs/heads/dev/packages/docs/public/QCalendarTask.png)
 
 Including support for locales, optional theming, 1st day Monday, 5-day work weeks, work week numbers, selected days, disabled days, day of year...
 
