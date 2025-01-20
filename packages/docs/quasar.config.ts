@@ -5,7 +5,6 @@ import { defineConfig } from '#q-app/wrappers'
 import { viteMdPlugin, type MenuItem } from '@md-plugins/vite-md-plugin'
 import { viteExamplesPlugin, viteManualChunks } from '@md-plugins/vite-examples-plugin'
 
-/// @ts-expect-error ignore for now
 export default defineConfig(async (ctx) => {
   // Dynamically import siteConfig
   const siteConfig = await import('./src/siteConfig')
