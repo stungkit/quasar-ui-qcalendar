@@ -94,7 +94,7 @@ export const useCommonProps = {
     // event, timestamp
   },
   selectedDates: {
-    type: Array,
+    type: [Array, Set],
     default: () => [],
   },
   selectedStartEndDates: {
@@ -232,6 +232,7 @@ export default function (props, { startDate, endDate, times }) {
     return getEndOfWeek(timestamp, props.weekdays, times.today)
   }
 
+  // this function is needed as a default value for dayStyle
   function dayStyleDefault(/*timestamp*/) {
     return undefined
   }

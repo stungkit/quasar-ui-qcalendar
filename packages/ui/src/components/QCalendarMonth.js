@@ -714,7 +714,7 @@ export default defineComponent({
           ...getRelativeClasses(
             day,
             outside,
-            props.selectedDates,
+            Array.from(props.selectedDates),
             props.selectedStartEndDates,
             props.hover,
           ),
@@ -862,8 +862,8 @@ export default defineComponent({
 
       const selectedDate =
         props.selectedDates &&
-        props.selectedDates.length > 0 &&
-        props.selectedDates.includes(day.date)
+        Array.from(props.selectedDates).length > 0 &&
+        Array.from(props.selectedDates).includes(day.date)
 
       const activeDate = props.noActiveDate !== true && __isActiveDate(day)
 
