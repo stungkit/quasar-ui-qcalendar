@@ -3,13 +3,13 @@ title: Quick Start
 desc: General use and common properties
 keys: developing
 related:
-  - /developing/qcalendarday
-  - /developing/qcalendarmonth
-  - /developing/qcalendarmonth-mini-mode
-  - /developing/qcalendaragenda
-  - /developing/qcalendarresource
-  - /developing/qcalendarscheduler
-  - /developing/qcalendartask
+  - /developing/qcalendar-day
+  - /developing/qcalendar-month
+  - /developing/qcalendar-month-mini-mode
+  - /developing/qcalendar-agenda
+  - /developing/qcalendar-resource
+  - /developing/qcalendar-scheduler
+  - /developing/qcalendar-task
 ---
 
 This section will highlight a number common properties and generalities amongst the various calendars. Other, more specific properties, will be discussed in their respective calendar sections.

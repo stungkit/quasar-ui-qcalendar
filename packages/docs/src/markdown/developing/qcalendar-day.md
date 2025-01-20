@@ -18,7 +18,7 @@ With the QCalendarDay calendar using the `day` view, any number of days can be s
 The first day displayed will always be today's date or the initial date of the `modelValue`.
 :::
 
-<MarkdownExample title="3 Day" file="Day3Day" no-github no-edit/>
+<MarkdownExample title="Three Day" file="DayThreeDay" no-github no-edit/>
 
 You can use the properties `date-header`, `date-align` and `weekday-align` to manipulate how the header area looks.
 
