@@ -73,7 +73,7 @@ Including support for locales, optional theming, 1st day Monday, 5-day work week
 
 # Structure
 
-This is a yarn workspace mono-repo. You cannot use npm for building.
+This is a pnpm workspace mono-repo. You cannot use npm for building.
 
 - [/ui](../ui) - standalone npm package (go here for more information)
 - [/app-extension](../app-extension) - Quasar app extension
