@@ -1,9 +1,9 @@
 <template>
   <div class="subcontent">
     <div class="line">
-      This example uses the <code class="example-token">use-navigation</code> property along with
-      the <code class="example-token">focusable</code> and
-      <code class="example-token">focus-type</code> properties.<br />
+      This example uses the <code class="markdown-token">use-navigation</code> property along with
+      the <code class="markdown-token">focusable</code> and
+      <code class="markdown-token">focus-type</code> properties.<br />
       If the calendar has focus you can use the <kbd>&larr;</kbd> and <kbd>&rarr;</kbd> keys on your
       keyboard for navigation.<br />
       On the intervals, you can use <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> for
