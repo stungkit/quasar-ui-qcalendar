@@ -152,7 +152,7 @@ const gettingStartedMenu: SiteMenuItem = {
   children: [
     { name: 'Introduction', path: '/getting-started/introduction' },
     { name: 'Installation', path: '/getting-started/installation' },
-    { name: 'Quick Start', path: '/getting-started/quickstart' },
+    { name: 'Quick Start', path: '/getting-started/quick-start' },
     { name: 'Anatomy of a Calendar', path: '/getting-started/anatomy-of-a-calendar' },
     { name: 'Transitions', path: '/getting-started/transitions' },
     { name: 'Themes', path: '/getting-started/themes' },
@@ -164,15 +164,15 @@ const developingMenu = {
   mq: 600, // media query breakpoint
   children: [
     { name: 'QCalendar', path: '/developing/qcalendar' },
-    { name: 'QCalendarAgenda', path: '/developing/qcalendaragenda' },
-    { name: 'QCalendarDay', path: '/developing/qcalendarday' },
-    { name: 'QCalendarDay (Week)', path: '/developing/qcalendarday-week' },
-    { name: 'QCalendarDay (Intervals)', path: '/developing/qcalendarday-intervals' },
-    { name: 'QCalendarMonth', path: '/developing/qcalendarmonth' },
-    { name: 'QCalendarMonth (mini-mode)', path: '/developing/qcalendarmonth-mini-mode' },
-    { name: 'QCalendarResource', path: '/developing/qcalendarresource' },
-    { name: 'QCalendarScheduler', path: '/developing/qcalendarscheduler' },
-    { name: 'QCalendarTask', path: '/developing/qcalendartask' },
+    { name: 'QCalendarAgenda', path: '/developing/qcalendar-agenda' },
+    { name: 'QCalendarDay', path: '/developing/qcalendar-day' },
+    { name: 'QCalendarDay (Week)', path: '/developing/qcalendar-day-week' },
+    { name: 'QCalendarDay (Intervals)', path: '/developing/qcalendar-day-intervals' },
+    { name: 'QCalendarMonth', path: '/developing/qcalendar-month' },
+    { name: 'QCalendarMonth (mini-mode)', path: '/developing/qcalendar-month-mini-mode' },
+    { name: 'QCalendarResource', path: '/developing/qcalendar-resource' },
+    { name: 'QCalendarScheduler', path: '/developing/qcalendar-scheduler' },
+    { name: 'QCalendarTask', path: '/developing/qcalendar-task' },
     { name: 'Timestamp', path: '/developing/timestamp' },
   ],
 }
@@ -206,7 +206,7 @@ const examplesMenu = {
     {
       name: 'Day',
       children: [
-        { name: '3 Day', path: '/examples/day/3-day' },
+        { name: '3 Day', path: '/examples/day/_3-day' },
         { name: 'Alignment', path: '/examples/day/alignment' },
         { name: 'Cell Width', path: '/examples/day/cell-width' },
         { name: 'Column Count', path: '/examples/day/column-count' },

@@ -1,17 +1,8 @@
 import mdPageList from 'src/markdown/listing'
 import examplesPageList from 'src/examples/listing'
-// import { slugify } from '@md-plugins/shared'
+import { slugify } from '@md-plugins/shared'
 
 // console.log('examplesPageList', examplesPageList)
-
-function slugify(str: string): string {
-  return str
-    .replace(/([a-z])([A-Z])/g, '$1-$2') // Insert hyphen between camelCase or PascalCase
-    .replace(/[\s_]+/g, '-') // Replace spaces and underscores with hyphens
-    .toLowerCase() // Convert to lowercase
-    .replace(/[^a-z0-9-]+/g, '') // Remove non-alphanumeric characters except hyphens
-    .replace(/(^-|-$)/g, '') // Remove leading and trailing hyphens
-}
 
 const routes = [
   {
@@ -43,9 +34,15 @@ const routes = [
             const len = parts.length
             const path = parts[len - 2] === parts[len - 1] ? parts.slice(0, len - 1) : parts
 
+            if (len > 2) {
+              path[2] = slugify(path[2] as string)
+              path[1] = slugify(path[1] as string)
+            }
+
             acc.path = path.join('/')
           }
 
+          // console.log('path:', acc.path)
           return acc
         }),
 
@@ -72,9 +69,9 @@ const routes = [
           path[1] = slugify(path[1] as string)
 
           acc.path = path.join('/').replace(/\/{2,}/g, '/')
-          console.log('path:', acc.path)
         }
 
+        // console.log('path:', acc.path)
         return acc
       }),
     ],
