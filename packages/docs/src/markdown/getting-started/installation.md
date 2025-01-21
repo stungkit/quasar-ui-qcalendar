@@ -57,37 +57,52 @@ This is the preferred way if you are targeting one or more calendar components.
 If you plan on importing from `src/` directly, please read the [Migration Guide](/other/migration-guide) on additional steps that may be needed.
 :::
 
-```
-$ pnpm add @quasar/quasar-ui-qcalendar
-# or
-$ yarn add @quasar/quasar-ui-qcalendar
-# or
-$ npm install @quasar/quasar-ui-qcalendar
+```tabs
+<<| bash pnpm |>>
+pnpm add @quasar/quasar-ui-qcalendar
+<<| bash yarn |>>
+yarn add @quasar/quasar-ui-qcalendar
+<<| bash npm |>>
+npm install @quasar/quasar-ui-qcalendar
 ```
 
-Then
+Now, you can access the compiled portions or access the sources directly. Choose which you want to use.
 
-```js
+```tabs
+<<| ts Compiled |>>
 import { defineBoot } from '#q-app/wrappers'
-import VuePlugin from '@quasar/quasar-ui-qcalendar/src/QCalendarDay'
-import '@quasar/quasar-ui-qcalendar/src/css/calendar-day.scss'
+import VuePlugin from '@quasar/quasar-ui-qcalendar/QCalendarDay'
+import '@quasar/quasar-ui-qcalendar/QCalendarDay.css'
+
+export default defineBoot(({ app }) => {
+  app.use(VuePlugin)
+})
+<<| ts Source (direct) |>>
+import { defineBoot } from '#q-app/wrappers'
+import VuePlugin from '@quasar/quasar-ui-qcalendar/src/QCalendarDay' // notice the `src` folder
+import '@quasar/quasar-ui-qcalendar/src/css/calendar-day.scss' // notice the path to raw scss file
 
 export default defineBoot(({ app }) => {
   app.use(VuePlugin)
 })
 ```
 
-Additionally, because you are accessing the sources this way, if you are using webpack, you will need to make sure your project will transpile the code.
+Additionally, if you are accessing sources directly there are a few more items you can do. Instead of adding the css/scss (from above) into a boot file, you can add it into your `quasar.config` file like so:
 
-In `quasar.conf.js` update the following:
-
-```js
+```ts
 // Note: using ~ tells Quasar the file resides in node_modules
 css: [
   'app.scss',
-  '~quasar-ui-qcalendar/src/css/calendar-day.scss'
+  '~quasar-ui-qcalendar/src/css/calendar-day.scss' // <---
 ],
+```
 
+If using `app-webpack` you will need to make sure your project will transpile the code.
+
+In `quasar.config` update the following:
+
+```js
+// Note: using ~ tells Quasar the file resides in node_modules
 build: {
   webpackTranspile: true,
   webpackTranspileDependencies: [
@@ -96,17 +111,34 @@ build: {
 }
 ```
 
+There are no extra steps to be taken with `app-vite`, it will automatically transpile your dependencies.
+
+#### Minified
+
+All CSS has been minified, so if you want `QCalendarDay.css` you could instead target `QCalendarDay.min.css`. This applies to all components.
+
 ### Or target as a component import
 
 ::: tip
 There are several variants for each calendar component, including common, es (modern), and UMD as well as minified versions of each of those. The same goes for the css, including min and rtl.
 :::
 
-```html
-<style src="@quasar/quasar-ui-qcalendar/dist/QCalendarDay.min.css"></style>
+```tabs
+<<| html Composition API |>>
+<!-- Add to your index.html -->
+<style src="@quasar/quasar-ui-qcalendar/QCalendarDay.min.css"></style>
 
+<!-- Add to your SFC -->
+<script setup>
+  import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/QCalendarDay'
+</script>
+<<| html Options API|>>
+<!-- Add to your index.html -->
+<style src="@quasar/quasar-ui-qcalendar/QCalendarDay.min.css"></style>
+
+<!-- Add to your SFC -->
 <script>
-  import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/QCalendarDay.esm.js'
+  import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/QCalendarDay'
 
   // add this if not using <script setup>
   export default {
@@ -132,8 +164,8 @@ const app = createApp(App).use(Plugin)
 ### Vue project from dist
 
 ```js
-import Plugin from '@quasar/quasar-ui-qcalendar/dist/QCalendarDay.esm.js'
-import '@quasar/quasar-ui-qcalendar/dist/QCalendarDay.min.css'
+import Plugin from '@quasar/quasar-ui-qcalendar/QCalendarDay'
+import '@quasar/quasar-ui-qcalendar/QCalendarDay.min.css'
 import App from './App.vue'
 
 const app = createApp(App).use(Plugin)
@@ -142,10 +174,10 @@ const app = createApp(App).use(Plugin)
 ### Or component import
 
 ```html
-<style src="@quasar/quasar-ui-qcalendar/dist/QCalendarDay.min.css"></style>
+<style src="@quasar/quasar-ui-qcalendar/QCalendarDay.min.css"></style>
 
 <script>
-  import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/QCalendarDay.esm.js'
+  import { QCalendarDay } from '@quasar/quasar-ui-qcalendar/QCalendarDay'
 
   // add this if not using <script setup>
   export default {

@@ -80,11 +80,10 @@ import {
   today,
   Timestamp,
 } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendarindex.css'
 import { ref, reactive, computed } from 'vue'
-import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-const calendar = ref<IQCalendarDay>()
+const calendar = ref<QCalendarDay>()
 
 const selectedDate = ref(today())
 const weekdays = reactive([0, 1, 2, 3, 4, 5, 6])

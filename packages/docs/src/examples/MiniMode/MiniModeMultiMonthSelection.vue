@@ -64,18 +64,17 @@ import {
   today,
   Timestamp,
 } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref, computed, onBeforeMount } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
 function leftClick(e: MouseEvent) {
   return e.button === 0
 }
 
-const calendar1 = ref<IQCalendarMonth>(),
-  calendar2 = ref<IQCalendarMonth>(),
+const calendar1 = ref<QCalendarMonth>(),
+  calendar2 = ref<QCalendarMonth>(),
   selectedDate1 = ref(today()),
   selectedDate2 = ref(today()),
   anchorTimestamp = ref<Timestamp | null>(null),

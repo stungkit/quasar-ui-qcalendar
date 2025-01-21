@@ -99,11 +99,10 @@
 
 <script setup lang="ts">
 import { QCalendarMonth, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
 interface Event {
   id: number
@@ -115,7 +114,7 @@ interface Event {
   weekday?: number
 }
 
-const calendar = ref<IQCalendarMonth>(),
+const calendar = ref<QCalendarMonth>(),
   selectedDate = ref(today()),
   dragItems = reactive<Event[]>([
     {

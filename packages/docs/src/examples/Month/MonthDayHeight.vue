@@ -52,13 +52,13 @@
 
 <script setup lang="ts">
 import { QCalendarMonth, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref, computed, type CSSProperties } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-const calendar = ref<IQCalendarMonth>(),
+
+const calendar = ref<QCalendarMonth>(),
   selectedDate = ref(today()),
   dayHeight = ref(50),
   dayMinHeight = ref(50)

@@ -41,12 +41,11 @@ import {
   getDateTime,
   Timestamp,
 } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 import { ref, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-const calendar = ref<IQCalendarDay>()
+const calendar = ref<QCalendarDay>()
 
 function leftClick(e: MouseEvent) {
   return e.button === 0

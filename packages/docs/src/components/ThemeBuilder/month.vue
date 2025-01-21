@@ -38,7 +38,7 @@
 
 <script>
 import { QCalendarMonth, getDayIdentifier } from '@quasar/quasar-ui-qcalendar/src/QCalendarMonth'
-import '@quasar/quasar-ui-qcalendar/src/index.scss'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 function leftClick(e) {
   return e.button === 0

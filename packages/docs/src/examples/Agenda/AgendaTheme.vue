@@ -47,15 +47,14 @@
 </template>
 
 <script setup lang="ts">
-import { QCalendarAgenda, today, Timestamp } from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import { QCalendarAgenda, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
+import '@quasar/quasar-ui-qcalendar/index.css'
 import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarAgenda as IQCalendarAgenda } from '@quasar/quasar-ui-qcalendar/dist/types'
 
 type Theme = Record<string, string>
 
-const calendar = ref<IQCalendarAgenda>()
+const calendar = ref<QCalendarAgenda>()
 const selectedDate = ref(today())
 const selectedTheme = ref<Theme>({})
 

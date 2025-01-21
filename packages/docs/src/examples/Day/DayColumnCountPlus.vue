@@ -33,10 +33,9 @@
 
 <script setup lang="ts">
 import { QCalendarDay, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
-import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
-const calendar = ref<IQCalendarDay>()
+const calendar = ref<QCalendarDay>()
 
 import { ref } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'

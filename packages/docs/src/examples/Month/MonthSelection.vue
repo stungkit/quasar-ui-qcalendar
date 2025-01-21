@@ -33,11 +33,11 @@
 
 <script setup lang="ts">
 import { QCalendarMonth, getDayIdentifier, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
+
 
 function leftClick(e: MouseEvent) {
   return e.button === 0
@@ -48,7 +48,7 @@ interface Scope {
   outside: boolean
 }
 
-const calendar = ref<IQCalendarMonth>(),
+const calendar = ref<QCalendarMonth>(),
   selectedDate = ref(today()),
   anchorTimestamp = ref<Timestamp | null>(null),
   otherTimestamp = ref<Timestamp | null>(null),

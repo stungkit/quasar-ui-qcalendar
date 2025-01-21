@@ -42,8 +42,8 @@
 </template>
 
 <script>
-import { QCalendarResource } from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/index.scss'
+import { QCalendarResource } from '@quasar/quasar-ui-qcalendar'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 export default {
   name: 'ThemeBuilderResource',

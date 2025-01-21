@@ -43,12 +43,11 @@
 
 <script setup lang="ts">
 import { QCalendarDay, today, parseDate, Timestamp } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-const calendar = ref<IQCalendarDay>(),
+const calendar = ref<QCalendarDay>(),
   selectedDate = ref(today()),
   toggled = ref(false),
   currentDate = ref<string | null>(null),

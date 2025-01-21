@@ -37,12 +37,11 @@
 
 <script setup lang="ts">
 import { QCalendarAgenda, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 import { ref } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarAgenda as IQCalendarAgenda } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-const calendar = ref<IQCalendarAgenda>()
+const calendar = ref<QCalendarAgenda>()
 const selectedDate = ref(today())
 const dateType = ref('square')
 const leftColumnOptions = ref([

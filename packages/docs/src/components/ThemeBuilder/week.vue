@@ -81,8 +81,8 @@ import {
   getDayTimeIdentifier,
   getDateTime,
   copyTimestamp,
-} from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/index.scss'
+} from '@quasar/quasar-ui-qcalendar'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 function leftClick(e) {
   return e.button === 0

@@ -106,18 +106,18 @@ import {
   parsed,
   padNumber,
   Timestamp,
-} from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+} from '@quasar/quasar-ui-qcalendar'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref, reactive, computed, onBeforeMount } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import type { QCalendarTask as IQCalendarTask } from '@quasar/quasar-ui-qcalendar/dist/types'
+
 
 import Done from '@carbon/icons-vue/es/checkmark--outline/16'
 import Pending from '@carbon/icons-vue/es/pending/16'
 import Blocking from '@carbon/icons-vue/es/undefined/16'
 
-const calendar = ref<IQCalendarTask>()
+const calendar = ref<QCalendarTask>()
 type Theme = Record<string, string>
 
 const selectedDate = ref(today()),

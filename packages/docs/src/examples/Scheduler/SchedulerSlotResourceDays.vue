@@ -36,11 +36,11 @@
 
 <script setup lang="ts">
 import { QCalendarScheduler, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarScheduler as IQCalendarScheduler } from '@quasar/quasar-ui-qcalendar/dist/types'
+
 
 interface Event {
   dow: number
@@ -60,7 +60,7 @@ interface Resource {
   children?: Resource[]
 }
 
-const calendar = ref<IQCalendarScheduler>(),
+const calendar = ref<QCalendarScheduler>(),
   selectedDate = ref(today()),
   resources = reactive<Resource[]>([
     { id: '1', name: 'John' },

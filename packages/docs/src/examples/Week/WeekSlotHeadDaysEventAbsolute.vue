@@ -52,10 +52,10 @@ import {
   today,
   Timestamp,
 } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 import { ref, reactive, computed, onBeforeMount } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
+
 
 interface Event {
   id: number
@@ -67,7 +67,7 @@ interface Event {
   bgcolor: string
 }
 
-const calendar = ref<IQCalendarDay>()
+const calendar = ref<QCalendarDay>()
 const selectedDate = ref(today())
 const weekdays = ref([0, 1, 2, 3, 4, 5, 6])
 // we only need 2 events for this example

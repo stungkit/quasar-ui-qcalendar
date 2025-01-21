@@ -143,13 +143,10 @@ import {
   isBetweenDates,
   parsed,
   Timestamp,
-} from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.scss'
-import '@quasar/quasar-ui-qcalendar/src/QCalendar.scss'
+} from '@quasar/quasar-ui-qcalendar'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendar as IQCalendar } from '@quasar/quasar-ui-qcalendar/dist/types'
 
 import Done from '@carbon/icons-vue/es/checkmark--outline/16'
 import Pending from '@carbon/icons-vue/es/pending/16'
@@ -171,7 +168,7 @@ interface AgendaItem {
   desc?: string
 }
 
-const calendar = ref<IQCalendar>(),
+const calendar = ref<QCalendar>(),
   selectedCalendar = ref('day'),
   selectedView = ref('day'),
   selectedDate = ref(today()),

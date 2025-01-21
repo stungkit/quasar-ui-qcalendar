@@ -17,7 +17,7 @@ In your sass file:
 In your Vue file (in a script section):
 
 ```js
-import '@quasar/quasar-ui-qcalendar/dist/QCalendarTransitions.css'
+import '@quasar/quasar-ui-qcalendar/QCalendarTransitions.css'
 ```
 
 ## Transitions

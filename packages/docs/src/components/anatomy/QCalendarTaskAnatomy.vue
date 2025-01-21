@@ -98,8 +98,8 @@ import {
   padNumber,
   QCalendarTask,
   type Timestamp,
-} from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/index.scss'
+} from '@quasar/quasar-ui-qcalendar'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 interface Type {
   name: string
@@ -250,19 +250,17 @@ const endDate = ref(today())
 const parsedTasks = computed(() => {
   const start = parsed(startDate.value)
   const end = parsed(endDate.value)
-  const t: Task[] = []
 
-  for (let i = 0; i < tasks.length; ++i) {
-    const task = tasks[i]
-    for (let j = 0; j < task!.logged.length; ++j) {
-      const loggedTimestamp = parsed(task!.logged[j]!.date)
-      if (isBetweenDates(loggedTimestamp, start, end)) {
-        t.push(task as Task)
-        break
-      }
-    }
+  if (!start || !end) {
+    return [] as Task[]
   }
-  return t
+
+  return tasks.filter(task =>
+    task.logged.some(logged => {
+      const loggedTimestamp = parsed(logged.date)
+      return loggedTimestamp && isBetweenDates(loggedTimestamp, start, end)
+    })
+  ) as Task[]
 })
 
 watch(
@@ -355,7 +353,7 @@ function getLoggedSummary(date: string) {
 function sum(start: Timestamp, end: Timestamp, task: Task) {
   const reducer = (accumulator: number, currentValue: { date: string; logged: number }) => {
     const loggedTimestamp = parsed(currentValue.date)
-    if (isBetweenDates(loggedTimestamp, start, end)) {
+    if (loggedTimestamp && isBetweenDates(loggedTimestamp, start, end)) {
       return accumulator + currentValue.logged
     }
     return accumulator
@@ -372,7 +370,7 @@ function getTasks(start: Timestamp, end: Timestamp, task: Task) {
 
   for (let index = 0; index < task.logged.length; ++index) {
     const loggedTimestamp = parsed(task.logged[index]!.date)
-    if (isBetweenDates(loggedTimestamp, start, end)) {
+    if (loggedTimestamp && isBetweenDates(loggedTimestamp, start, end)) {
       t.push(task)
       break
     }
@@ -406,7 +404,7 @@ function totals(start: Timestamp, end: Timestamp) {
   let total = 0
   const reducer = (accumulator: number, currentValue: { date: string; logged: number }) => {
     const loggedTimestamp = parsed(currentValue.date)
-    if (isBetweenDates(loggedTimestamp, start, end)) {
+    if (loggedTimestamp && isBetweenDates(loggedTimestamp, start, end)) {
       return accumulator + currentValue.logged
     }
     return accumulator

@@ -95,11 +95,11 @@ import {
   padNumber,
   Timestamp,
 } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref, reactive, computed, onBeforeMount } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarTask as IQCalendarTask } from '@quasar/quasar-ui-qcalendar/dist/types'
+
 
 interface Logged {
   date: string
@@ -112,7 +112,7 @@ interface Task {
   logged: Logged[]
 }
 
-const calendar = ref<IQCalendarTask>(),
+const calendar = ref<QCalendarTask>(),
   selectedDate = ref(today()),
   startDate = ref(today()),
   endDate = ref(today()),

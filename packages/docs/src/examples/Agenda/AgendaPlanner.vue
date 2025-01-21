@@ -267,9 +267,8 @@ import {
   daysBetween,
   createNativeLocaleFormatter,
   Timestamp,
-  type QCalendarAgenda as IQCalendarAgenda,
 } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 import Checkbox from '@carbon/icons-vue/es/checkbox/24'
 import CheckboxChecked from '@carbon/icons-vue/es/checkbox--checked/24'
 import AddAlt from '@carbon/icons-vue/es/add--alt/16'
@@ -360,7 +359,7 @@ const workDone = [
 ]
 
 let itemId = 1
-const calendar = ref<IQCalendarAgenda>()
+const calendar = ref<QCalendarAgenda>()
 const selectedDate = ref(today())
 const shortMonthLabel = ref(false)
 const todayDate = ref(today())

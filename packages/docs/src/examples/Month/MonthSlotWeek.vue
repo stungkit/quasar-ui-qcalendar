@@ -62,11 +62,10 @@ import {
   Timestamp,
 } from '@quasar/quasar-ui-qcalendar'
 import { indexOf } from '@quasar/quasar-ui-qcalendar/src/utils/helpers.js'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref, reactive } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
 interface Event {
   id: number
@@ -97,7 +96,7 @@ function getCurrentDay(day: number): string {
   return tm!.date
 }
 
-const calendar = ref<IQCalendarMonth>(),
+const calendar = ref<QCalendarMonth>(),
   selectedDate = ref(today()),
   events = reactive<Event[]>([
     {

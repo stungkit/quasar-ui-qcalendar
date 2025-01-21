@@ -85,8 +85,8 @@ import {
   parsed,
   padNumber,
   QCalendarTask,
-} from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/index.scss'
+} from '@quasar/quasar-ui-qcalendar'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { defineComponent } from 'vue'
 

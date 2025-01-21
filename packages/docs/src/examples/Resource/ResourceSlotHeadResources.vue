@@ -34,11 +34,11 @@
 
 <script setup lang="ts">
 import { QCalendarResource, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref, reactive } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarResource as IQCalendarResource } from '@quasar/quasar-ui-qcalendar/dist/types'
+
 
 interface Resource {
   id: string
@@ -47,7 +47,7 @@ interface Resource {
   children?: Resource[]
 }
 
-const calendar = ref<IQCalendarResource>(),
+const calendar = ref<QCalendarResource>(),
   selectedDate = ref(today()),
   locale = ref('en-US'),
   resources = reactive<Resource[]>([

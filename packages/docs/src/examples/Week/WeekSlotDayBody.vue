@@ -84,10 +84,10 @@ import {
   parseTime,
   Timestamp,
 } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarDay as IQCalendarDay } from '@quasar/quasar-ui-qcalendar/dist/types'
+
 
 // The function below is used to set up our demo data
 const CURRENT_DAY = new Date()
@@ -111,7 +111,7 @@ interface Event {
   side?: string
 }
 
-const calendar = ref<IQCalendarDay>(),
+const calendar = ref<QCalendarDay>(),
   selectedDate = ref(today()),
   events = reactive<Event[]>([
     {

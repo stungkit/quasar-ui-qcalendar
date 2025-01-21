@@ -59,10 +59,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { QCalendarAgenda, today } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarAgenda as IQCalendarAgenda } from '@quasar/quasar-ui-qcalendar/dist/types'
 
 const selectedDate = ref(today())
 const dateAlign = ref('center')
@@ -70,7 +69,7 @@ const weekdayAlign = ref('center')
 const leftColumnOptions = ref([])
 const rightColumnOptions = ref([])
 const dateHeader = ref('stacked')
-const calendar = ref<IQCalendarAgenda>()
+const calendar = ref<QCalendarAgenda>()
 
 const onChange = (date: string) => {
   console.log('Date changed:', date)

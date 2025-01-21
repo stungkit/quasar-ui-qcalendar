@@ -57,9 +57,8 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { QCalendarAgenda, Timestamp, today } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarAgenda as IQCalendarAgenda } from '@quasar/quasar-ui-qcalendar/dist/types'
 
 interface AgendaItem {
   time: string
@@ -67,7 +66,7 @@ interface AgendaItem {
   desc?: string
 }
 
-const calendar = ref<IQCalendarAgenda>()
+const calendar = ref<QCalendarAgenda>()
 const selectedDate = ref(today())
 const agenda = reactive<Record<number, AgendaItem[]>>({
   // value represents day of the week

@@ -42,16 +42,15 @@
 </template>
 
 <script setup lang="ts">
-import { QCalendarMonth, today, Timestamp } from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import { QCalendarMonth, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import type { QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
 type Theme = Record<string, string>
 
-const calendar = ref<IQCalendarMonth>()
+const calendar = ref<QCalendarMonth>()
 const selectedDate = ref(today())
 const selectedTheme = ref<Theme>({})
 const themes = reactive<Record<string, Theme>>({

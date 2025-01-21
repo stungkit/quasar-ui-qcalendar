@@ -128,11 +128,11 @@ import {
   padNumber,
   Timestamp,
 } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref, reactive, computed, onBeforeMount } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarTask as IQCalendarTask } from '@quasar/quasar-ui-qcalendar/dist/types'
+
 
 import Done from '@carbon/icons-vue/es/checkmark--outline/16'
 import Pending from '@carbon/icons-vue/es/pending/16'
@@ -149,7 +149,7 @@ interface Task {
   logged: Logged[]
 }
 
-const calendar = ref<IQCalendarTask>(),
+const calendar = ref<QCalendarTask>(),
   selectedDate = ref(today()),
   dateAlign = ref('center'),
   weekdayAlign = ref('center'),

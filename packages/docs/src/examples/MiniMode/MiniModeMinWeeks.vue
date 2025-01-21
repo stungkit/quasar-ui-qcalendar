@@ -25,13 +25,12 @@
 
 <script setup lang="ts">
 import { QCalendarMonth, today, Timestamp } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/src/index.scss'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
-import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
-const calendar = ref<IQCalendarMonth>()
+const calendar = ref<QCalendarMonth>()
 const selectedDate = ref(today())
 
 function onToday() {

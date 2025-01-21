@@ -75,12 +75,11 @@ import {
   isBetweenDates,
   Timestamp,
 } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendar/dist/index.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
 import Holidays from 'date-holidays'
-import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
 interface Holiday {
   date: string
@@ -102,7 +101,7 @@ interface Event {
   days?: number
 }
 
-const calendar = ref<IQCalendarMonth>(),
+const calendar = ref<QCalendarMonth>(),
   hd = new Holidays(),
   countries = hd.getCountries(),
   selectedDate = ref(today()),

@@ -55,8 +55,8 @@
 </template>
 
 <script>
-import { QCalendarScheduler } from '@quasar/quasar-ui-qcalendar/src'
-import '@quasar/quasar-ui-qcalendar/src/index.scss'
+import { QCalendarScheduler } from '@quasar/quasar-ui-qcalendar'
+import '@quasar/quasar-ui-qcalendar/index.css'
 
 export default {
   name: 'ThemeBuilderScheduler',
