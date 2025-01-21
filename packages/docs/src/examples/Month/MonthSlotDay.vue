@@ -27,8 +27,9 @@
               <div
                 :class="badgeClasses(event, 'day')"
                 :style="badgeStyles(event, 'day')"
-                class="my-event"
+                class="row justify-start items-center no-wrap my-event"
               >
+                <q-icon v-if="event?.icon" :name="event.icon" class="q-mr-xs"></q-icon>
                 <div class="title q-calendar__ellipsis">
                   {{ event.title + (event.time ? ' - ' + event.time : '') }}
                   <q-tooltip>{{ event.details }}</q-tooltip>
@@ -198,9 +199,11 @@ const eventsMap = computed<Record<string, Event[]>>(() => {
   return map
 })
 function badgeClasses(event: Event, _type: string) {
+  console.log('event', event)
   return {
-    [`text-white bg-${event.bgcolor}`]: true,
-    'rounded-border': true,
+    'text-white': true,
+    [`bg-${event.bgcolor}`]: true,
+    'q-calendar__ellipsis': true,
   }
 }
 
@@ -257,7 +260,8 @@ function onClickHeadWorkweek(data: Timestamp) {
   font-size: 12px;
   width: 100%;
   margin: 1px 0 0 0;
-  justify-content: center;
+  padding: 0 2px;
+  justify-content: start;
   text-overflow: ellipsis;
   overflow: hidden;
   cursor: pointer;
