@@ -15,6 +15,150 @@
     "dist",
     "src"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js"
+    },
+    "./index.min.css": {
+      "default": "./dist/index.min.css"
+    },
+    "./index.css": {
+      "default": "./dist/index.css"
+    },
+    "./index.rtl.min.css": {
+      "default": "./dist/index.rtl.min.css"
+    },
+    "./index.rtl.css": {
+      "default": "./dist/index.rtl.css"
+    },
+    "./QCalendar": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/QCalendar.esm.js",
+      "require": "./dist/QCalendar.cjs.js"
+    },
+    "./QCalendar.min.css": {
+      "default": "./dist/QCalendar.min.css"
+    },
+    "./QCalendar.css": {
+      "default": "./dist/QCalendar.css"
+    },
+    "./QCalendar.rtl.min.css": {
+      "default": "./dist/QCalendar.rtl.min.css"
+    },
+    "./QCalendar.rtl.css": {
+      "default": "./dist/QCalendar.rtl.css"
+    },
+    "./QCalendarAgenda": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/QCalendarAgenda.esm.js",
+      "require": "./dist/QCalendarAgenda.cjs.js"
+    },
+    "./QCalendarAgenda.min.css": {
+      "default": "./dist/QCalendarAgenda.min.css"
+    },
+    "./QCalendarAgenda.css": {
+      "default": "./dist/QCalendarAgenda.css"
+    },
+    "./QCalendarAgenda.rtl.min.css": {
+      "default": "./dist/QCalendarAgenda.rtl.min.css"
+    },
+    "./QCalendarAgenda.rtl.css": {
+      "default": "./dist/QCalendarAgenda.rtl.css"
+    },
+    "./QCalendarDay": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/QCalendarDay.esm.js",
+      "require": "./dist/QCalendarDay.cjs.js"
+    },
+    "./QCalendarDay.min.css": {
+      "default": "./dist/QCalendarDay.min.css"
+    },
+    "./QCalendarDay.css": {
+      "default": "./dist/QCalendarDay.css"
+    },
+    "./QCalendarDay.rtl.min.css": {
+      "default": "./dist/QCalendarDay.rtl.min.css"
+    },
+    "./QCalendarDay.rtl.css": {
+      "default": "./dist/QCalendarDay.rtl.css"
+    },
+    "./QCalendarMonth": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/QCalendarMonth.esm.js",
+      "require": "./dist/QCalendarMonth.cjs.js"
+    },
+    "./QCalendarMonth.min.css": {
+      "default": "./dist/QCalendarMonth.min.css"
+    },
+    "./QCalendarMonth.css": {
+      "default": "./dist/QCalendarMonth.css"
+    },
+    "./QCalendarMonth.rtl.min.css": {
+      "default": "./dist/QCalendarMonth.rtl.min.css"
+    },
+    "./QCalendarMonth.rtl.css": {
+      "default": "./dist/QCalendarMonth.rtl.css"
+    },
+    "./QCalendarResource": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/QCalendarResource.esm.js",
+      "require": "./dist/QCalendarResource.cjs.js"
+    },
+    "./QCalendarResource.min.css": {
+      "default": "./dist/QCalendarResource.min.css"
+    },
+    "./QCalendarResource.css": {
+      "default": "./dist/QCalendarResource.css"
+    },
+    "./QCalendarResource.rtl.min.css": {
+      "default": "./dist/QCalendarResource.rtl.min.css"
+    },
+    "./QCalendarResource.rtl.css": {
+      "default": "./dist/QCalendarResource.rtl.css"
+    },
+    "./QCalendarScheduler": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/QCalendarScheduler.esm.js",
+      "require": "./dist/QCalendarScheduler.cjs.js"
+    },
+    "./QCalendarScheduler.min.css": {
+      "default": "./dist/QCalendarScheduler.min.css"
+    },
+    "./QCalendarScheduler.css": {
+      "default": "./dist/QCalendarScheduler.css"
+    },
+    "./QCalendarScheduler.rtl.min.css": {
+      "default": "./dist/QCalendarScheduler.rtl.min.css"
+    },
+    "./QCalendarScheduler.rtl.css": {
+      "default": "./dist/QCalendarScheduler.rtl.css"
+    },
+    "./QCalendarTask": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/QCalendarTask.esm.js",
+      "require": "./dist/QCalendarTask.cjs.js"
+    },
+    "./QCalendarTask.min.css": {
+      "default": "./dist/QCalendarTask.min.css"
+    },
+    "./QCalendarTask.css": {
+      "default": "./dist/QCalendarTask.css"
+    },
+    "./QCalendarTask.rtl.min.css": {
+      "default": "./dist/QCalendarTask.rtl.min.css"
+    },
+    "./QCalendarTask.rtl.css": {
+      "default": "./dist/QCalendarTask.rtl.css"
+    },
+    "./Timestamp": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/Timestamp.esm.js",
+      "require": "./dist/Timestamp.cjs.js"
+    },
+    "./*": "./*"
+  },
   "scripts": {
     "lint": "eslint --ext .cjs,.js,.vue src",
     "lint-fix": "eslint --ext .cjs,.js,.vue src --fix",
