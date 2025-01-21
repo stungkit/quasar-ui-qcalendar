@@ -259,11 +259,13 @@ function onClickHeadWorkweek(data: Timestamp) {
   position: relative;
   font-size: 12px;
   width: 100%;
+  max-width: 100%;
   margin: 1px 0 0 0;
   padding: 0 2px;
   justify-content: start;
   text-overflow: ellipsis;
   overflow: hidden;
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -273,6 +275,7 @@ function onClickHeadWorkweek(data: Timestamp) {
   justify-content: center;
   align-items: center;
   height: 100%;
+  max-width: 100%;
 }
 
 .text-white {
