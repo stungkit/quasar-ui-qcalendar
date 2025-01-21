@@ -1,10 +1,10 @@
 /*global console */
-import rimraf from 'rimraf'
+import { rimrafSync } from 'rimraf'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-rimraf.sync(path.resolve(__dirname, '../dist/*'))
+rimrafSync(path.resolve(__dirname, '../dist/*'))
 console.log(' 💥 Cleaned build artifacts.\n')
