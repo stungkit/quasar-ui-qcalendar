@@ -203,20 +203,28 @@ const calendar = ref<IQCalendarMonth>(),
   ])
 
 function getWeekEvents(week: Timestamp[], _weekdays: number[]): DisplayedEvent[] {
+  // first day of week
   const firstDay = week[0] ? parsed(week[0].date + ' 00:00') : null
+  // last day of week
   const lastDay =
     week.length > 0 && week[week.length - 1] ? parsed(week[week.length - 1]?.date + ' 23:59') : null
 
   const eventsWeek: DisplayedEvent[] = []
 
   if (firstDay && lastDay) {
+    // for each event - could use a filter here to optimize
     events.forEach((event, id) => {
+      // start date of event
       const startDate = parsed(event.start + ' 00:00')
+      // end date of event
       const endDate = parsed(event.end + ' 23:59')
 
       if (startDate && endDate) {
+        // does the event start date and end date fall  within the week?
         if (isOverlappingDates(startDate, endDate, firstDay, lastDay)) {
+          // how many days from the start of the week?
           const left = daysBetween(firstDay, startDate)
+          // how many days from the end of the week?
           const right = daysBetween(endDate, lastDay)
 
           eventsWeek.push({
@@ -250,7 +258,7 @@ function insertEvent(
   level: number,
 ) {
   const iEvent = infoWeek[index]
-  if (iEvent !== undefined && iEvent.left && iEvent.left >= availableDays) {
+  if (iEvent !== undefined && 'left' in iEvent && iEvent.left >= availableDays) {
     // If you have space available, more events are placed
     if (iEvent.left - availableDays) {
       // It is filled with empty events
@@ -266,7 +274,7 @@ function insertEvent(
 
     const currentAvailableDays = iEvent.left + iEvent.size
 
-    if (currentAvailableDays < weekLength) {
+    if (currentAvailableDays <= weekLength) {
       const indexNextEvent = indexOf(
         infoWeek,
         (e: DisplayedEvent) =>
