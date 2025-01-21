@@ -42,7 +42,7 @@ importers:
   packages/app-extension:
     dependencies:
       '@quasar/quasar-ui-qcalendar':
-        specifier: ^4.0.1
+        specifier: ^4.0.2
         version: link:../ui
     devDependencies:
       '@babel/core':
