@@ -35,7 +35,6 @@
                   <q-icon
                     v-if="displayedEvent.event?.icon"
                     :name="displayedEvent.event.icon"
-                    class="q-mr-xs"
                   ></q-icon>
                   {{
                     displayedEvent.event.title +
@@ -203,52 +202,46 @@ const calendar = ref<IQCalendarMonth>(),
   ])
 
 function getWeekEvents(week: Timestamp[], _weekdays: number[]): DisplayedEvent[] {
-  // first day of week
-  const firstDay = week[0] ? parsed(week[0].date + ' 00:00') : null
-  // last day of week
-  const lastDay =
-    week.length > 0 && week[week.length - 1] ? parsed(week[week.length - 1]?.date + ' 23:59') : null
+  if (!week || week.length === 0) return []
 
-  const eventsWeek: DisplayedEvent[] = []
+  // Define week range
+  const firstDay = parsed(`${week[0]!.date} 00:00`)
+  const lastDay = parsed(`${week[week.length - 1]?.date} 23:59`)
+  if (!firstDay || !lastDay) return []
 
-  if (firstDay && lastDay) {
-    // for each event - could use a filter here to optimize
-    events.forEach((event, id) => {
-      // start date of event
-      const startDate = parsed(event.start + ' 00:00')
-      // end date of event
-      const endDate = parsed(event.end + ' 23:59')
+  // Filter and process events
+  const eventsWeek = events
+    .map((event, id) => {
+      const startDate = parsed(`${event.start} 00:00`)
+      const endDate = parsed(`${event.end} 23:59`)
 
-      if (startDate && endDate) {
-        // does the event start date and end date fall  within the week?
-        if (isOverlappingDates(startDate, endDate, firstDay, lastDay)) {
-          // how many days from the start of the week?
-          const left = daysBetween(firstDay, startDate)
-          // how many days from the end of the week?
-          const right = daysBetween(endDate, lastDay)
-
-          eventsWeek.push({
-            id, // index event
-            left, // Position initial day [0-6]
-            right, // Number days available
-            size: week.length - (left + right), // Size current event (in days)
-            event, // Info
-          })
+      if (startDate && endDate && isOverlappingDates(startDate, endDate, firstDay, lastDay)) {
+        const left = daysBetween(firstDay, startDate)
+        const right = daysBetween(endDate, lastDay)
+        return {
+          id,
+          left,
+          right,
+          size: week.length - (left + right),
+          event,
         }
       }
+      return null
     })
-  }
+    .filter(Boolean) as DisplayedEvent[] // Remove null values
 
+  // Sort and insert events into week structure
   const evts: DisplayedEvent[] = []
   if (eventsWeek.length > 0) {
-    const infoWeek = eventsWeek.sort((a, b) => (a.left ?? 0) - (b.left ?? 0))
-    infoWeek.forEach((_, i) => {
-      insertEvent(evts, week.length, infoWeek, i, 0, 0)
+    const sortedWeek = eventsWeek.sort((a, b) => (a.left ?? 0) - (b.left ?? 0))
+    sortedWeek.forEach((_, i) => {
+      insertEvent(evts, week.length, sortedWeek, i, 0, 0)
     })
   }
 
   return evts
 }
+
 function insertEvent(
   events: DisplayedEvent[],
   weekLength: number,
@@ -371,8 +364,7 @@ function onClickHeadWorkweek(data: Timestamp) {
   display: inline-flex;
   white-space: nowrap;
   font-size: 12px;
-  height: 16px;
-  max-height: 16px;
+  height: 20px;
   margin: 1px 0 0 0;
   padding: 2px 2px;
   justify-content: start;
@@ -382,11 +374,13 @@ function onClickHeadWorkweek(data: Timestamp) {
 }
 
 .title {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
+  display: inline-block; /* Ensures the text can truncate */
+  white-space: nowrap; /* Prevents text from wrapping to a new line */
+  overflow: hidden; /* Hides the overflowing text */
+  text-overflow: ellipsis; /* Displays the ellipsis for truncated text */
+  max-width: 100%; /* Ensures the truncation works within the parent container */
+  vertical-align: middle; /* Aligns the text with icons, if any */
+  text-align: left; /* Aligns the text to the left */
 }
 
 .my-void-event {
