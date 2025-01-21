@@ -32,6 +32,11 @@
                   v-if="displayedEvent.event && displayedEvent.event.details"
                   class="title q-calendar__ellipsis"
                 >
+                  <q-icon
+                    v-if="displayedEvent.event?.icon"
+                    :name="displayedEvent.event.icon"
+                    class="q-mr-xs"
+                  ></q-icon>
                   {{
                     displayedEvent.event.title +
                     (displayedEvent.event.time ? ' - ' + displayedEvent.event.time : '')
@@ -361,7 +366,8 @@ function onClickHeadWorkweek(data: Timestamp) {
   height: 16px;
   max-height: 16px;
   margin: 1px 0 0 0;
-  justify-content: center;
+  padding: 2px 2px;
+  justify-content: start;
   text-overflow: ellipsis;
   overflow: hidden;
   cursor: pointer;
@@ -414,6 +420,6 @@ function onClickHeadWorkweek(data: Timestamp) {
 }
 
 .rounded-border {
-  border-radius: 2px;
+  border-radius: 6px;
 }
 </style>
