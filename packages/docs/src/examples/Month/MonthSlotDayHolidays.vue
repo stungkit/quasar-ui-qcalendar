@@ -82,10 +82,20 @@ import NavigationBar from 'components/NavigationBar.vue'
 import Holidays from 'date-holidays'
 import { type QCalendarMonth as IQCalendarMonth } from '@quasar/quasar-ui-qcalendar/dist/types'
 
+interface Holiday {
+  date: string
+  start: Date
+  end: Date
+  name: string
+  type: string
+  rule: string
+  substitute?: boolean
+}
+
 interface Event {
   id: number
   title: string
-  details: Holidays.HolidayType
+  details: string
   date: string
   time?: string
   bgColor: string
@@ -93,7 +103,8 @@ interface Event {
 }
 
 const calendar = ref<IQCalendarMonth>(),
-  countries = new Holidays().getCountries(),
+  hd = new Holidays(),
+  countries = hd.getCountries(),
   selectedDate = ref(today()),
   selectedMonth = reactive<Timestamp[]>([]),
   year = ref(new Date().getFullYear()),
@@ -107,146 +118,237 @@ const calendar = ref<IQCalendarMonth>(),
     AI: 'en', // 'Anguilla', English/Creole
     AL: 'sq', // 'Shqipëri', Albanian
     AM: 'hy', // 'Հայաստան', Armenian
-    AO: 'pt', // 'Angola', Potuguese
+    AO: 'pt', // 'Angola', Portuguese
     AR: 'es-AR', // 'Argentina', Spanish
     AS: 'en-US', // 'American Samoa', American English
     AT: 'de-AT', // 'Österreich', German (Austrian)/Bavarian
-    AU: 'en-AU', // 'Australia', Austraian English
+    AU: 'en-AU', // 'Australia', Australian English
     AW: 'nl', // 'Aruba', Dutch
-    AX: 'sv-FI', // 'Landskapet Åland', Swedish (finnish)
+    AX: 'sv-FI', // 'Landskapet Åland', Swedish (Finnish)
     AZ: 'az', // 'Azərbaycan Respublikası', Azerbaijani
     BA: 'bs', // 'Bosna i Hercegovina', Bosnian
     BB: 'en', // 'Barbados', English
     BD: 'bn', // 'গণপ্রজাতন্ত্রী বাংলাদেশ', Bengali
-    BE: 'nl-BE', // 'Belgique', Ditch (Belgian)
-    BF: 'nl', // 'Burkina Faso', Dutch
-    BG: 'mk', // 'България', Macedonian
-    BH: 'ar', // 'مملكة البحرين', Arabix
+    BE: 'nl-BE', // 'Belgique', Dutch (Belgian)
+    BF: 'fr', // 'Burkina Faso', French
+    BG: 'bg', // 'България', Bulgarian
+    BH: 'ar', // 'مملكة البحرين', Arabic
     BI: 'fr', // 'République du Burundi', French
     BJ: 'fr', // 'République du Bénin', French
     BL: 'fr', // 'St. Barthélemy', French
     BM: 'en', // 'Bermuda', English
-    BN: 'en', // 'Negara Brunei Darussalam', Maylay/English
-    BO: 'es-BO', // 'Bolivia', English Bolian
-    BQ: 'nl', // Caribisch Nederland', Dutch
-    BR: 'pt-BR', // 'Brasil', Portuguese Brazil
-    BS: 'bah', // 'Bahamas', Bahamian Creole
+    BN: 'ms', // 'Negara Brunei Darussalam', Malay
+    BO: 'es-BO', // 'Bolivia', Spanish
+    BQ: 'nl', // 'Caribisch Nederland', Dutch
+    BR: 'pt-BR', // 'Brasil', Portuguese (Brazil)
+    BS: 'en', // 'Bahamas', English
     BW: 'tn', // 'Botswana', Setswana
     BY: 'ru', // 'Рэспубліка Беларусь', Russian
-    BZ: 'en-BZ', // 'Belize', English Belize
-    CA: 'en-CA', // 'Canada',
-    CC: 'en', // 'Cocos (Keeling) Islands', Maylay/English
+    BZ: 'en-BZ', // 'Belize', English (Belize)
+    CA: 'en-CA', // 'Canada', English (Canada)
+    CC: 'en', // 'Cocos (Keeling) Islands', English
     CD: 'fr', // 'République démocratique du Congo', French
     CF: 'fr', // 'République centrafricaine', French
     CG: 'fr', // 'République du Congo', French
-    CH: 'de-LI', // 'Schweiz', German Swiss
-    CL: 'es-CL', // 'Chile', Spanish Chile
+    CH: 'de-CH', // 'Schweiz', German (Swiss)
+    CI: 'fr', // 'République de Côte d'Ivoire', French
+    CK: 'en', // 'Cook Islands', English
+    CL: 'es-CL', // 'Chile', Spanish (Chile)
     CM: 'fr', // 'Cameroun', French
     CN: 'zh', // '中华人民共和国', Mandarin (Chinese)
-    CO: 'es-CO', // 'Colombia', Spanish Columbian
-    CR: 'es-CR', // 'Costa Rica', Spanish Costa Rica
+    CO: 'es-CO', // 'Colombia', Spanish (Colombian)
+    CR: 'es-CR', // 'Costa Rica', Spanish (Costa Rica)
     CU: 'es-CU', // 'Cuba', Spanish
-    CV: 'kea', // 'República de Cabo Verde', Spanish (ISO 693-3)
+    CV: 'kea', // 'República de Cabo Verde', Kabuverdianu (ISO 639-3)
     CW: 'nl', // 'Curaçao', Dutch
     CX: 'en', // 'Christmas Island', English
     CY: 'el', // 'Κύπρος', Greek
     CZ: 'cs', // 'Česká republika', Czech
-    DE: 'de-DE', // 'Deutschland', German Germany
+    DE: 'de-DE', // 'Deutschland', German (Germany)
+    DJ: 'fr', // 'République de Djibouti', French
     DK: 'da', // 'Danmark', Danish
-    DM: 'fr', // 'Dominica', French
-    DO: 'fr', // 'República Dominicana', French
-    EC: 'es-EC', // 'Ecuador', Spanish Ecuador
+    DM: 'en', // 'Dominica', English
+    DO: 'es-DO', // 'República Dominicana', Spanish (Dominican Republic)
+    DZ: 'ar', // 'الجمهورية الجزائرية الديمقراطية الشعبية', Arabic
+    EC: 'es-EC', // 'Ecuador', Spanish (Ecuador)
     EE: 'et', // 'Eesti', Estonian
+    EG: 'ar', // 'جمهورية مصر العربية', Arabic
+    EH: 'ar', // 'الجمهورية العربية الصحراوية الديمقراطية', Arabic
+    ER: 'ti', // 'Eritrea', Tigrinya
     ES: 'es', // 'España', Spanish
-    ET: 'ak', // 'ኢትዮጵያ', Afrikans
-    FI: 'fi', // 'Suomi', Finish
-    FO: 'de', // 'Føroyar', German
+    ET: 'am', // 'ኢትዮጵያ', Amharic
+    FI: 'fi', // 'Suomi', Finnish
+    FJ: 'en', // 'Matanitu Tugalala o Viti', English
+    FO: 'fo', // 'Føroyar', Faroese
     FR: 'fr', // 'France', French
     GA: 'fr', // 'Gabon', French
-    GB: 'en-GB', // 'United Kingdom', English Great Britain
-    GD: 'en', // 'Grenada', Englsih
+    GB: 'en-GB', // 'United Kingdom', English (Great Britain)
+    GD: 'en', // 'Grenada', English
     GE: 'ka', // 'საქართველო', Georgian
-    GF: 'fr-GY', // 'Guyane', Grench Guyane
-    GG: 'fr', // 'Guernsey', French
-    GI: 'es', // 'Gibraltar', Spanish
-    GL: 'kl', // 'Kalaallit Nunaat', (ISO 639-1)
+    GF: 'fr', // 'Guyane', French (Guyane)
+    GG: 'en', // 'Guernsey', English
+    GH: 'en', // 'Ghana', English
+    GI: 'en', // 'Gibraltar', English
+    GL: 'kl', // 'Kalaallit Nunaat', Greenlandic
+    GM: 'en', // 'The Gambia', English
+    GN: 'fr', // 'Guinée', French
     GP: 'fr', // 'Guadeloupe', French
-    GQ: 'fr', // 'República de Guinea Ecuatorial', French (Spanish, Portuguese)
+    GQ: 'es', // 'República de Guinea Ecuatorial', Spanish
     GR: 'el', // 'Ελλάδα', Greek
-    GT: 'es-GT', // 'Guatemala', Spanish Guatemala
-    GU: 'ch', // 'Guam', Chamorro
+    GT: 'es-GT', // 'Guatemala', Spanish (Guatemala)
+    GU: 'en', // 'Guam', English
+    GW: 'pt', // 'Guiné-Bissau', Portuguese
     GY: 'en', // 'Guyana', English
-    HN: 'es-HN', // 'Honduras', English Honduras
-    HR: 'hr', // 'Hrvatska', Croation
-    HT: 'ht', // 'Haïti', Haitian
-    HU: 'hu', // 'Magyarország', Hungary
-    ID: 'hy-AM', // 'Indonesia', Armenian
-    IE: 'en-IE', // 'Ireland', English Ireland
+    HK: 'zh-HK', // '香港', Chinese (Hong Kong)
+    HN: 'es-HN', // 'Honduras', Spanish (Honduras)
+    HR: 'hr', // 'Hrvatska', Croatian
+    HT: 'ht', // 'Haïti', Haitian Creole
+    HU: 'hu', // 'Magyarország', Hungarian
+    IC: 'es-IC', // 'Islas Canarias', Spanish (Canary Islands)
+    ID: 'id', // 'Indonesia', Indonesian
+    IE: 'en-IE', // 'Ireland', English (Ireland)
+    IL: 'he', // 'מְדִינַת יִשְׂרָאֵל', Hebrew
     IM: 'en', // 'Isle of Man', English
+    IN: 'hi', // 'भारत', Hindi
+    IQ: 'ar', // 'جمهورية العراق', Arabic
+    IR: 'fa', // 'جمهوری اسلامی ایران', Persian
     IS: 'is', // 'Ísland', Icelandic
     IT: 'it', // 'Italia', Italian
     JE: 'en', // 'Jersey', English
-    JM: 'en-JM', // 'Jamaica', English Jamaica
+    JM: 'en-JM', // 'Jamaica', English (Jamaica)
+    JO: 'ar', // 'المملكة الأردنية الهاشمية', Arabic
     JP: 'ja', // '日本', Japanese
     KE: 'sw', // 'Kenya', Swahili
-    KR: 'ko-KP', // '대한민국', Korean (South)
-    LI: 'gsw', // 'Lichtenstein', Swiss German
-    LS: 'en', // "'Muso oa Lesotho", English
+    KG: 'ky', // 'Кыргызстан', Kyrgyz
+    KH: 'km', // 'កម្ពុជា', Khmer
+    KI: 'en', // 'Kiribati', English
+    KM: 'ar', // 'Union des Comores', Arabic
+    KN: 'en', // 'St. Kitts & Nevis', English
+    KP: 'ko-KP', // '조선민주주의인민공화국', Korean (North)
+    KR: 'ko-KR', // '대한민국', Korean (South)
+    KW: 'ar', // 'دولة الكويت', Arabic
+    KY: 'en', // 'Cayman Islands', English
+    KZ: 'kk', // 'Қазақстан', Kazakh
+    LA: 'lo', // 'ປະເທດລາວ', Lao
+    LB: 'ar', // 'الجمهورية اللبنانية', Arabic
+    LC: 'en', // 'St. Lucia', English
+    LI: 'de-LI', // 'Liechtenstein', German (Liechtenstein)
+    LK: 'si', // 'ශ්‍රී ලංකාව', Sinhala
+    LR: 'en', // 'Liberia', English
+    LS: 'en', // 'Lesotho', English
     LT: 'lt', // 'Lietuva', Lithuanian
-    LU: 'fr-LU', // 'Luxembourg', French Luxembourg
+    LU: 'fr-LU', // 'Luxembourg', French (Luxembourg)
     LV: 'lv', // 'Latvija', Latvian
-    MC: 'fr-MC', // 'Monaco', French Monaco
-    MD: 'mo', // 'Republica Moldova',
-    ME: 'bs', // 'Crna Gora', Bosnian
-    MG: 'mg', // "Repoblikan'i Madagasikara", Madagascar
+    LY: 'ar', // 'دولة ليبيا', Arabic
+    MA: 'ar', // 'المملكة المغربية', Arabic
+    MC: 'fr-MC', // 'Monaco', French (Monaco)
+    MD: 'ro', // 'Republica Moldova', Romanian
+    ME: 'sr', // 'Црна Гора', Serbian
+    MF: 'fr', // 'Saint Martin', French
+    MG: 'mg', // 'Madagasikara', Malagasy
+    MH: 'en', // 'Marshall Islands', English
     MK: 'mk', // 'Република Македонија', Macedonian
+    ML: 'fr', // 'République du Mali', French
+    MM: 'my', // 'မြန်မာ', Burmese
+    MN: 'mn', // 'Монгол Улс', Mongolian
+    MO: 'zh-MO', // '澳門', Chinese (Macau)
+    MP: 'en', // 'Northern Mariana Islands', English
     MQ: 'fr', // 'Martinique', French
-    MT: 'mt', // 'Malta', Malta
+    MR: 'ar', // 'الجمهورية الإسلامية الموريتانية', Arabic
+    MS: 'en', // 'Montserrat', English
+    MT: 'mt', // 'Malta', Maltese
+    MU: 'mfe', // 'Mauritius', Mauritian Creole
+    MV: 'dv', // 'ދިވެހިރާއްޖޭގެ', Dhivehi
     MW: 'en', // 'Malawi', English
-    MX: 'es-MX', // 'México', Spanish Mexican
-    MZ: 'pt', // 'Moçambique', Potuguese
-    NA: 'en', // 'Namibia', English (German)
-    NI: 'es-NI', // 'Nicaragua', Spanish Nicaragua
-    NL: 'nl-NL', // 'Nederland', Dutch Netherlands
+    MX: 'es-MX', // 'México', Spanish (Mexico)
+    MY: 'ms', // 'Malaysia', Malay
+    MZ: 'pt', // 'Moçambique', Portuguese
+    NA: 'en', // 'Namibia', English
+    NC: 'fr', // 'Nouvelle-Calédonie', French
+    NE: 'fr', // 'République du Niger', French
+    NG: 'en', // 'Nigeria', English
+    NI: 'es-NI', // 'Nicaragua', Spanish (Nicaragua)
+    NL: 'nl-NL', // 'Nederland', Dutch (Netherlands)
     NO: 'no', // 'Norge', Norwegian
-    NZ: 'en-NZ', // 'New Zealand', English New Zealand
-    PA: 'es', // 'Panamá', Spanish
-    PE: 'es-PE', // 'Perú', Spanish Peru
-    PH: 'en-PH', // 'Philippines', English Philippines
+    NP: 'ne', // 'नेपाल', Nepali
+    NR: 'en', // 'Nauru', English
+    NU: 'en', // 'Niue', English
+    NZ: 'en-NZ', // 'New Zealand', English (New Zealand)
+    OM: 'ar', // 'سلطنة عمان', Arabic
+    PA: 'es-PA', // 'Panamá', Spanish (Panama)
+    PE: 'es-PE', // 'Perú', Spanish (Peru)
+    PF: 'fr-PF', // 'Polynésie française', French (Polynesia)
+    PG: 'en', // 'Papua New Guinea', English
+    PH: 'en-PH', // 'Philippines', English (Philippines)
+    PK: 'ur', // 'پاکستان', Urdu
     PL: 'pl', // 'Polska', Polish
+    PM: 'fr', // 'Saint-Pierre-et-Miquelon', French
+    PN: 'en', // 'Pitcairn Islands', English
+    PR: 'es-PR', // 'Puerto Rico', Spanish (Puerto Rico)
     PT: 'pt', // 'Portugal', Portuguese
-    PY: 'gn', // 'Paraguay', Paraguay
+    PY: 'gn', // 'Paraguay', Guarani
+    QA: 'ar', // 'دولة قطر', Arabic
     RE: 'fr', // 'Réunion', French
-    RO: 'ro', // 'Romania', Romanian
+    RO: 'ro', // 'România', Romanian
     RS: 'sr', // 'Република Србија', Serbian
     RU: 'ru', // 'Россия', Russian
-    RW: 'rw', // "Repubulika y'u Rwanda", Rwanda
+    RW: 'rw', // 'Rwanda', Kinyarwanda
+    SA: 'ar', // 'المملكة العربية السعودية', Arabic
+    SB: 'en', // 'Solomon Islands', English
+    SC: 'fr', // 'Seychelles', French
+    SD: 'ar', // 'جمهورية السودان', Arabic
     SE: 'sv', // 'Sverige', Swedish
-    SG: 'zh-SG', // 'Singapore', Chinese Singapore
-    SH: 'en', // 'St. Helena', English
-    SI: 'sq', // 'Republika Slovenija', Albanian
-    SJ: 'no', // 'Svalbard & Jan Mayen', Norwegian
-    SK: 'sk', // 'Slovenská republika', Slovak
+    SG: 'zh-SG', // 'Singapore', Chinese (Singapore)
+    SH: 'en', // 'Saint Helena', English
+    SI: 'sl', // 'Slovenija', Slovenian
+    SJ: 'no', // 'Svalbard og Jan Mayen', Norwegian
+    SK: 'sk', // 'Slovensko', Slovak
+    SL: 'en', // 'Sierra Leone', English
     SM: 'it', // 'San Marino', Italian
-    SO: 'ar', // 'Jamhuuriyadda Federaalka Soomaaliya', Arabic
+    SN: 'fr', // 'Sénégal', French
+    SO: 'so', // 'Soomaaliya', Somali
+    SR: 'nl', // 'Suriname', Dutch
     SS: 'en', // 'South Sudan', English
-    SV: 'es-SV', // 'El Salvador', Spanish El Salvador
-    TG: 'fr', // 'République togolaise', French
-    TO: 'to', // 'Puleʻanga Fakatuʻi ʻo Tonga', Tongan
+    ST: 'pt', // 'São Tomé e Príncipe', Portuguese
+    SV: 'es-SV', // 'El Salvador', Spanish (El Salvador)
+    SX: 'nl', // 'Sint Maarten', Dutch
+    SY: 'ar', // 'الجمهورية العربية السورية', Arabic
+    SZ: 'en', // 'Eswatini', English
+    TC: 'en', // 'Turks and Caicos Islands', English
+    TD: 'fr', // 'Tchad', French
+    TG: 'fr', // 'Togo', French
+    TH: 'th', // 'ประเทศไทย', Thai
+    TJ: 'tg', // 'Тоҷикистон', Tajik
+    TK: 'en', // 'Tokelau', English
+    TL: 'pt', // 'Timor-Leste', Portuguese
+    TM: 'tk', // 'Türkmenistan', Turkmen
+    TN: 'ar', // 'الجمهورية التونسية', Arabic
+    TO: 'to', // 'Tonga', Tongan
     TR: 'tr', // 'Türkiye', Turkish
+    TT: 'en', // 'Trinidad and Tobago', English
+    TV: 'en', // 'Tuvalu', English
+    TW: 'zh-TW', // '台灣', Chinese (Taiwan)
     TZ: 'sw', // 'Tanzania', Swahili
-    UA: 'uk', // 'Україна', Ukraine
-    UG: 'en-UG', // 'Uganda', English Uganda
-    US: 'en-US', // 'United States of America', English USA
-    UY: 'es-UY', // 'Uruguay', Spanish Uruguay
-    VA: 'it', // 'Stato della Città del Vaticano', Italian
-    VE: 'es-VE', // 'Venezuela', Spanish Venezuela
-    VN: 'vi', // 'Cộng hòa Xã hội chủ nghĩa Việt Nam', Vietnamese
-    XK: 'sq', // 'Republika e Kosovës', Albanian
+    UA: 'uk', // 'Україна', Ukrainian
+    UG: 'en-UG', // 'Uganda', English (Uganda)
+    US: 'en-US', // 'United States of America', English (USA)
+    UY: 'es-UY', // 'Uruguay', Spanish (Uruguay)
+    UZ: 'uz', // 'Oʻzbekiston', Uzbek
+    VA: 'it', // 'Città del Vaticano', Italian
+    VC: 'en', // 'Saint Vincent and the Grenadines', English
+    VE: 'es-VE', // 'Venezuela', Spanish (Venezuela)
+    VG: 'en', // 'British Virgin Islands', English
+    VI: 'en', // 'U.S. Virgin Islands', English
+    VN: 'vi', // 'Việt Nam', Vietnamese
+    VU: 'bi', // 'Vanuatu', Bislama
+    WF: 'fr', // 'Wallis et Futuna', French
+    WS: 'sm', // 'Samoa', Samoan
+    XK: 'sq', // 'Kosovo', Albanian
+    YE: 'ar', // 'اليمن', Arabic
     YT: 'fr', // 'Mayotte', French
     ZA: 'af', // 'South Africa', Afrikaans
     ZM: 'en', // 'Zambia', English
-    ZW: 'en', // 'Zimbabwe' English
+    ZW: 'en', // 'Zimbabwe', English
   }
 
 const countriesList = computed(() => {
@@ -255,7 +357,7 @@ const countriesList = computed(() => {
   })
 })
 
-console.log(countriesList.value)
+// console.log(countriesList.value)
 
 const locale = computed(() => {
   if (country.value) {
@@ -281,7 +383,7 @@ function monthFormatter() {
   }
 }
 
-const holidaysMap = computed<Holidays.Holiday[]>(() => {
+const holidaysMap = computed<Holiday[]>(() => {
   // get previous, current and next year so in dec/jan
   // you can see holidays from different years
   return [
@@ -413,15 +515,18 @@ function onClickHeadWorkweek(data: Timestamp) {
   justify-content: center;
   text-overflow: ellipsis;
   overflow: hidden;
+  white-space: nowrap;
   cursor: pointer;
 }
 
-.title {
+.my-event .title {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
+  max-width: 100%;
+  width: 100%;
 }
 
 .text-white {
