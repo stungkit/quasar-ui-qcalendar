@@ -157,6 +157,30 @@
       "import": "./dist/Timestamp.esm.js",
       "require": "./dist/Timestamp.cjs.js"
     },
+    "./QCalendarTransitions.min.css": {
+      "default": "./dist/QCalendarTransitions.min.css"
+    },
+    "./QCalendarTransitions.css": {
+      "default": "./dist/QCalendarTransitions.css"
+    },
+    "./QCalendarTransitions.rtl.min.css": {
+      "default": "./dist/QCalendarTransitions.rtl.min.css"
+    },
+    "./QCalendarTransitions.rtl.css": {
+      "default": "./dist/QCalendarTransitions.rtl.css"
+    },
+    "./QCalendarVariables.min.css": {
+      "default": "./dist/QCalendarVariables.min.css"
+    },
+    "./QCalendarVariables.css": {
+      "default": "./dist/QCalendarVariables.css"
+    },
+    "./QCalendarVariables.rtl.min.css": {
+      "default": "./dist/QCalendarVariables.rtl.min.css"
+    },
+    "./QCalendarVariables.rtl.css": {
+      "default": "./dist/QCalendarVariables.rtl.css"
+    },
     "./*": "./*"
   },
   "scripts": {
