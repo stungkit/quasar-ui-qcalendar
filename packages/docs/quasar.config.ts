@@ -26,7 +26,7 @@ export default defineConfig(async (ctx) => {
     extras: [
       // 'ionicons-v4',
       // 'mdi-v7',
-      // 'fontawesome-v6',
+      'fontawesome-v6',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
@@ -113,7 +113,13 @@ export default defineConfig(async (ctx) => {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
     framework: {
-      config: {},
+      config: {
+        dark: 'auto',
+        loadingBar: {
+          color: 'red',
+          position: 'top',
+        },
+      },
 
       // iconSet: 'material-icons', // Quasar icon set
       // lang: 'en-US', // Quasar language pack
@@ -126,7 +132,16 @@ export default defineConfig(async (ctx) => {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Dark', 'Meta'],
+      plugins: [
+        'Dark',
+        'Dialog',
+        'LoadingBar',
+        'LocalStorage',
+        'Meta',
+        'Notify',
+        'Platform',
+        'Screen',
+      ],
     },
 
     // animations: 'all', // --- includes all animations
