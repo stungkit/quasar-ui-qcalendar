@@ -7,6 +7,7 @@ import * as rollup from 'rollup'
 import uglify from 'uglify-js'
 import json from '@rollup/plugin-json'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
+import babel from '@rollup/plugin-babel'
 
 import buildConf from './config.js'
 import * as buildUtils from './utils.js'
@@ -15,7 +16,15 @@ function pathResolve(relativePath) {
   return path.resolve(path.dirname(new URL(import.meta.url).pathname), relativePath)
 }
 
-const rollupPlugins = [nodeResolve(), json()]
+const rollupPlugins = [
+  nodeResolve(),
+  json(),
+  babel({
+    babelHelpers: 'bundled',
+    presets: ['@babel/preset-env'],
+    exclude: 'node_modules/**',
+  }),
+]
 
 const uglifyOptions = {
   compress: {

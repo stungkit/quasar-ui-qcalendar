@@ -4,7 +4,11 @@ import { version } from './version'
 import * as Timestamp from './utils/Timestamp.js'
 import * as helpers from './utils/helpers.js'
 
-export { version, QCalendarScheduler, Timestamp, helpers }
+// Explicitly export individual named properties
+export * from './utils/Timestamp.js'
+export * from './utils/helpers.js'
+
+export { version, QCalendarScheduler }
 
 export default {
   version,
