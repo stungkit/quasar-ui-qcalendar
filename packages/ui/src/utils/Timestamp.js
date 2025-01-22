@@ -666,28 +666,24 @@ export function getWorkWeek(timestamp) {
     ts = parseTimestamp(today())
   }
 
-  const date = makeDate(ts)
-  if (isNaN(date)) return 0
-
   // Remove time components of date
-  const weekday = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  const weekday = new Date(Date.UTC(ts.year, ts.month - 1, ts.day))
 
-  // Change date to Thursday same week
-  weekday.setDate(weekday.getDate() - ((weekday.getDay() + 6) % 7) + 3)
+  // Adjust the date to the correct day of the week
+  const dayAdjustment = 4 // thursday is 4
+  weekday.setUTCDate(weekday.getUTCDate() - ((weekday.getUTCDay() + 6) % 7) + dayAdjustment)
 
-  // Take January 4th as it is always in week 1 (see ISO 8601)
-  const firstThursday = new Date(weekday.getFullYear(), 0, 4)
+  // Set to nearest Thursday: current date + 4 - current day number
+  // Make Sunday's day number 7
+  weekday.setUTCDate(weekday.getUTCDate() + dayAdjustment - (weekday.getUTCDay() || 7))
 
-  // Change date to Thursday same week
-  firstThursday.setDate(firstThursday.getDate() - ((firstThursday.getDay() + 6) % 7) + 3)
+  // Get first day of year
+  var yearStart = new Date(Date.UTC(weekday.getUTCFullYear(), 0, 1))
 
-  // Check if daylight-saving-time-switch occurred and correct for it
-  const ds = weekday.getTimezoneOffset() - firstThursday.getTimezoneOffset()
-  weekday.setHours(weekday.getHours() - ds)
+  // Calculate full weeks to nearest Thursday
+  var weekNumber = Math.ceil(((weekday - yearStart) / 86400000 + 1) / 7)
 
-  // Number of weeks between target Thursday and first Thursday
-  const weekDiff = (weekday - firstThursday) / TIME_CONSTANTS.MILLISECONDS_IN.WEEK
-  return 1 + Math.floor(weekDiff)
+  return weekNumber
 }
 
 /**
