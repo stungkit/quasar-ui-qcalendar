@@ -8,8 +8,6 @@ export const DAYS_IN_MONTH = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 export const DAYS_IN_MONTH_LEAP = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 export const TIME_CONSTANTS = {
-  DAYS_IN_WEEK: 7,
-  HOURS_IN_DAY: 24,
   MILLISECONDS_IN: {
     SECOND: 1000,
     MINUTE: 60000,
@@ -33,6 +31,9 @@ export const TIME_CONSTANTS = {
     DAY: 24,
     WEEK: 168,
   },
+  DAYS_IN: {
+    WEEK: 7,
+  },
 }
 
 export const DAYS_IN_MONTH_MIN = 28
@@ -40,7 +41,6 @@ export const DAYS_IN_MONTH_MAX = 31
 export const MONTH_MAX = 12
 export const MONTH_MIN = 1
 export const DAY_MIN = 1
-export const DAYS_IN_WEEK = 7
 export const FIRST_HOUR = 0
 
 /* eslint-disable no-multi-spaces */
@@ -830,10 +830,10 @@ export function getWeekdaySkips(weekdays) {
   for (let i = 0; i < weekdays.length; ++i) {
     filled[weekdays[i]] = 1
   }
-  for (let k = 0; k < DAYS_IN_WEEK; ++k) {
+  for (let k = 0; k < TIME_CONSTANTS.DAYS_IN.WEEK; ++k) {
     let skip = 1
-    for (let j = 1; j < DAYS_IN_WEEK; ++j) {
-      const next = (k + j) % DAYS_IN_WEEK
+    for (let j = 1; j < TIME_CONSTANTS.DAYS_IN.WEEK; ++j) {
+      const next = (k + j) % TIME_CONSTANTS.DAYS_IN.WEEK
       if (filled[next]) {
         break
       }
@@ -1131,7 +1131,7 @@ export function weeksBetween(ts1, ts2) {
   let t2 = copyTimestamp(ts2)
   t1 = findWeekday(t1, 0)
   t2 = findWeekday(t2, 6)
-  return Math.ceil(daysBetween(t1, t2) / DAYS_IN_WEEK)
+  return Math.ceil(daysBetween(t1, t2) / TIME_CONSTANTS.DAYS_IN.WEEK)
 }
 
 // Known dates - starting week on a monday to conform to browser
@@ -1235,7 +1235,6 @@ export default {
   MONTH_MAX,
   MONTH_MIN,
   DAY_MIN,
-  DAYS_IN_WEEK,
   TIME_CONSTANTS,
   FIRST_HOUR,
   Timestamp,
