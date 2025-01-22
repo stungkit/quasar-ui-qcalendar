@@ -1,5 +1,4 @@
-/*global console process */
-/* eslint-disable array-bracket-spacing */
+/* global console process */
 import path from 'path'
 import { compileAsync } from 'sass-embedded'
 import postcss from 'postcss'
@@ -11,13 +10,12 @@ import { fileURLToPath } from 'url'
 import buildConf from './config.js'
 import * as buildUtils from './utils.js'
 
-// Convert __dirname to ES module equivalent
+// Convert __dirname for ES module compatibility
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const postCssCompiler = postcss([autoprefixer])
-const postCssRtlCompiler = postcss([rtl({})])
-
+const postCssRtlCompiler = postcss([rtl()])
 const nano = postcss([
   cssnano({
     preset: [
@@ -32,58 +30,80 @@ const nano = postcss([
   }),
 ])
 
-Promise.all([
-  generate('src/index.scss', 'dist/index'),
-  generate('src/QCalendar.scss', 'dist/QCalendar'),
-  generate('src/QCalendarAgenda.scss', 'dist/QCalendarAgenda'),
-  generate('src/QCalendarDay.scss', 'dist/QCalendarDay'),
-  generate('src/QCalendarMonth.scss', 'dist/QCalendarMonth'),
-  generate('src/QCalendarResource.scss', 'dist/QCalendarResource'),
-  generate('src/QCalendarScheduler.scss', 'dist/QCalendarScheduler'),
-  generate('src/QCalendarTask.scss', 'dist/QCalendarTask'),
-  generate('src/QCalendarTransitions.scss', 'dist/QCalendarTransitions'),
-  generate('src/QCalendarVariables.scss', 'dist/QCalendarVariables'),
-]).catch((e) => {
-  console.error(e)
-  process.exit(1)
-})
+const styles = [
+  'index',
+  'QCalendar',
+  'QCalendarAgenda',
+  'QCalendarDay',
+  'QCalendarMonth',
+  'QCalendarResource',
+  'QCalendarScheduler',
+  'QCalendarTask',
+  'QCalendarTransitions',
+  'QCalendarVariables',
+]
+
+;(async () => {
+  try {
+    await Promise.all(styles.map((style) => generate(`src/${style}.scss`, `dist/${style}`)))
+    console.log('CSS generation completed successfully.')
+  } catch (e) {
+    console.error('Error during CSS generation:', e)
+    process.exit(1)
+  }
+})()
 
 /**
- * Helpers
+ * Resolve file paths relative to the project root.
  */
-
 function resolve(_path) {
   return path.resolve(__dirname, '..', _path)
 }
 
+/**
+ * Generate CSS files for a given source and destination.
+ */
 async function generate(src, dest) {
-  src = resolve(src)
-  dest = resolve(dest)
+  const resolvedSrc = resolve(src)
+  const resolvedDest = resolve(dest)
 
   try {
-    const result = await compileAsync(src, { loadPaths: ['node_modules'] })
+    const result = await compileAsync(resolvedSrc, { loadPaths: ['node_modules'] })
     let code = buildConf.banner + result.css
 
-    code = await postCssCompiler.process(code, { from: void 0 })
-    code.warnings().forEach((warn) => {
-      console.warn(warn.toString())
-    })
+    code = await processCss(postCssCompiler, code)
 
     await Promise.all([
-      generateUMD(dest, code.css),
-      postCssRtlCompiler
-        .process(code.css, { from: void 0 })
-        .then((code) => generateUMD(dest, code.css, '.rtl')),
+      writeAndMinifyCss(resolvedDest, code.css),
+      processCss(postCssRtlCompiler, code.css).then((rtlCode) =>
+        writeAndMinifyCss(resolvedDest, rtlCode.css, '.rtl'),
+      ),
     ])
   } catch (err) {
-    console.error(err)
-    process.exit(1)
+    console.error(`Error processing ${src}:`, err)
+    throw err
   }
 }
 
-function generateUMD(dest, code, ext = '') {
-  return buildUtils
-    .writeFile(`${dest}${ext}.css`, code, true)
-    .then((code) => nano.process(code, { from: void 0 }))
-    .then((code) => buildUtils.writeFile(`${dest}${ext}.min.css`, code.css, true))
+/**
+ * Process CSS using a PostCSS compiler.
+ */
+async function processCss(compiler, css) {
+  const result = await compiler.process(css, { from: undefined })
+  result.warnings().forEach((warn) => {
+    console.warn(warn.toString())
+  })
+  return result
+}
+
+/**
+ * Write the CSS file and its minified version.
+ */
+async function writeAndMinifyCss(dest, css, ext = '') {
+  const filePath = `${dest}${ext}.css`
+  await buildUtils.writeFile(filePath, css, true)
+
+  const minified = await nano.process(css, { from: undefined })
+  const minFilePath = `${dest}${ext}.min.css`
+  await buildUtils.writeFile(minFilePath, minified.css, true)
 }

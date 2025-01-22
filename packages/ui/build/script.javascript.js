@@ -11,22 +11,20 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import buildConf from './config.js'
 import * as buildUtils from './utils.js'
 
-function pathResolve(_path) {
-  return path.resolve(path.dirname(new URL(import.meta.url).pathname), _path)
+function pathResolve(relativePath) {
+  return path.resolve(path.dirname(new URL(import.meta.url).pathname), relativePath)
 }
 
-const rollupPluginsModern = [nodeResolve(), json()]
+const rollupPlugins = [nodeResolve(), json()]
 
-const uglifyJsOptions = {
+const uglifyOptions = {
   compress: {
-    // turn off flags with small gains to speed up minification
+    // Optimized compression settings
     arrows: false,
     collapse_vars: false,
     comparisons: false,
-    // computed_props: false,
     hoist_funs: false,
     hoist_props: false,
-    hoist_vars: false,
     inline: false,
     loops: false,
     negate_iife: false,
@@ -36,14 +34,11 @@ const uglifyJsOptions = {
     switches: false,
     toplevel: false,
     typeofs: false,
-
-    // a few flags with noticable gains/speed ratio
+    // Essential features
     booleans: true,
     if_return: true,
     sequences: true,
     unused: true,
-
-    // required features to drop conditional branches
     conditionals: true,
     dead_code: true,
     evaluate: true,
@@ -52,7 +47,7 @@ const uglifyJsOptions = {
 
 const buildEntries = [
   'index',
-  'QCalendar', // same as index
+  'QCalendar',
   'QCalendarAgenda',
   'QCalendarDay',
   'QCalendarMonth',
@@ -62,148 +57,50 @@ const buildEntries = [
   'Timestamp',
 ]
 
-function generateBuilds() {
-  const builds = []
-
-  buildEntries.forEach((entry) => {
-    builds.push({
-      rollup: {
-        input: {
-          input: pathResolve(`entry/${entry}.esm.js`),
-        },
-        output: {
-          file: pathResolve(`../dist/${entry}.esm.js`),
-          format: 'es',
-          exports: 'auto',
-        },
+const builds = buildEntries.flatMap((entry) =>
+  ['esm', 'cjs', 'umd'].map((format) => ({
+    rollup: {
+      input: {
+        input: pathResolve(`entry/${entry}.${format}.js`),
+        plugins: rollupPlugins,
+        external: ['vue'],
       },
-      build: {
-        unminified: true,
-        minified: true,
-        minExt: true,
+      output: {
+        file: pathResolve(`../dist/${entry}.${format}.js`),
+        format,
+        name: format === 'umd' ? entry : undefined,
+        exports: 'auto',
+        banner: buildConf.banner,
+        globals: { vue: 'Vue' },
       },
-    })
-    builds.push({
-      rollup: {
-        input: {
-          input: pathResolve(`entry/${entry}.cjs.js`),
-        },
-        output: {
-          file: pathResolve(`../dist/${entry}.cjs.js`),
-          format: 'cjs',
-          exports: 'auto',
-        },
-      },
-      build: {
-        unminified: true,
-        minified: true,
-        minExt: true,
-      },
-    })
-    builds.push({
-      rollup: {
-        input: {
-          input: pathResolve(`entry/${entry}.umd.js`),
-        },
-        output: {
-          name: entry,
-          file: pathResolve(`../dist/${entry}.umd.js`),
-          format: 'umd',
-        },
-      },
-      build: {
-        unminified: true,
-        minified: true,
-        minExt: true,
-      },
-    })
-  })
-
-  return builds
-}
-
-const builds = generateBuilds()
-// Add your asset folders here, if needed
-// addAssets(builds, 'icon-set', 'iconSet')
-// addAssets(builds, 'lang', 'lang')
+    },
+    build: {
+      unminified: true,
+      minified: true,
+      minExt: true,
+    },
+  })),
+)
 
 build(builds)
 
 /**
- * Helpers
+ * Main Build Process
  */
-
-// eslint-disable-next-line no-unused-vars
-// function addAssets(builds, type, injectName) {
-//   const files = fs.readdirSync(pathResolve('../../ui/src/components/' + type)),
-//     plugins = [buble(bubleConfig)],
-//     outputDir = pathResolve(`../dist/${type}`)
-
-//   fse.mkdirp(outputDir)
-
-//   files
-//     .filter((file) => file.endsWith('.js'))
-//     .forEach((file) => {
-//       const name = file.substr(0, file.length - 3).replace(/-([a-z])/g, (g) => g[1].toUpperCase())
-//       builds.push({
-//         rollup: {
-//           input: {
-//             input: pathResolve(`../src/components/${type}/${file}`),
-//             plugins,
-//           },
-//           output: {
-//             file: addExtension(pathResolve(`../dist/${type}/${file}`), 'umd'),
-//             format: 'umd',
-//             name: `QCalendar.${injectName}.${name}`,
-//           },
-//         },
-//         build: {
-//           minified: true,
-//         },
-//       })
-//     })
-// }
-
-function build(builds) {
-  return Promise.all(builds.map(genConfig).map(buildEntry)).catch(buildUtils.logError)
-}
-
-function genConfig(opts) {
-  Object.assign(opts.rollup.input, {
-    plugins: rollupPluginsModern,
-    external: ['vue'],
-  })
-
-  Object.assign(opts.rollup.output, {
-    banner: buildConf.banner,
-    globals: { vue: 'Vue' },
-  })
-
-  return opts
-}
-
-function addExtension(filename, ext = 'min') {
-  const insertionPoint = filename.lastIndexOf('.')
-  return `${filename.slice(0, insertionPoint)}.${ext}${filename.slice(insertionPoint)}`
-}
-
-function injectVueRequirement(code) {
-  // eslint-disable-next-line quotes
-  const index = code.indexOf(`Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue`)
-
-  if (index === -1) {
-    return code
+async function build(builds) {
+  try {
+    for (const config of builds) {
+      await buildEntry(config)
+    }
+  } catch (error) {
+    buildUtils.logError(error)
+    process.exit(1)
   }
-
-  const checkMe = ` if (Vue === void 0) {
-    console.error('[ QCalendar ] Vue is required to run. Please add a script tag for it before loading QCalendar.')
-    return
-  }
-  `
-
-  return code.substring(0, index - 1) + checkMe + code.substring(index)
 }
 
+/**
+ * Generates the build output for a single entry.
+ */
 async function buildEntry(config) {
   try {
     const bundle = await rollup.rollup(config.rollup.input)
@@ -216,22 +113,46 @@ async function buildEntry(config) {
     }
 
     if (config.build.minified) {
-      const minified = uglify.minify(code, uglifyJsOptions)
+      const minified = uglify.minify(code, uglifyOptions)
 
       if (minified.error) {
         throw minified.error
       }
 
-      await buildUtils.writeFile(
-        config.build.minExt === true
-          ? addExtension(config.rollup.output.file)
-          : config.rollup.output.file,
-        buildConf.banner + minified.code,
-        true,
-      )
+      const minifiedFile = config.build.minExt
+        ? addFileExtension(config.rollup.output.file, 'min')
+        : config.rollup.output.file
+
+      await buildUtils.writeFile(minifiedFile, buildConf.banner + minified.code, true)
     }
-  } catch (err) {
-    console.error(err)
+  } catch (error) {
+    console.error(`Error building ${config.rollup.output.file}:`, error)
     process.exit(1)
   }
+}
+
+/**
+ * Adds or replaces an extension in a file path.
+ */
+function addFileExtension(filename, ext = 'min') {
+  const index = filename.lastIndexOf('.')
+  return `${filename.slice(0, index)}.${ext}${filename.slice(index)}`
+}
+
+/**
+ * Injects a Vue dependency check into UMD builds.
+ */
+function injectVueRequirement(code) {
+  const dependencyCheck = `if (Vue === void 0) {
+    console.error('[ QCalendar ] Vue is required to run. Please add a script tag for it before loading QCalendar.');
+    return;
+  }`
+
+  const vueCheckIndex = code.indexOf(
+    `Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue`,
+  )
+
+  return vueCheckIndex !== -1
+    ? code.slice(0, vueCheckIndex - 1) + dependencyCheck + code.slice(vueCheckIndex)
+    : code
 }

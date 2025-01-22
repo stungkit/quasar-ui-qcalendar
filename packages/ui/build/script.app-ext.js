@@ -2,63 +2,68 @@
 import fs from 'fs'
 import path from 'path'
 import { blue } from 'kolorist'
-
 import { fileURLToPath } from 'url'
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '../..')
 const resolvePath = (file) => path.resolve(root, file)
 
-const writeJson = function (file, json) {
-  return fs.writeFileSync(file, JSON.stringify(json, null, 2) + '\n', 'utf-8')
+const writeJson = (file, json) => {
+  fs.writeFileSync(file, JSON.stringify(json, null, 2) + '\n', 'utf-8')
 }
 
-export function syncAppExt(both = true) {
-  // make sure this project has an app-extension project
+export function syncAppExt(syncVersion = true) {
   const appExtDir = resolvePath('app-extension')
-  if (!fs.existsSync(appExtDir)) {
-    return
-  }
-
-  // make sure this project has an ui project
   const uiDir = resolvePath('ui')
-  if (!fs.existsSync(uiDir)) {
+
+  // Ensure required directories exist
+  if (!fs.existsSync(appExtDir) || !fs.existsSync(uiDir)) {
+    console.warn('Required directories not found. Skipping sync.')
     return
   }
 
-  // get version and name from ui package.json
-  const { name, version } = JSON.parse(fs.readFileSync(resolvePath('ui/package.json'), 'utf-8'))
+  // Load UI project metadata
+  const uiPackagePath = resolvePath('ui/package.json')
+  const { name, version } = readJson(uiPackagePath)
 
-  // read app-ext package.json
-  const appExtFile = resolvePath('app-extension/package.json')
-  const appExtJson = JSON.parse(fs.readFileSync(appExtFile, 'utf-8'))
-  let finished = false
+  // Load App Extension metadata
+  const appExtPackagePath = resolvePath('app-extension/package.json')
+  const appExtJson = readJson(appExtPackagePath)
 
-  // sync version numbers
-  if (both === true) {
+  // Sync version and dependencies
+  let updated = false
+
+  if (syncVersion) {
     appExtJson.version = version
+    updated = true
   }
 
-  // check dependencies
-  if (appExtJson.dependencies !== void 0) {
-    if (appExtJson.dependencies[name] !== void 0) {
-      appExtJson.dependencies[name] = '^' + version
-      finished = true
-    }
-  }
-  // check devDependencies, if not finished
-  if (finished === false && appExtJson.devDependencies !== void 0) {
-    if (appExtJson.devDependencies[name] !== void 0) {
-      appExtJson.devDependencies[name] = '^' + version
-      finished = true
-    }
-  }
+  updated ||= updateDependency(appExtJson.dependencies, name, version)
+  updated ||= updateDependency(appExtJson.devDependencies, name, version)
 
-  if (finished === true) {
-    writeJson(appExtFile, appExtJson)
+  if (updated) {
+    writeJson(appExtPackagePath, appExtJson)
     console.log(` ⭐️ App Extension version ${blue(appExtJson.name)} synced with UI version.\n`)
-    return
+  } else {
+    console.error('   App Extension version and dependency NOT synced.\n')
   }
+}
 
-  console.error('   App Extension version and dependency NOT synced.\n')
+/**
+ * Read JSON from file
+ */
+function readJson(file) {
+  return JSON.parse(fs.readFileSync(file, 'utf-8'))
+}
+
+/**
+ * Update a dependency to the correct version if it exists.
+ */
+function updateDependency(dependencies, name, version) {
+  if (dependencies?.[name]) {
+    dependencies[name] = `^${version}`
+    return true
+  }
+  return false
 }
