@@ -3,11 +3,8 @@ process.env.BABEL_ENV = 'production'
 
 import path from 'path'
 import { URL } from 'url'
-// import fs from 'fs'
-// import fse from 'fs-extra'
 import * as rollup from 'rollup'
 import uglify from 'uglify-js'
-// import buble from '@rollup/plugin-buble'
 import json from '@rollup/plugin-json'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 
@@ -19,15 +16,6 @@ function pathResolve(_path) {
 }
 
 const rollupPluginsModern = [nodeResolve(), json()]
-
-// const bubleConfig = {
-//   objectAssign: 'Object.assign'
-// }
-
-// const nodeResolveConfig = {
-//   extensions: ['.js'],
-//   preferBuiltins: false
-// }
 
 const uglifyJsOptions = {
   compress: {
@@ -61,12 +49,6 @@ const uglifyJsOptions = {
     evaluate: true,
   },
 }
-
-// const rollupPlugins = [
-//   nodeResolve(nodeResolveConfig),
-//   json(),
-//   buble(bubleConfig)
-// ]
 
 const buildEntries = [
   'index',
@@ -141,7 +123,6 @@ function generateBuilds() {
 }
 
 const builds = generateBuilds()
-
 // Add your asset folders here, if needed
 // addAssets(builds, 'icon-set', 'iconSet')
 // addAssets(builds, 'lang', 'lang')
@@ -223,44 +204,34 @@ function injectVueRequirement(code) {
   return code.substring(0, index - 1) + checkMe + code.substring(index)
 }
 
-function buildEntry(config) {
-  return rollup
-    .rollup(config.rollup.input)
-    .then((bundle) => bundle.generate(config.rollup.output))
-    .then(({ output }) => {
-      const code =
-        config.rollup.output.format === 'umd'
-          ? injectVueRequirement(output[0].code)
-          : output[0].code
+async function buildEntry(config) {
+  try {
+    const bundle = await rollup.rollup(config.rollup.input)
+    const { output } = await bundle.generate(config.rollup.output)
+    const code =
+      config.rollup.output.format === 'umd' ? injectVueRequirement(output[0].code) : output[0].code
 
-      return config.build.unminified ? buildUtils.writeFile(config.rollup.output.file, code) : code
-    })
-    .then((code) => {
-      if (!config.build.minified) {
-        return code
-      }
+    if (config.build.unminified) {
+      await buildUtils.writeFile(config.rollup.output.file, code)
+    }
 
-      // const minified = uglify.minify(code, {
-      //   compress: {
-      //     pure_funcs: ['makeMap']
-      //   }
-      // })
+    if (config.build.minified) {
       const minified = uglify.minify(code, uglifyJsOptions)
 
       if (minified.error) {
-        return Promise.reject(minified.error)
+        throw minified.error
       }
 
-      return buildUtils.writeFile(
+      await buildUtils.writeFile(
         config.build.minExt === true
           ? addExtension(config.rollup.output.file)
           : config.rollup.output.file,
         buildConf.banner + minified.code,
         true,
       )
-    })
-    .catch((err) => {
-      console.error(err)
-      process.exit(1)
-    })
+    }
+  } catch (err) {
+    console.error(err)
+    process.exit(1)
+  }
 }
