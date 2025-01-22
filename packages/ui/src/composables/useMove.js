@@ -10,12 +10,10 @@ import {
   updateWeekday,
   nextDay,
   prevDay,
-  today
+  today,
 } from '../utils/Timestamp.js'
 
-export const useMoveEmits = [
-  'moved'
-]
+export const useMoveEmits = ['moved']
 
 /**
  * export of default funtion
@@ -35,16 +33,10 @@ export const useMoveEmits = [
  * @param {import('vue').Ref} param.emittedValue reactive sting that is emitted when changed (YYYY-MM-DD)
  * @param {Function} param.emit Vue emit function
  */
-export default function (props, {
-  parsedView,
-  parsedValue,
-  weekdaySkips,
-  direction,
-  maxDays,
-  times,
-  emittedValue,
-  emit
-}) {
+export default function (
+  props,
+  { parsedView, parsedValue, weekdaySkips, direction, maxDays, times, emittedValue, emit },
+) {
   /**
    * Moves the calendar the desired amount. This is based on the 'view'.
    * A month calendar moves by prev/next month
@@ -53,7 +45,7 @@ export default function (props, {
    * @param {Number} amount The amount to move (default 1)
    * @fires 'moved' with current Timestamp
    */
-  function move (amount = 1) {
+  function move(amount = 1) {
     if (amount === 0) {
       emittedValue.value = today()
       return
@@ -64,50 +56,52 @@ export default function (props, {
     const limit = forward ? DAYS_IN_MONTH_MAX : DAY_MIN
     let count = forward ? amount : -amount
     direction.value = forward ? 'next' : 'prev'
-    const dayCount = weekdaySkips.value.filter(x => x !== 0).length
+    const dayCount = weekdaySkips.value.filter((x) => x !== 0).length
 
     while (--count >= 0) {
       switch (parsedView.value) {
         case 'month':
+          // set to 1st or last day of the month
           moved.day = limit
-          mover(moved)
-          updateWeekday(moved)
-          while (weekdaySkips.value[ moved.weekday ] === 0) {
+          moved = mover(moved)
+          moved = updateWeekday(moved)
+          while (weekdaySkips.value[moved.weekday] === 0) {
             moved = addToDate(moved, { day: forward === true ? 1 : -1 })
           }
           break
         case 'week':
         case 'week-agenda':
         case 'week-scheduler':
-          relativeDays(moved, mover, dayCount, props.weekdays)
+          moved = relativeDays(moved, mover, dayCount, props.weekdays)
           break
         case 'day':
         case 'scheduler':
         case 'agenda':
-          relativeDays(moved, mover, maxDays.value, props.weekdays)
+          moved = relativeDays(moved, mover, maxDays.value, props.weekdays)
           break
         case 'month-interval':
         case 'month-agenda':
         case 'month-scheduler':
+          // set to 1st or last day of the month
           moved.day = limit
-          mover(moved)
+          moved = mover(moved)
           break
         case 'resource':
-          relativeDays(moved, mover, maxDays.value, props.weekdays)
+          moved = relativeDays(moved, mover, maxDays.value, props.weekdays)
           break
       }
     }
 
-    updateWeekday(moved)
-    updateFormatted(moved)
-    updateDayOfYear(moved)
-    updateRelative(moved, times.now)
+    moved = updateWeekday(moved)
+    moved = updateFormatted(moved)
+    moved = updateDayOfYear(moved)
+    moved = updateRelative(moved, times.now)
 
     emittedValue.value = moved.date
     emit('moved', moved)
   }
 
   return {
-    move
+    move,
   }
 }

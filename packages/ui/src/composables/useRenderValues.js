@@ -9,14 +9,10 @@ import {
   getEndOfWeek,
   moveRelativeDays,
   updateFormatted,
-  nextDay
+  nextDay,
 } from '../utils/Timestamp.js'
 
-export default function (props, {
-  parsedView,
-  parsedValue,
-  times
-}) {
+export default function (props, { parsedView, parsedValue, times }) {
   const renderValues = computed(() => {
     const around = parsedValue.value
     let maxDays = props.maxDays
@@ -38,27 +34,32 @@ export default function (props, {
       case 'day':
       case 'scheduler':
       case 'agenda':
-        end = moveRelativeDays(copyTimestamp(end), nextDay, maxDays > 1 ? maxDays - 1 : maxDays, props.weekdays)
-        updateFormatted(end)
+        end = moveRelativeDays(
+          copyTimestamp(end),
+          nextDay,
+          maxDays > 1 ? maxDays - 1 : maxDays,
+          props.weekdays,
+        )
+        end = updateFormatted(end)
         break
       case 'month-interval':
       case 'month-scheduler':
       case 'month-agenda':
         start = getStartOfMonth(around)
         end = getEndOfMonth(around)
-        updateFormatted(end)
+        end = updateFormatted(end)
         maxDays = daysInMonth(start.year, start.month)
         break
       case 'resource':
         maxDays = 1
         end = moveRelativeDays(copyTimestamp(end), nextDay, maxDays, props.weekdays)
-        updateFormatted(end)
+        end = updateFormatted(end)
         break
     }
     return { start, end, maxDays }
   })
 
   return {
-    renderValues
+    renderValues,
   }
 }

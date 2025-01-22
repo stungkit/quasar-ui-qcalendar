@@ -425,7 +425,7 @@ export default function (
     }
 
     if (now) {
-      updateRelative(timestamp, now, true)
+      timestamp = updateRelative(timestamp, now, true)
     }
 
     return timestamp
@@ -457,7 +457,7 @@ export default function (
     }
 
     if (now) {
-      updateRelative(timestamp, now, true)
+      timestamp = updateRelative(timestamp, now, true)
     }
 
     return timestamp
@@ -489,7 +489,7 @@ export default function (
     }
 
     if (now) {
-      updateRelative(timestamp, now, true)
+      timestamp = updateRelative(timestamp, now, true)
     }
 
     return timestamp

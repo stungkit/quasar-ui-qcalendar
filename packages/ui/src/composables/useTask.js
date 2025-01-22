@@ -1,10 +1,10 @@
 import {
-  computed
+  computed,
   // watch
 } from 'vue'
 
 import {
-  DAYS_IN_WEEK,
+  TIME_CONSTANTS,
   addToDate,
   copyTimestamp,
   createDayList,
@@ -17,64 +17,65 @@ import {
   parseTimestamp,
   today,
   validateNumber,
-  validateTimestamp
+  validateTimestamp,
 } from '../utils/Timestamp.js'
 
 export const useTaskProps = {
-  modelValue: { // v-model
+  modelValue: {
+    // v-model
     type: String,
     default: today(),
-    validator: v => v === '' || validateTimestamp(v)
+    validator: (v) => v === '' || validateTimestamp(v),
   },
   modelTasks: {
     type: Array,
-    default: []
+    default: [],
   },
   modelTitle: {
     type: Array,
-    default: []
+    default: [],
   },
   modelFooter: {
     type: Array,
-    default: []
+    default: [],
   },
   taskKey: {
-    type: [ String, Number ],
-    default: 'id'
+    type: [String, Number],
+    default: 'id',
   },
   weekdays: {
     type: Array,
-    default: () => [ 0, 1, 2, 3, 4, 5, 6 ]
+    default: () => [0, 1, 2, 3, 4, 5, 6],
   },
   dateType: {
     type: String,
     default: 'round',
-    validator: v => [ 'round', 'rounded', 'square' ].includes(v)
+    validator: (v) => ['round', 'rounded', 'square'].includes(v),
   },
   dateHeader: {
     type: String,
     default: 'stacked',
-    validator: v => [ 'stacked', 'inline', 'inverted' ].includes(v)
+    validator: (v) => ['stacked', 'inline', 'inverted'].includes(v),
   },
   weekdayAlign: {
     type: String,
     default: 'center',
-    validator: v => [ 'left', 'center', 'right' ].includes(v)
+    validator: (v) => ['left', 'center', 'right'].includes(v),
   },
   dateAlign: {
     type: String,
     default: 'center',
-    validator: v => [ 'left', 'center', 'right' ].includes(v)
+    validator: (v) => ['left', 'center', 'right'].includes(v),
   },
   view: {
     type: String,
-    validator: v => [ 'day', 'week', 'month' ].includes(v)
+    validator: (v) => ['day', 'week', 'month'].includes(v),
     // default: 'month'
   },
   viewCount: {
     type: Number,
     default: 1,
-    validator: v => validateNumber(v) && v > 0
+    validator: (v) => validateNumber(v) && v > 0,
   },
   bordered: Boolean,
   dark: Boolean,
@@ -84,57 +85,57 @@ export const useTaskProps = {
   noHeader: Boolean,
   noDefaultHeaderText: Boolean,
   noDefaultHeaderBtn: Boolean,
-  cellWidth: [ Number, String ],
+  cellWidth: [Number, String],
   // cellWidth: {
   //   type: [ Number, String ],
   //   default: 75
   // },
   minWeekdayLabel: {
-    type: [ Number, String ],
-    default: 2
+    type: [Number, String],
+    default: 2,
   },
   weekdayBreakpoints: {
     type: Array,
-    default: () => [ 75, 35 ],
-    validator: v => v.length === 2
+    default: () => [75, 35],
+    validator: (v) => v.length === 2,
   },
   locale: {
     type: String,
-    default: 'en-US'
+    default: 'en-US',
   },
   animated: Boolean,
   transitionPrev: {
     type: String,
-    default: 'slide-right'
+    default: 'slide-right',
   },
   transitionNext: {
     type: String,
-    default: 'slide-left'
+    default: 'slide-left',
   },
   disabledDays: Array,
   disabledBefore: String,
   disabledAfter: String,
   disabledWeekdays: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   weekdayClass: Function,
   dayClass: Function,
   footerDayClass: Function,
   dragEnterFunc: {
-    type: Function
+    type: Function,
     // event, timestamp
   },
   dragOverFunc: {
-    type: Function
+    type: Function,
     // event, timestamp
   },
   dragLeaveFunc: {
-    type: Function
+    type: Function,
     // event, timestamp
   },
   dropFunc: {
-    type: Function
+    type: Function,
     // event, timestamp
   },
   hoverable: Boolean,
@@ -142,43 +143,44 @@ export const useTaskProps = {
   focusType: {
     type: Array,
     default: ['date'],
-    validator: v => {
+    validator: (v) => {
       let val = true
-      v.forEach(type => {
-        if ([ 'day', 'date', 'weekday', 'interval', 'resource', 'task' ].includes(type) !== true) {
+      v.forEach((type) => {
+        if (['day', 'date', 'weekday', 'interval', 'resource', 'task'].includes(type) !== true) {
           val = false
         }
       })
       return val
-    }
+    },
   },
   taskWidth: {
     type: Number,
     default: 200,
-    validator: v => validateNumber(v) && v > 0
-  }
+    validator: (v) => validateNumber(v) && v > 0,
+  },
 }
 
-export default function (props, emit, {
-  weekdaySkips,
-  times
-  // parsedStart,
-  // parsedEnd,
-  // size,
-  // headerColumnRef
-}) {
+export default function (
+  props,
+  emit,
+  {
+    weekdaySkips,
+    times,
+    // parsedStart,
+    // parsedEnd,
+    // size,
+    // headerColumnRef
+  },
+) {
   const parsedStartDate = computed(() => {
     if (props.view === 'day') {
       return parseTimestamp(props.modelValue)
-    }
-    else if (props.view === 'week') {
+    } else if (props.view === 'week') {
       return getStartOfWeek(parseTimestamp(props.modelValue), props.weekdays, times.today)
-    }
-    else if (props.view === 'month') {
+    } else if (props.view === 'month') {
       return getStartOfMonth(parseTimestamp(props.modelValue), props.weekdays, times.today)
-    }
-    else {
-      throw new Error(`QCalendarTask: unknown 'view' type (${ props.view })`)
+    } else {
+      throw new Error(`QCalendarTask: unknown 'view' type (${props.view})`)
     }
   })
 
@@ -190,29 +192,24 @@ export default function (props, emit, {
       let end = copyTimestamp(parsedStartDate.value)
       end = addToDate(end, { day: props.viewCount - 1 })
       return end
-    }
-    else if (props.view === 'week') {
+    } else if (props.view === 'week') {
       if (props.viewCount === 1) {
         return getEndOfWeek(parseTimestamp(props.modelValue), props.weekdays, times.today)
-      }
-      else {
+      } else {
         let end = copyTimestamp(parsedStartDate.value)
-        end = addToDate(end, { day: (props.viewCount - 1) * DAYS_IN_WEEK })
+        end = addToDate(end, { day: (props.viewCount - 1) * TIME_CONSTANTS.DAYS_IN.WEEK })
         return getEndOfWeek(end, props.weekdays, times.today)
       }
-    }
-    else if (props.view === 'month') {
+    } else if (props.view === 'month') {
       if (props.viewCount === 1) {
         return getEndOfMonth(parseTimestamp(props.modelValue), props.weekdays, times.today)
-      }
-      else {
+      } else {
         let end = copyTimestamp(parsedStartDate.value)
         end = addToDate(end, { month: props.viewCount })
         return getEndOfMonth(end, props.weekdays, times.today)
       }
-    }
-    else {
-      throw new Error(`QCalendarTask: unknown 'view' type (${ props.view })`)
+    } else {
+      throw new Error(`QCalendarTask: unknown 'view' type (${props.view})`)
     }
   })
 
@@ -226,7 +223,7 @@ export default function (props, emit, {
       props.disabledAfter,
       props.disabledWeekdays,
       props.disabledDays,
-      Number.MAX_SAFE_INTEGER
+      Number.MAX_SAFE_INTEGER,
       // parsedMinDays.value
     )
   })
@@ -234,6 +231,6 @@ export default function (props, emit, {
   return {
     days,
     parsedStartDate,
-    parsedEndDate
+    parsedEndDate,
   }
 }
