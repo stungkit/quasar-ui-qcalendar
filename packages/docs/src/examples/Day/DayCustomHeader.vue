@@ -80,7 +80,7 @@ import {
   today,
   Timestamp,
 } from '@quasar/quasar-ui-qcalendar'
-import '@quasar/quasar-ui-qcalendarindex.css'
+import '@quasar/quasar-ui-qcalendar/index.css'
 import { ref, reactive, computed } from 'vue'
 
 const calendar = ref<QCalendarDay>()
