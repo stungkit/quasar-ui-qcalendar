@@ -11,7 +11,7 @@ describe('[TIMESTAMP] getWorkWeek', () => {
   it('getWorkWeek 2021-01-04 (the 4th is always in week 1)', async () => {
     const ts = timestamp.parsed('2021-01-04')
     const tests = timestamp.getWorkWeek(ts)
-    expect(tests).toStrictEqual(53)
+    expect(tests).toStrictEqual(1)
   })
 
   it('getWorkWeek when year is 0', async () => {
