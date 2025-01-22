@@ -5,13 +5,15 @@
   "author": "Jeff Galbraith <jeff@quasar.dev>",
   "license": "MIT",
   "private": true,
+  "access": "private",
   "packageManager": "pnpm@9.15.4",
   "scripts": {
     "clean": "rm -rf node_modules pnpm-lock.yaml packages/ui/node_modules packages/docs/node_modules",
     "build": "pnpm run build:ui && pnpm run build:docs",
     "build:ui": "cd packages/ui && pnpm build",
     "build:docs": "cd packages/docs && pnpm build",
-    "ci:publish": "pnpm -r publish --access public --publish-branch dev"
+    "ci:publish": "pnpm -r publish --access public --publish-branch dev",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",

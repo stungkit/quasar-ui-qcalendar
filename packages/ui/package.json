@@ -196,6 +196,7 @@
     "build:js": "node build/script.javascript.js",
     "build:css": "node build/script.css.js",
     "build:api": "node build/build.api.js",
+    "build:app-ext": "node build/script.app-ext.js",
     "test": "jest --runInBand --no-cache"
   },
   "funding": {
