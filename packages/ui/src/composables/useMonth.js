@@ -1,7 +1,4 @@
-import {
-  computed,
-  watch
-} from 'vue'
+import { computed, watch } from 'vue'
 
 import {
   createDayList,
@@ -11,76 +8,74 @@ import {
   getStartOfWeek,
   getEndOfMonth,
   getStartOfMonth,
-  validateNumber
+  validateNumber,
 } from '../utils/Timestamp.js'
 
 export const useMonthProps = {
   dayHeight: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 0,
-    validator: validateNumber
+    validator: validateNumber,
   },
   dayMinHeight: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 0,
-    validator: validateNumber
+    validator: validateNumber,
   },
   dayStyle: {
     type: Function,
-    default: null
+    default: null,
   },
   dayClass: {
     type: Function,
-    default: null
+    default: null,
   },
   weekdayStyle: {
     type: Function,
-    default: null
+    default: null,
   },
   weekdayClass: {
     type: Function,
-    default: null
+    default: null,
   },
   dayPadding: String,
   minWeeks: {
-    type: [ Number, String ],
+    type: [Number, String],
     validator: validateNumber,
-    default: 1
+    default: 1,
   },
   shortMonthLabel: Boolean,
   showWorkWeeks: Boolean,
   showMonthLabel: {
     type: Boolean,
-    default: true
+    default: true,
   },
   showDayOfYearLabel: Boolean,
   enableOutsideDays: Boolean,
   noOutsideDays: Boolean,
   hover: Boolean,
   miniMode: {
-    type: [ Boolean, String ],
-    validator: v => [ true, false, 'auto' ].includes(v)
+    type: [Boolean, String],
+    validator: (v) => [true, false, 'auto'].includes(v),
   },
   breakpoint: {
-    type: [ Number, String ],
+    type: [Number, String],
     default: 'md',
-    validator: v => [ 'xs', 'sm', 'md', 'lg', 'xl' ].includes(v) || validateNumber(v)
+    validator: (v) => ['xs', 'sm', 'md', 'lg', 'xl'].includes(v) || validateNumber(v),
   },
   monthLabelSize: {
     type: String,
     default: 'sm',
-    validator: v => [ 'xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl' ].includes(v) || (!!v && v.length > 0)
-  }
+    validator: (v) =>
+      ['xxs', 'xs', 'sm', 'md', 'lg', 'xl', 'xxl'].includes(v) || (!!v && v.length > 0),
+  },
 }
 
-export default function (props, emit, {
-  weekdaySkips,
-  times,
-  parsedStart,
-  parsedEnd,
-  size,
-  headerColumnRef
-}) {
+export default function (
+  props,
+  emit,
+  { weekdaySkips, times, parsedStart, parsedEnd, size, headerColumnRef },
+) {
   const parsedMinWeeks = computed(() => parseInt(props.minWeeks, 10))
   const parsedMinDays = computed(() => parsedMinWeeks.value * props.weekdays.length)
   const parsedMonthStart = computed(() => __getStartOfWeek(__getStartOfMonth(parsedStart.value)))
@@ -89,8 +84,7 @@ export default function (props, emit, {
     let width = 0
     if (props.cellWidth) {
       width = props.cellWidth
-    }
-    else if (size.width > 0 && headerColumnRef.value) {
+    } else if (size.width > 0 && headerColumnRef.value) {
       width = headerColumnRef.value.offsetWidth / props.weekdays.length
     }
     return width
@@ -110,7 +104,7 @@ export default function (props, emit, {
       props.disabledWeekdays,
       props.disabledDays,
       Number.MAX_SAFE_INTEGER,
-      parsedMinDays.value
+      parsedMinDays.value,
     )
   })
 
@@ -132,7 +126,7 @@ export default function (props, emit, {
       props.disabledWeekdays,
       props.disabledDays,
       props.weekdays.length,
-      props.weekdays.length
+      props.weekdays.length,
     )
   })
 
@@ -145,44 +139,56 @@ export default function (props, emit, {
     const longOptions = { timeZone: 'UTC', month: 'long' }
     const shortOptions = { timeZone: 'UTC', month: 'short' }
 
-    return createNativeLocaleFormatter(
-      props.locale,
-      (_tms, short) => (short ? shortOptions : longOptions)
+    return createNativeLocaleFormatter(props.locale, (_tms, short) =>
+      short ? shortOptions : longOptions,
     )
   })
 
   const parsedBreakpoint = computed(() => {
     switch (props.breakpoint) {
-      case 'xs': return 300
-      case 'sm': return 350
-      case 'md': return 400
-      case 'lg': return 450
-      case 'xl': return 500
-      default: return parseInt(props.breakpoint, 10)
+      case 'xs':
+        return 300
+      case 'sm':
+        return 350
+      case 'md':
+        return 400
+      case 'lg':
+        return 450
+      case 'xl':
+        return 500
+      default:
+        return parseInt(props.breakpoint, 10)
     }
   })
 
   const parsedMonthLabelSize = computed(() => {
     switch (props.monthLabelSize) {
-      case 'xxs': return '.4em'
-      case 'xs': return '.6em'
-      case 'sm': return '.8em'
-      case 'md': return '1.0em'
-      case 'lg': return '1.2em'
-      case 'xl': return '1.4em'
-      case 'xxl': return '1.6em'
-      default: return props.monthLabelSize
+      case 'xxs':
+        return '.4em'
+      case 'xs':
+        return '.6em'
+      case 'sm':
+        return '.8em'
+      case 'md':
+        return '1.0em'
+      case 'lg':
+        return '1.2em'
+      case 'xl':
+        return '1.4em'
+      case 'xxl':
+        return '1.6em'
+      default:
+        return props.monthLabelSize
     }
   })
 
   let firstTime = true
   const isMiniMode = computed(() => {
-    const val = props.miniMode === true
-    || (
-      props.miniMode === 'auto'
-      && props.breakpoint !== void 0
-      && size.width < parsedBreakpoint.value
-    )
+    const val =
+      props.miniMode === true ||
+      (props.miniMode === 'auto' &&
+        props.breakpoint !== void 0 &&
+        size.width < parsedBreakpoint.value)
     if (firstTime === true) {
       firstTime = false
       emit('mini-mode', val)
@@ -190,7 +196,7 @@ export default function (props, emit, {
     return val
   })
 
-  watch(isMiniMode, val => {
+  watch(isMiniMode, (val) => {
     emit('mini-mode', val)
   })
 
@@ -198,7 +204,7 @@ export default function (props, emit, {
    * Returns a Timestamp of the start of the week
    * @param {Timestamp} day The day in which to find the start of the week
    */
-  function __getStartOfWeek (day) {
+  function __getStartOfWeek(day) {
     return getStartOfWeek(day, props.weekdays, times.today)
   }
 
@@ -206,7 +212,7 @@ export default function (props, emit, {
    * Returns a Timestamp of the end of the week
    * @param {Timestamp} day The day in which to find the end of the week
    */
-  function __getEndOfWeek (day) {
+  function __getEndOfWeek(day) {
     return getEndOfWeek(day, props.weekdays, times.today)
   }
 
@@ -214,7 +220,7 @@ export default function (props, emit, {
    * Returns a Timestamp of the start of the month
    * @param {Timestamp} day The day in which to find the start of the month
    */
-  function __getStartOfMonth (day) {
+  function __getStartOfMonth(day) {
     return getStartOfMonth(day)
   }
 
@@ -222,7 +228,7 @@ export default function (props, emit, {
    * Returns a Timestamp of the end of the month
    * @param {Timestamp} day The day in which to find the end of the month
    */
-  function __getEndOfMonth (day) {
+  function __getEndOfMonth(day) {
     return getEndOfMonth(day)
   }
 
@@ -230,11 +236,13 @@ export default function (props, emit, {
    * Returns boolean if the passed Timestamp is an outside day
    * @param {Timestamp} day The day to check if is deemed an outside day
    */
-  function isOutside (day) {
+  function isOutside(day) {
     const dayIdentifier = getDayIdentifier(day)
 
-    return dayIdentifier < getDayIdentifier(parsedStart.value)
-      || dayIdentifier > getDayIdentifier(parsedEnd.value)
+    return (
+      dayIdentifier < getDayIdentifier(parsedStart.value) ||
+      dayIdentifier > getDayIdentifier(parsedEnd.value)
+    )
   }
 
   return {
@@ -249,6 +257,6 @@ export default function (props, emit, {
     todayWeek,
     isMiniMode,
     monthFormatter,
-    isOutside
+    isOutside,
   }
 }

@@ -1,4 +1,3 @@
-/* global window */
 import {
   h,
   computed,
