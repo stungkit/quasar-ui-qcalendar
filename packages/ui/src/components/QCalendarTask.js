@@ -77,6 +77,7 @@ export default defineComponent({
       // headerColumnRef = ref(null),
       size = reactive({ width: 0, height: 0 }),
       dragOverHeadDayRef = ref(false),
+      dragOverResource = ref(false),
       // keep track of last seen start and end dates
       lastStart = ref(null),
       lastEnd = ref(null)
@@ -351,7 +352,8 @@ export default defineComponent({
         maxWidth: width,
         ...styler({ scope }),
       }
-
+      const dragValue = task[props.taskKey]
+      scope.droppable = dragOverResource.value === dragValue
       const dayClass = typeof props.dayClass === 'function' ? props.dayClass({ scope }) : {}
       // const key = day.date + '-' + task.id
 
