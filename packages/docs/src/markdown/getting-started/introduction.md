@@ -10,11 +10,11 @@ Please note that the codepen links, in the documentation examples, do not work a
 And, if you're looking to help out, check out our [Call to action](/other/contributing/call-to-action) in the **Contributing** section.
 :::
 
-> If you are looking for a **Migration Guide** from v3 to v4, go [here](/other/migration-guide) in the **Help** section.
+> If you are looking for a **Migration Guide** from v3 to v4, go [here](/other/migration-guide).
 
 ## Everything You Need for a Complete Calendar Solution
 
-QCalendar allows for viewing of **day** (1-6 days), **week**, **monthly**, **scheduler**, **agenda**, **resource** and **task** views. Painstaking care has been given to make almost every aspect of QCalendar configurable and/or modifiable in some way and control given to the developer.
+**QCalendar** allows for viewing of **day** (1-6 days), **week**, **monthly**, **scheduler**, **agenda**, **resource** and **task** views. Painstaking care has been given to make almost every aspect of QCalendar configurable and/or modifiable in some way and control given to the developer.
 
 QCalendar is a less-opinionated calendar component, as it does not keep track of things like events and reminders. This is in the hands of the developer, but QCalendar makes it easy via events, slots and methods (see examples how to accomplish these endeavors).
 
