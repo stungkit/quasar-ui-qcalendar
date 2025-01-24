@@ -163,8 +163,8 @@ function dayClass(day: Timestamp) {
 }
 
 function monthFormatterFunc() {
-  const longOptions = { timeZone: 'UTC', month: 'long' } as const
-  const shortOptions = { timeZone: 'UTC', month: 'short' } as const
+  const longOptions: Intl.DateTimeFormatOptions = { timeZone: 'UTC', month: 'long' } as const
+  const shortOptions: Intl.DateTimeFormatOptions = { timeZone: 'UTC', month: 'short' } as const
 
   return createNativeLocaleFormatter(locale.value, (_tms, short) =>
     short ? shortOptions : longOptions,
@@ -172,8 +172,8 @@ function monthFormatterFunc() {
 }
 
 function weekdayFormatterFunc() {
-  const longOptions = { timeZone: 'UTC', weekday: 'long' } as const
-  const shortOptions = { timeZone: 'UTC', weekday: 'short' } as const
+  const longOptions: Intl.DateTimeFormatOptions = { timeZone: 'UTC', weekday: 'long' } as const
+  const shortOptions: Intl.DateTimeFormatOptions = { timeZone: 'UTC', weekday: 'short' } as const
 
   return createNativeLocaleFormatter(locale.value, (_tms, short) =>
     short ? shortOptions : longOptions,
@@ -181,8 +181,8 @@ function weekdayFormatterFunc() {
 }
 
 function dayFormatterFunc() {
-  const longOptions = { timeZone: 'UTC', day: '2-digit' } as const
-  const shortOptions = { timeZone: 'UTC', day: 'numeric' } as const
+  const longOptions: Intl.DateTimeFormatOptions = { timeZone: 'UTC', day: '2-digit' } as const
+  const shortOptions: Intl.DateTimeFormatOptions = { timeZone: 'UTC', day: 'numeric' } as const
 
   return createNativeLocaleFormatter(locale.value, (_tms, short) =>
     short ? shortOptions : longOptions,
