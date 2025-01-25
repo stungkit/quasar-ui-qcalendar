@@ -119,7 +119,6 @@ import '@quasar/quasar-ui-qcalendar/index.css'
 import { ref, reactive, computed } from 'vue'
 import NavigationBar from 'components/NavigationBar.vue'
 
-
 interface Resource {
   id: number
   label: string
@@ -182,7 +181,7 @@ const eventsMap = computed(() => {
   if (events.length > 0) {
     events.forEach((event) => (map[event.date] = map[event.date] || []).push(event))
   }
-  console.log('eventsMap', map)
+  // console.log('eventsMap', map)
   return map
 })
 

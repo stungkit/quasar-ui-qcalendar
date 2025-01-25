@@ -156,7 +156,7 @@ const eventsMap = computed<EventsMap>(() => {
       map[key].push(event)
     }
   })
-  console.log('eventsMap', map)
+  // console.log('eventsMap', map)
   return map
 })
 

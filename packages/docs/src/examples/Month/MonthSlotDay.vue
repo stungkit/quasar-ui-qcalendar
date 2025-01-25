@@ -194,11 +194,11 @@ const eventsMap = computed<Record<string, Event[]>>(() => {
       }
     })
   }
-  console.log(map)
+  // console.log(map)
   return map
 })
 function badgeClasses(event: Event, _type: string) {
-  console.log('event', event)
+  // console.log('event', event)
   return {
     'text-white': true,
     [`bg-${event.bgcolor}`]: true,

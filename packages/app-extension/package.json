@@ -5,10 +5,6 @@
   "author": "Jeff Galbraith <jeff@quasar.dev>",
   "license": "MIT",
   "main": "src/index.js",
-  "scripts": {
-    "lint": "eslint --ext .js,.vue src",
-    "lint-fix": "eslint --ext .js,.vue src --fix"
-  },
   "funding": {
     "type": "github",
     "url": "https://github.com/sponsors/hawkeye64"
@@ -39,19 +35,9 @@
   "dependencies": {
     "@quasar/quasar-ui-qcalendar": "^4.0.3"
   },
-  "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/eslint-parser": "^7.26.5",
-    "eslint": "^8.11.0",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^7.2.1",
-    "eslint-plugin-vue": "^9.32.0",
-    "eslint-webpack-plugin": "^4.2.0"
-  },
   "engines": {
-    "node": ">= 10.0.0",
-    "npm": ">= 5.6.0",
-    "yarn": ">= 1.6.0"
+    "node": "^28 || ^26 || ^24 || ^22 || ^20 || ^18",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
   }
 }
