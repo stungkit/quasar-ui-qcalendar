@@ -1,8 +1,8 @@
 /*global console process */
 process.env.BABEL_ENV = 'production'
 
-import path from 'path'
-import { URL } from 'url'
+import path from 'node:path'
+import { URL } from 'node:url'
 import * as rollup from 'rollup'
 import uglify from 'uglify-js'
 import json from '@rollup/plugin-json'
@@ -10,7 +10,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import babel from '@rollup/plugin-babel'
 
 import buildConf from './config.js'
-import * as buildUtils from './utils.js'
+import * as buildUtils from './build.utils.js'
 
 function pathResolve(relativePath) {
   return path.resolve(path.dirname(new URL(import.meta.url).pathname), relativePath)

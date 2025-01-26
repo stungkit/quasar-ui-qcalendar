@@ -1,6 +1,6 @@
-import path, { resolve } from 'path'
+import path, { resolve } from 'node:path'
 import open from 'open'
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
 
 // Convert __dirname to ES module equivalent
 const __filename = fileURLToPath(import.meta.url)

@@ -1,14 +1,14 @@
 /* global console process */
-import path from 'path'
+import path from 'node:path'
 import { compileAsync } from 'sass-embedded'
 import postcss from 'postcss'
 import cssnano from 'cssnano'
 import rtl from 'rtlcss'
 import autoprefixer from 'autoprefixer'
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
 
 import buildConf from './config.js'
-import * as buildUtils from './utils.js'
+import * as buildUtils from './build.utils.js'
 
 // Convert __dirname for ES module compatibility
 const __filename = fileURLToPath(import.meta.url)
