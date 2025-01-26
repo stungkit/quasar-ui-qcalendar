@@ -32,14 +32,15 @@ export default [
       parser: eslintParser,
 
       parserOptions: {
-        project: './tsconfig.json',
+        project: './jsconfig.json',
+        allowDefaultProject: ['*.js'],
       },
 
       globals: {
         ...globals.node,
       },
     },
-    files: ['src/**/*.ts', 'src/**/*.js', 'ui/**/*.ts', 'ui/**/*.js'], // Match all TypeScript files
+    files: ['src/**/*.ts', 'src/**/*.js'], // Match all TypeScript files
     plugins: {
       '@typescript-eslint': eslintPlugin,
     },
