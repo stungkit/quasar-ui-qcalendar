@@ -43,7 +43,6 @@ export const MONTH_MIN = 1
 export const DAY_MIN = 1
 export const FIRST_HOUR = 0
 
-/* eslint-disable no-multi-spaces */
 /**
  * @typedef {Object} Timestamp The Timestamp object
  * @property {string=} Timestamp.date Date string in format 'YYYY-MM-DD'
@@ -88,7 +87,6 @@ export const TimeObject = {
   hour: 0, // Number
   minute: 0, // Number
 }
-/* eslint-enable no-multi-spaces */
 
 /**
  * Validates the passed input ('YYY-MM-DD') as a date or ('YYY-MM-DD HH:MM') date time combination
@@ -957,7 +955,6 @@ export function createNativeLocaleFormatter(locale, cb) {
       const intlFormatter = new Intl.DateTimeFormat(locale || undefined, cb(timestamp, short))
       return intlFormatter.format(makeDateTime(timestamp))
     } catch (e) /* istanbul ignore next */ {
-      /* eslint-disable-next-line */
       console.error(`Intl.DateTimeFormat: ${e.message} -> ${getDateTime(timestamp)}`)
       return emptyFormatter
     }
@@ -1168,7 +1165,6 @@ export function getWeekdayFormatter() {
       )
       return intlFormatter.format(weekdayDateMap[weekday])
     } catch (e) /* istanbul ignore next */ {
-      /* eslint-disable-next-line */
       console.error(`Intl.DateTimeFormat: ${e.message} -> day of week: ${weekday}`)
       return emptyFormatter
     }
@@ -1209,7 +1205,6 @@ export function getMonthFormatter() {
       date.setMonth(month)
       return intlFormatter.format(date)
     } catch (e) /* istanbul ignore next */ {
-      /* eslint-disable-next-line */
       console.error(`Intl.DateTimeFormat: ${e.message} -> month: ${month}`)
       return emptyFormatter
     }
