@@ -184,8 +184,7 @@
     "./*": "./*"
   },
   "scripts": {
-    "lint": "eslint --ext .cjs,.js,.vue src",
-    "lint-fix": "eslint --ext .cjs,.js,.vue src --fix",
+    "lint": "eslint -c ./eslint.config.mjs \"./**/*.{ts,js,cjs,mjs,vue}\"",
     "dev": "cd dev && pnpm run dev && cd ..",
     "dev:umd": "pnpm run build && node build/script.open-umd.js",
     "dev:ssr": "cd dev && pnpm run 'dev:ssr' && cd ..",
