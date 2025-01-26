@@ -23,7 +23,7 @@ function extendConf(conf, api) {
   conf.css.push('~@quasar/quasar-ui-qcalendar/src/index.scss')
 }
 
-module.exports = function (api) {
+export default function (api) {
   // Quasar compatibility check; you may need
   // hard dependencies, as in a minimum version of the "quasar"
   // package or a minimum version of "@quasar/app" CLI
