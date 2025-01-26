@@ -1,0 +1,28 @@
+{
+  "props": {
+    "column-count": {
+      "type": [
+        "Number",
+        "String"
+      ],
+      "desc": "Number of columns to display",
+      "category": "behavior",
+      "default": "0",
+      "examples": [
+        "3"
+      ]
+    },
+    "column-index-start": {
+      "type": [
+        "Number",
+        "String"
+      ],
+      "desc": "The index of the first column to display",
+      "category": "behavior",
+      "default": "0",
+      "examples": [
+        "1"
+      ]
+    }
+  }
+}
