@@ -1,6 +1,8 @@
+/* global ResizeObserver */
 export default {
   name: 'ResizeObserver',
 
+  // eslint-disable-next-line no-unused-vars
   mounted(el, { modifiers, value }) {
     if (!value) return // callback
 

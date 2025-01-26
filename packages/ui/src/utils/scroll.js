@@ -1,3 +1,4 @@
+/* global window document requestAnimationFrame performance setHorizontalScroll */
 export function scrollTo(scrollTarget, offset) {
   if (scrollTarget === window) {
     window.scrollTo(window.pageXOffset || window.scrollX || document.body.scrollLeft || 0, offset)
