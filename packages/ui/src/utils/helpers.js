@@ -1,5 +1,5 @@
 export function convertToUnit(input, unit = 'px') {
-  if (input == null || input === '') {
+  if (!input) {
     return undefined
   } else if (isNaN(input)) {
     return String(input)
