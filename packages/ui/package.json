@@ -186,17 +186,18 @@
   "scripts": {
     "lint": "eslint -c ./eslint.config.mjs \"./**/*.{ts,js,cjs,mjs,vue}\"",
     "dev": "cd dev && pnpm run dev && cd ..",
-    "dev:umd": "pnpm run build && node build/script.open-umd.js",
+    "dev:umd": "pnpm run build && tsx build/script.open-umd.ts",
     "dev:ssr": "cd dev && pnpm run 'dev:ssr' && cd ..",
     "dev:ios": "cd dev && pnpm run 'dev:ios' && cd ..",
     "dev:android": "cd dev && pnpm run 'dev:android' && cd ..",
     "dev:electron": "cd dev && pnpm run 'dev:electron' && cd ..",
-    "build": "node build/index.js",
-    "build:js": "node build/script.javascript.js",
-    "build:css": "node build/script.css.js",
-    "build:api": "node build/build.api.js",
-    "build:app-ext": "node build/script.app-ext.js",
-    "test": "jest --runInBand --no-cache"
+    "build": "tsx build/index.ts",
+    "build:js": "tsx build/script.javascript.ts",
+    "build:css": "tsx build/script.css.ts",
+    "build:api": "tsx build/build.api.ts",
+    "build:app-ext": "tsx build/script.app-ext.ts",
+    "build:types:old": "tsc --emitDeclarationOnly --declarationDir dist/types",
+    "build:types": "npx -p typescript tsc src/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir dist/types"
   },
   "funding": {
     "type": "github",
