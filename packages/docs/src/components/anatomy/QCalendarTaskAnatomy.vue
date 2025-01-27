@@ -1,6 +1,6 @@
 <template>
   <div
-    class="row full-width q-pa-xs rounded-borders relative-position"
+    class="row full-width q-pa-xs rounded-borders relative-position anatomy"
     style="border: 2px solid rgba(25, 118, 210, 0.65)"
   >
     <q-scroll-area
@@ -255,11 +255,11 @@ const parsedTasks = computed(() => {
     return [] as Task[]
   }
 
-  return tasks.filter(task =>
-    task.logged.some(logged => {
+  return tasks.filter((task) =>
+    task.logged.some((logged) => {
       const loggedTimestamp = parsed(logged.date)
       return loggedTimestamp && isBetweenDates(loggedTimestamp, start, end)
-    })
+    }),
   ) as Task[]
 })
 

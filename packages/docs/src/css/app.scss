@@ -492,3 +492,20 @@ input[type='radio'] {
   min-height: 6px !important;
   padding: 1px !important;
 }
+
+.anatomy .q-item--active {
+  background-color: rgba(25, 118, 210, 0.08) !important;
+}
+
+.q-dark div,
+.body--dark div {
+  .highlight {
+    box-shadow: inset 0 0 0 1px rgba(238, 255, 0, 0.65) !important;
+    min-height: 6px !important;
+    padding: 1px !important;
+  }
+
+  .anatomy .q-item--active {
+    background-color: rgba(238, 255, 0, 0.08) !important;
+  }
+}

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="row full-width q-pa-xs rounded-borders relative-position"
+    class="row full-width q-pa-xs rounded-borders relative-position anatomy"
     style="border: 2px solid rgba(25, 118, 210, 0.65); height: 300px"
   >
     <q-scroll-area class="col" style="max-width: 180px; width: 100%; max-height: 300px">
