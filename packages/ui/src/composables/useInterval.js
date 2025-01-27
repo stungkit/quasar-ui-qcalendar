@@ -85,11 +85,11 @@ export const useSchedulerProps = {
     // required: true
   },
   resourceKey: {
-    type: [String, Number],
+    type: String,
     default: 'id',
   },
   resourceLabel: {
-    type: [String, Number],
+    type: String,
     default: 'label',
   },
   resourceHeight: {
@@ -190,11 +190,11 @@ export const useResourceProps = {
     // required: true
   },
   resourceKey: {
-    type: [String, Number],
+    type: String,
     default: 'id',
   },
   resourceLabel: {
-    type: [String, Number],
+    type: String,
     default: 'label',
   },
   resourceHeight: {

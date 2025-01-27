@@ -45,7 +45,618 @@
       ]
     }
   },
-  "events": {},
+  "events": {
+    "click-resource": {
+      "desc": "Occurs on resource area",
+      "applicable": [
+        "scheduler",
+        "week-scheduler",
+        "resource",
+        "day-resource",
+        "month-scheduler",
+        "custom-scheduler"
+      ],
+      "params": {
+        "data": {
+          "type": "Object",
+          "desc": "The data passed to the function",
+          "__exemption": [
+            "examples"
+          ],
+          "definition": {
+            "scope": {
+              "type": "Object",
+              "desc": "The scope of the event",
+              "__exemption": [
+                "examples"
+              ],
+              "definition": {
+                "resource": {
+                  "type": "Object",
+                  "tsType": "ResourceObject",
+                  "desc": "The resource object associated with the event. Only applicable for resource views",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "intervals": {
+                  "type": "Array",
+                  "tsType": "TimestampArray",
+                  "desc": "An array of timestamps of the intervals",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "index": {
+                  "type": "Number",
+                  "desc": "The index of the resource",
+                  "__exemption": [
+                    "examples"
+                  ]
+                }
+              }
+            },
+            "event": {
+              "type": "Object",
+              "desc": "JS event object",
+              "__exemption": [
+                "examples"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "contextmenu-resource": {
+      "desc": "Occurs on resource area",
+      "applicable": [
+        "scheduler",
+        "week-scheduler",
+        "resource",
+        "day-resource",
+        "month-scheduler",
+        "custom-scheduler"
+      ],
+      "params": {
+        "data": {
+          "type": "Object",
+          "desc": "The data passed to the function",
+          "__exemption": [
+            "examples"
+          ],
+          "definition": {
+            "scope": {
+              "type": "Object",
+              "desc": "The scope of the event",
+              "__exemption": [
+                "examples"
+              ],
+              "definition": {
+                "resource": {
+                  "type": "Object",
+                  "tsType": "ResourceObject",
+                  "desc": "The resource object associated with the event. Only applicable for resource views",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "intervals": {
+                  "type": "Array",
+                  "tsType": "TimestampArray",
+                  "desc": "An array of timestamps of the intervals",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "index": {
+                  "type": "Number",
+                  "desc": "The index of the resource",
+                  "__exemption": [
+                    "examples"
+                  ]
+                }
+              }
+            },
+            "event": {
+              "type": "Object",
+              "desc": "JS event object",
+              "__exemption": [
+                "examples"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "mousedown-resource": {
+      "desc": "Occurs on resource area",
+      "applicable": [
+        "scheduler",
+        "week-scheduler",
+        "resource",
+        "day-resource",
+        "month-scheduler",
+        "custom-scheduler"
+      ],
+      "params": {
+        "data": {
+          "type": "Object",
+          "desc": "The data passed to the function",
+          "__exemption": [
+            "examples"
+          ],
+          "definition": {
+            "scope": {
+              "type": "Object",
+              "desc": "The scope of the event",
+              "__exemption": [
+                "examples"
+              ],
+              "definition": {
+                "resource": {
+                  "type": "Object",
+                  "tsType": "ResourceObject",
+                  "desc": "The resource object associated with the event. Only applicable for resource views",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "intervals": {
+                  "type": "Array",
+                  "tsType": "TimestampArray",
+                  "desc": "An array of timestamps of the intervals",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "index": {
+                  "type": "Number",
+                  "desc": "The index of the resource",
+                  "__exemption": [
+                    "examples"
+                  ]
+                }
+              }
+            },
+            "event": {
+              "type": "Object",
+              "desc": "JS event object",
+              "__exemption": [
+                "examples"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "mouseup-resource": {
+      "desc": "Occurs on resource area",
+      "applicable": [
+        "scheduler",
+        "week-scheduler",
+        "resource",
+        "day-resource",
+        "month-scheduler",
+        "custom-scheduler"
+      ],
+      "params": {
+        "data": {
+          "type": "Object",
+          "desc": "The data passed to the function",
+          "__exemption": [
+            "examples"
+          ],
+          "definition": {
+            "scope": {
+              "type": "Object",
+              "desc": "The scope of the event",
+              "__exemption": [
+                "examples"
+              ],
+              "definition": {
+                "resource": {
+                  "type": "Object",
+                  "tsType": "ResourceObject",
+                  "desc": "The resource object associated with the event. Only applicable for resource views",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "intervals": {
+                  "type": "Array",
+                  "tsType": "TimestampArray",
+                  "desc": "An array of timestamps of the intervals",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "index": {
+                  "type": "Number",
+                  "desc": "The index of the resource",
+                  "__exemption": [
+                    "examples"
+                  ]
+                }
+              }
+            },
+            "event": {
+              "type": "Object",
+              "desc": "JS event object",
+              "__exemption": [
+                "examples"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "mouseenter-resource": {
+      "desc": "Occurs on resource area",
+      "applicable": [
+        "scheduler",
+        "week-scheduler",
+        "resource",
+        "day-resource",
+        "month-scheduler",
+        "custom-scheduler"
+      ],
+      "params": {
+        "data": {
+          "type": "Object",
+          "desc": "The data passed to the function",
+          "__exemption": [
+            "examples"
+          ],
+          "definition": {
+            "scope": {
+              "type": "Object",
+              "desc": "The scope of the event",
+              "__exemption": [
+                "examples"
+              ],
+              "definition": {
+                "resource": {
+                  "type": "Object",
+                  "tsType": "ResourceObject",
+                  "desc": "The resource object associated with the event. Only applicable for resource views",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "intervals": {
+                  "type": "Array",
+                  "tsType": "TimestampArray",
+                  "desc": "An array of timestamps of the intervals",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "index": {
+                  "type": "Number",
+                  "desc": "The index of the resource",
+                  "__exemption": [
+                    "examples"
+                  ]
+                }
+              }
+            },
+            "event": {
+              "type": "Object",
+              "desc": "JS event object",
+              "__exemption": [
+                "examples"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "mouseleave-resource": {
+      "desc": "Occurs on resource area",
+      "applicable": [
+        "scheduler",
+        "week-scheduler",
+        "resource",
+        "day-resource",
+        "month-scheduler",
+        "custom-scheduler"
+      ],
+      "params": {
+        "data": {
+          "type": "Object",
+          "desc": "The data passed to the function",
+          "__exemption": [
+            "examples"
+          ],
+          "definition": {
+            "scope": {
+              "type": "Object",
+              "desc": "The scope of the event",
+              "__exemption": [
+                "examples"
+              ],
+              "definition": {
+                "resource": {
+                  "type": "Object",
+                  "tsType": "ResourceObject",
+                  "desc": "The resource object associated with the event. Only applicable for resource views",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "intervals": {
+                  "type": "Array",
+                  "tsType": "TimestampArray",
+                  "desc": "An array of timestamps of the intervals",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "index": {
+                  "type": "Number",
+                  "desc": "The index of the resource",
+                  "__exemption": [
+                    "examples"
+                  ]
+                }
+              }
+            },
+            "event": {
+              "type": "Object",
+              "desc": "JS event object",
+              "__exemption": [
+                "examples"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "mousemove-resource": {
+      "desc": "Occurs on resource area",
+      "applicable": [
+        "scheduler",
+        "week-scheduler",
+        "resource",
+        "day-resource",
+        "month-scheduler",
+        "custom-scheduler"
+      ],
+      "params": {
+        "data": {
+          "type": "Object",
+          "desc": "The data passed to the function",
+          "__exemption": [
+            "examples"
+          ],
+          "definition": {
+            "scope": {
+              "type": "Object",
+              "desc": "The scope of the event",
+              "__exemption": [
+                "examples"
+              ],
+              "definition": {
+                "resource": {
+                  "type": "Object",
+                  "tsType": "ResourceObject",
+                  "desc": "The resource object associated with the event. Only applicable for resource views",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "intervals": {
+                  "type": "Array",
+                  "tsType": "TimestampArray",
+                  "desc": "An array of timestamps of the intervals",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "index": {
+                  "type": "Number",
+                  "desc": "The index of the resource",
+                  "__exemption": [
+                    "examples"
+                  ]
+                }
+              }
+            },
+            "event": {
+              "type": "Object",
+              "desc": "JS event object",
+              "__exemption": [
+                "examples"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "touchstart-resource": {
+      "desc": "Occurs on resource area",
+      "applicable": [
+        "scheduler",
+        "week-scheduler",
+        "resource",
+        "day-resource",
+        "month-scheduler",
+        "custom-scheduler"
+      ],
+      "params": {
+        "data": {
+          "type": "Object",
+          "desc": "The data passed to the function",
+          "__exemption": [
+            "examples"
+          ],
+          "definition": {
+            "scope": {
+              "type": "Object",
+              "desc": "The scope of the event",
+              "__exemption": [
+                "examples"
+              ],
+              "definition": {
+                "resource": {
+                  "type": "Object",
+                  "tsType": "ResourceObject",
+                  "desc": "The resource object associated with the event. Only applicable for resource views",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "intervals": {
+                  "type": "Array",
+                  "tsType": "TimestampArray",
+                  "desc": "An array of timestamps of the intervals",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "index": {
+                  "type": "Number",
+                  "desc": "The index of the resource",
+                  "__exemption": [
+                    "examples"
+                  ]
+                }
+              }
+            },
+            "event": {
+              "type": "Object",
+              "desc": "JS event object",
+              "__exemption": [
+                "examples"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "touchend-resource": {
+      "desc": "Occurs on resource area",
+      "applicable": [
+        "scheduler",
+        "week-scheduler",
+        "resource",
+        "day-resource",
+        "month-scheduler",
+        "custom-scheduler"
+      ],
+      "params": {
+        "data": {
+          "type": "Object",
+          "desc": "The data passed to the function",
+          "__exemption": [
+            "examples"
+          ],
+          "definition": {
+            "scope": {
+              "type": "Object",
+              "desc": "The scope of the event",
+              "__exemption": [
+                "examples"
+              ],
+              "definition": {
+                "resource": {
+                  "type": "Object",
+                  "tsType": "ResourceObject",
+                  "desc": "The resource object associated with the event. Only applicable for resource views",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "intervals": {
+                  "type": "Array",
+                  "tsType": "TimestampArray",
+                  "desc": "An array of timestamps of the intervals",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "index": {
+                  "type": "Number",
+                  "desc": "The index of the resource",
+                  "__exemption": [
+                    "examples"
+                  ]
+                }
+              }
+            },
+            "event": {
+              "type": "Object",
+              "desc": "JS event object",
+              "__exemption": [
+                "examples"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "touchmove-resource": {
+      "desc": "Occurs on resource area",
+      "applicable": [
+        "scheduler",
+        "week-scheduler",
+        "resource",
+        "day-resource",
+        "month-scheduler",
+        "custom-scheduler"
+      ],
+      "params": {
+        "data": {
+          "type": "Object",
+          "desc": "The data passed to the function",
+          "__exemption": [
+            "examples"
+          ],
+          "definition": {
+            "scope": {
+              "type": "Object",
+              "desc": "The scope of the event",
+              "__exemption": [
+                "examples"
+              ],
+              "definition": {
+                "resource": {
+                  "type": "Object",
+                  "tsType": "ResourceObject",
+                  "desc": "The resource object associated with the event. Only applicable for resource views",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "intervals": {
+                  "type": "Array",
+                  "tsType": "TimestampArray",
+                  "desc": "An array of timestamps of the intervals",
+                  "__exemption": [
+                    "examples"
+                  ]
+                },
+                "index": {
+                  "type": "Number",
+                  "desc": "The index of the resource",
+                  "__exemption": [
+                    "examples"
+                  ]
+                }
+              }
+            },
+            "event": {
+              "type": "Object",
+              "desc": "JS event object",
+              "__exemption": [
+                "examples"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
   "methods": {
     "timeStartPos": {
       "desc": "Calculates the starting y position of the passed in time",

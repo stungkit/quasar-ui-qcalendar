@@ -27,8 +27,7 @@
         "'month'",
         "'week-agenda'"
       ],
-      "default": "'day'",
-      "__runtimeDefault": true
+      "default": "'day'"
     },
     "short-interval-label": {
       "type": "Boolean",
@@ -280,6 +279,7 @@
       "category": "style",
       "desc": "Gets called to provide custom styling of a day",
       "__runtimeDefault": true,
+      "default": "# null",
       "params": {
         "timestamp": {
           "type": "Timestamp",
@@ -410,6 +410,8 @@
       "type": "Function",
       "category": "style",
       "desc": "Gets called to provide custom styling (via classes) of a weekday",
+      "__runtimeDefault": true,
+      "default": "# null",
       "params": {
         "data": {
           "type": "Object",
@@ -469,6 +471,8 @@
       "type": "Function",
       "category": "content",
       "desc": "Gets called to provide custom display of an interval label",
+      "__runtimeDefault": true,
+      "default": "# null",
       "params": {
         "timestamp": {
           "type": "Timestamp",
@@ -487,7 +491,7 @@
         ]
       }
     },
-    "hour24-format": {
+    "hour24format": {
       "type": "Boolean",
       "category": "style",
       "desc": "Show intervals in 24 hour format",
@@ -506,13 +510,12 @@
         "all scheduler"
       ]
     },
-    "time-clicks-clamps": {
+    "time-clicks-clamped": {
       "type": "Boolean",
       "category": "behavior",
-      "default": "false",
-      "desc": "If true, time clicks will clamp to the nearest interval",
-      "__exemption": [
-        "examples"
+      "desc": "Causes the returning timestamp time to be clamped to the interval it is in",
+      "applicable": [
+        "All interval-based"
       ]
     },
     "date-header": {
@@ -528,6 +531,26 @@
       "examples": [
         "'inline'"
       ]
+    },
+    "no-sticky": {
+      "type": "Boolean",
+      "category": "behavior",
+      "desc": "Disables sticky headers",
+      "applicable": [
+        "resource"
+      ]
+    },
+    "interval-header-height": {
+      "type": [
+        "Number",
+        "String"
+      ],
+      "category": "style",
+      "desc": "The height of the interval header",
+      "applicable": [
+        "resource"
+      ],
+      "default": "20"
     }
   },
   "slots": {}
