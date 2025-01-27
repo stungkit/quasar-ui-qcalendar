@@ -1,4 +1,4 @@
-import { version } from './version'
+import { version } from './version.js'
 
 import * as Timestamp from './utils/Timestamp.js'
 import * as helpers from './utils/helpers.js'

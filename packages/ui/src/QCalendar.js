@@ -5,7 +5,7 @@ import QCalendarMonth from './components/QCalendarMonth.js'
 import QCalendarResource from './components/QCalendarResource.js'
 import QCalendarScheduler from './components/QCalendarScheduler.js'
 import QCalendarTask from './components/QCalendarTask.js'
-import { version } from './version'
+import { version } from './version.js'
 
 import * as Timestamp from './utils/Timestamp.js'
 import * as helpers from './utils/helpers.js'
