@@ -1,5 +1,5 @@
 /* global process console */
-import { join, resolve, relative } from 'node:path'
+import path from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
 import fse from 'fs-extra'
 import zlib from 'zlib'
@@ -11,12 +11,6 @@ const jsRE = /\.c?js$/
 const cssRE = /\.(css|sass|scss)$/
 const tsRE = /\.ts$/
 const jsonRE = /\.json$/
-
-interface DestinationInfo {
-  banner: string
-  tableEntryType: string
-  toTable: boolean
-}
 
 interface TableDataEntry {
   0: string
@@ -51,12 +45,12 @@ export function capitalize(str: string) {
 export const rootFolder = fileURLToPath(new URL('..', import.meta.url))
 
 export function resolveToRoot(...pathList: string[]): string {
-  return resolve(rootFolder, ...pathList)
+  return path.resolve(rootFolder, ...pathList)
 }
 
 export function relativeToRoot(...pathList: string[]): string {
   /// @ts-expect-error fix later
-  return relative(rootFolder, ...pathList)
+  return path.relative(rootFolder, ...pathList)
 }
 
 export const { version } = readJsonFile(new URL('../package.json', import.meta.url))
@@ -95,7 +89,7 @@ function getSize(code: string): string {
 }
 
 export function createFolder(folder: string) {
-  const dir = join(rootFolder, folder)
+  const dir = path.join(rootFolder, folder)
   fse.ensureDirSync(dir)
 }
 
@@ -144,7 +138,7 @@ export function writeFile(dest: string, code: string, zip = false): Promise<stri
   const { banner, tableEntryType, toTable } = getDestinationInfo(dest)
 
   const fileSize = getSize(code)
-  const filePath = relative(process.cwd(), dest)
+  const filePath = path.relative(process.cwd(), dest)
 
   return new Promise((resolve, reject) => {
     function report(gzippedString?: string, gzippedSize?: string) {
@@ -223,4 +217,16 @@ const privateFileRE = /test|private/
 
 export function filterOutPrivateFiles(file: string) {
   return privateFileRE.test(file) === false
+}
+
+export function copyFolder(srcDir: string, destDir: string) {
+  return fse
+    .copy(srcDir, destDir)
+    .then(() => {
+      console.log(`Copied from ${srcDir} to ${destDir}`)
+    })
+    .catch((err) => {
+      console.error('\n' + red('[Error]'), err)
+      console.log()
+    })
 }
