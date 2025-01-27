@@ -1683,3 +1683,20 @@ export async function generate({ compact = false } = {}) {
     process.exit(1)
   }
 }
+
+function run() {
+  generate()
+    .then(() => {
+      console.log('build.api.js: done')
+      console.log()
+    })
+    .catch((error) => {
+      console.error(error)
+      process.exit(1)
+    })
+}
+
+// Check if the module is being run directly
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  run()
+}
