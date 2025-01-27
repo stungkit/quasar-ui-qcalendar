@@ -32,8 +32,8 @@ export default [
       parser: eslintParser,
 
       parserOptions: {
-        project: './jsconfig.json',
-        allowDefaultProject: ['*.js'],
+        project: './tsconfig.json',
+        allowDefaultProject: ['*.js', '*.ts'],
       },
 
       globals: {
