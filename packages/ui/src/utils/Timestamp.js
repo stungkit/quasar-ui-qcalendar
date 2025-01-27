@@ -942,7 +942,6 @@ export function createIntervalList(timestamp, first, minutes, count, now) {
  * @returns {formatter} The function has params (timestamp, short). The short is to use the short options.
  */
 export function createNativeLocaleFormatter(locale, cb) {
-  // eslint-disable-next-line no-unused-vars
   const emptyFormatter = (_t, _s) => ''
 
   /* istanbul ignore next */
@@ -965,7 +964,7 @@ export function createNativeLocaleFormatter(locale, cb) {
  * Makes a JavaScript Date from the passed {@link Timestamp}
  * @param {Timestamp} timestamp The {@link Timestamp} to use
  * @param {boolean} utc True to get Date object using UTC
- * @returns {date} A JavaScript Date
+ * @returns {Date} A JavaScript Date
  */
 export function makeDate(timestamp, utc = true) {
   if (utc) return new Date(Date.UTC(timestamp.year, timestamp.month - 1, timestamp.day, 0, 0))
@@ -976,7 +975,7 @@ export function makeDate(timestamp, utc = true) {
  * Makes a JavaScript Date from the passed {@link Timestamp} (with time)
  * @param {Timestamp} timestamp The {@link Timestamp} to use
  * @param {boolean} utc True to get Date object using UTC
- * @returns {date} A JavaScript Date
+ * @returns {Date} A JavaScript Date
  */
 export function makeDateTime(timestamp, utc = true) {
   if (utc)
@@ -1095,6 +1094,20 @@ export function addToDate(timestamp, options) {
   return updateFormatted(normalizeTimestamp(ts))
 }
 
+/**
+ * Normalizes a timestamp object by creating a JavaScript Date object and extracting standardized values.
+ * This function ensures that the timestamp values are consistent and correctly represent a valid date and time.
+ *
+ * @param {Object} ts - The timestamp object to normalize.
+ * @param {number} ts.year - The year of the timestamp.
+ * @param {number} ts.month - The month of the timestamp (1-12).
+ * @param {number} ts.day - The day of the month.
+ * @param {number} ts.hour - The hour of the day (0-23).
+ * @param {number} ts.minute - The minute of the hour (0-59).
+ * @returns {Object} A new object with normalized timestamp values.
+ *                   The returned object includes all properties from the input object,
+ *                   with year, month, day, hour, and minute properties updated to normalized values.
+ */
 function normalizeTimestamp(ts) {
   const date = new Date(ts.year, ts.month - 1, ts.day, ts.hour, ts.minute)
   return {
@@ -1131,7 +1144,7 @@ export function weeksBetween(ts1, ts2) {
   return Math.ceil(daysBetween(t1, t2) / TIME_CONSTANTS.DAYS_IN.WEEK)
 }
 
-// Known dates - starting week on a monday to conform to browser
+// Known dates
 const weekdayDateMap = {
   Sun: new Date('2020-01-05T00:00:00.000Z'),
   Mon: new Date('2020-01-06T00:00:00.000Z'),
@@ -1142,8 +1155,24 @@ const weekdayDateMap = {
   Sat: new Date('2020-01-11T00:00:00.000Z'),
 }
 
+/**
+ * Returns a function that uses Intl.DateTimeFormat to format weekdays.
+ *
+ * @function getWeekdayFormatter
+ * @returns {function} A function that formats weekdays.
+ *
+ * @example
+ * const formatWeekday = getWeekdayFormatter();
+ * console.log(formatWeekday('Mon', 'long', 'en-US')); // "Monday"
+ * console.log(formatWeekday('Mon', 'short', 'fr-FR')); // "lun."
+ *
+ * @param {string} weekday - The abbreviation of the weekday (e.g., 'Mon', 'Tue', 'Wed', etc.).
+ * @param {string} [type='long'] - The type of formatting to use ('narrow', 'short', or 'long').
+ * @param {string} [locale=''] - The locale to use for formatting.
+ *
+ * @returns {string} The formatted weekday.
+ */
 export function getWeekdayFormatter() {
-  // eslint-disable-next-line no-unused-vars
   const emptyFormatter = (_d, _t) => ''
   const options = {
     long: { timeZone: 'UTC', weekday: 'long' },
@@ -1156,7 +1185,14 @@ export function getWeekdayFormatter() {
     return emptyFormatter
   }
 
-  // type = 'narrow', 'short', 'long'
+  /**
+   * Formats a given weekday into a localized string based on the specified type and locale.
+   *
+   * @param {number} weekday - The day of the week (0 for Sunday, 1 for Monday, etc.).
+   * @param {string} type - The format type (e.g., 'narrow', 'short', 'long') to use for formatting.
+   * @param {string} [locale] - The locale string (e.g., 'en-US') to use for formatting. Defaults to the user's locale if not provided.
+   * @returns {string} The formatted weekday string.
+   */
   function weekdayFormatter(weekday, type, locale) {
     try {
       const intlFormatter = new Intl.DateTimeFormat(
@@ -1173,14 +1209,32 @@ export function getWeekdayFormatter() {
   return weekdayFormatter
 }
 
+/**
+ * Retrieves an array of localized weekday names.
+ *
+ * @param {string} type - The format type for the weekday names. Can be 'narrow', 'short', or 'long'.
+ * @param {string} [locale] - The locale to use for formatting. If not provided, the default locale is used.
+ * @returns {string[]} An array of localized weekday names in the specified format.
+ */
 export function getWeekdayNames(type, locale) {
   const shortWeekdays = Object.keys(weekdayDateMap)
   const weekdayFormatter = getWeekdayFormatter()
   return shortWeekdays.map((weekday) => weekdayFormatter(weekday, type, locale))
 }
 
+/**
+ * Creates and returns a function for formatting month names based on locale and format type.
+ *
+ * @returns {Function} A function that formats month names.
+ *   The returned function accepts the following parameters:
+ *   @param {number} month - The month to format (0-11, where 0 is January).
+ *   @param {string} [type='long'] - The format type: 'narrow', 'short', or 'long'.
+ *   @param {string} [locale] - The locale to use for formatting. If not provided, the default locale is used.
+ *   @returns {string} The formatted month name.
+ *
+ * @throws {Error} If Intl or Intl.DateTimeFormat is not supported in the environment.
+ */
 export function getMonthFormatter() {
-  // eslint-disable-next-line no-unused-vars
   const emptyFormatter = (_m, _t) => ''
   const options = {
     long: { timeZone: 'UTC', month: 'long' },
@@ -1193,7 +1247,14 @@ export function getMonthFormatter() {
     return emptyFormatter
   }
 
-  // type = 'narrow', 'short', 'long'
+  /**
+   * Formats a given month into a string based on the specified type and locale.
+   *
+   * @param {number} month - The month to format (0 for January, 11 for December).
+   * @param {string} type - The format type (e.g., 'narrow', 'long', 'short', etc.).
+   * @param {string} [locale] - The locale to use for formatting (defaults to the system locale if not provided).
+   * @returns {string} The formatted month string.
+   */
   function monthFormatter(month, type, locale) {
     try {
       const intlFormatter = new Intl.DateTimeFormat(
@@ -1213,6 +1274,13 @@ export function getMonthFormatter() {
   return monthFormatter
 }
 
+/**
+ * Retrieves an array of localized month names.
+ *
+ * @param {string} type - The format type for the month names. Can be 'narrow', 'short', or 'long'.
+ * @param {string} [locale] - The locale to use for formatting. If not provided, the default locale is used.
+ * @returns {string[]} An array of localized month names in the specified format.
+ */
 export function getMonthNames(type, locale) {
   const monthFormatter = getMonthFormatter()
   return [...Array(12).keys()].map((month) => monthFormatter(month, type, locale))
