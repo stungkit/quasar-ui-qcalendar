@@ -1,4 +1,6 @@
 /* global process console */
+// @ts-nocheck
+
 import { join, basename } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { globSync } from 'tinyglobby'

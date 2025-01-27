@@ -5,43 +5,57 @@ import fse from 'fs-extra'
 import zlib from 'zlib'
 import { red, yellow, green, blue, magenta, gray, underline } from 'kolorist'
 import { table } from 'table'
-import config from './config.js'
+import config from './config'
 
 const jsRE = /\.c?js$/
 const cssRE = /\.(css|sass|scss)$/
 const tsRE = /\.ts$/
 const jsonRE = /\.json$/
 
-const tableData = []
+interface DestinationInfo {
+  banner: string
+  tableEntryType: string
+  toTable: boolean
+}
 
-export function plural(num) {
+interface TableDataEntry {
+  0: string
+  1: string
+  2: string
+  3: string
+}
+
+const tableData: TableDataEntry[] = []
+
+export function plural(num: number) {
   return num === 1 ? '' : 's'
 }
 
 const camelCaseRE = /((-|\.)\w)/g
 const camelCaseInnerRE = /-|\./
-export function camelCase(str) {
+export function camelCase(str: string) {
   // assumes kebab case "str"
   return str.replace(camelCaseRE, (text) => text.replace(camelCaseInnerRE, '').toUpperCase())
 }
 
 const kebabRE = /([a-zA-Z])([A-Z])/g
-export function kebabCase(str) {
+export function kebabCase(str: string) {
   // assumes pascal case "str"
   return str.replace(kebabRE, '$1-$2').toLowerCase()
 }
 
-export function capitalize(str) {
+export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 export const rootFolder = fileURLToPath(new URL('..', import.meta.url))
 
-export function resolveToRoot(...pathList) {
+export function resolveToRoot(...pathList: string[]): string {
   return resolve(rootFolder, ...pathList)
 }
 
-export function relativeToRoot(...pathList) {
+export function relativeToRoot(...pathList: string[]): string {
+  /// @ts-expect-error fix later
   return relative(rootFolder, ...pathList)
 }
 
@@ -61,7 +75,7 @@ process.on('exit', (code) => {
       underline('Gzipped'),
     ])
 
-    const output = table(tableData, {
+    const output = table(tableData as unknown as ReadonlyArray<readonly unknown[]>, {
       columns: {
         0: { alignment: 'right' },
         1: { alignment: 'left' },
@@ -76,16 +90,20 @@ process.on('exit', (code) => {
   }
 })
 
-function getSize(code) {
+function getSize(code: string): string {
   return (code.length / 1024).toFixed(2) + 'kb'
 }
 
-export function createFolder(folder) {
+export function createFolder(folder: string) {
   const dir = join(rootFolder, folder)
   fse.ensureDirSync(dir)
 }
 
-function getDestinationInfo(dest) {
+function getDestinationInfo(dest: string): {
+  banner: string
+  tableEntryType: string
+  toTable: boolean
+} {
   if (jsonRE.test(dest)) {
     return {
       banner: gray('[json]'),
@@ -122,18 +140,22 @@ function getDestinationInfo(dest) {
   process.exit(1)
 }
 
-export function writeFile(dest, code, zip) {
+export function writeFile(dest: string, code: string, zip = false): Promise<string> {
   const { banner, tableEntryType, toTable } = getDestinationInfo(dest)
 
   const fileSize = getSize(code)
   const filePath = relative(process.cwd(), dest)
 
   return new Promise((resolve, reject) => {
-    function report(gzippedString, gzippedSize) {
-      console.log(`${banner} ${filePath.padEnd(49)} ${fileSize.padStart(8)}${gzippedString || ''}`)
+    function report(gzippedString?: string, gzippedSize?: string) {
+      if (gzippedString) {
+        console.log(
+          `${banner} ${filePath.padEnd(49)} ${fileSize.padStart(8)}${gzippedString || ''}`,
+        )
 
-      if (toTable) {
-        tableData.push([tableEntryType, filePath, fileSize, gzippedSize || '-'])
+        if (toTable) {
+          tableData.push([tableEntryType, filePath, fileSize, gzippedSize || '-'])
+        }
       }
 
       resolve(code)
@@ -142,9 +164,9 @@ export function writeFile(dest, code, zip) {
     fse.writeFile(dest, code, (err) => {
       if (err) return reject(err)
       if (zip) {
-        zlib.gzip(code, (err, zipped) => {
+        zlib.gzip(code, (err, zipped: Buffer<ArrayBufferLike>) => {
           if (err) return reject(err)
-          const size = getSize(zipped)
+          const size = getSize(zipped as unknown as string)
           report(` (gzipped: ${size.padStart(8)})`, size)
         })
       } else {
@@ -154,15 +176,19 @@ export function writeFile(dest, code, zip) {
   })
 }
 
-export function readFile(file) {
+export function readFile(file: string) {
   return fse.readFileSync(file, 'utf-8')
 }
 
-export function readJsonFile(file) {
+export function readJsonFile(file: string | URL): Record<string, unknown> {
   return JSON.parse(fse.readFileSync(file, 'utf-8'))
 }
 
-export function writeFileIfChanged(dest, newContent, zip) {
+export function writeFileIfChanged(
+  dest: string,
+  newContent: string,
+  zip: boolean,
+): Promise<string | void> {
   let currentContent = ''
   try {
     currentContent = fse.readFileSync(dest, 'utf-8')
@@ -175,17 +201,17 @@ export function writeFileIfChanged(dest, newContent, zip) {
     : Promise.resolve()
 }
 
-export function logError(err) {
+export function logError(err: string | Error) {
   console.error('\n' + red('[Error]'), err)
   console.log()
 }
 
-export function logWarning(err) {
+export function logWarning(err: string | Error) {
   console.error('\n' + yellow('[Warning]'), err)
   console.log()
 }
 
-export function clone(data) {
+export function clone(data: string) {
   const str = JSON.stringify(data)
 
   if (str) {
@@ -195,6 +221,6 @@ export function clone(data) {
 
 const privateFileRE = /test|private/
 
-export function filterOutPrivateFiles(file) {
+export function filterOutPrivateFiles(file: string) {
   return privateFileRE.test(file) === false
 }

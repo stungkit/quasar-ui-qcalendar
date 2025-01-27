@@ -7,24 +7,18 @@ import * as rollup from 'rollup'
 import uglify from 'uglify-js'
 import json from '@rollup/plugin-json'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
-import babel from '@rollup/plugin-babel'
+// import babel from '@rollup/plugin-babel'
+// import { dts } from 'rollup-plugin-dts'
+import typescript from '@rollup/plugin-typescript'
 
-import buildConf from './config.js'
-import * as buildUtils from './build.utils.js'
+import buildConf from './config'
+import * as buildUtils from './build.utils'
 
-function pathResolve(relativePath) {
+function pathResolve(relativePath: string): string {
   return path.resolve(path.dirname(new URL(import.meta.url).pathname), relativePath)
 }
 
-const rollupPlugins = [
-  nodeResolve(),
-  json(),
-  babel({
-    babelHelpers: 'bundled',
-    presets: ['@babel/preset-env'],
-    exclude: 'node_modules/**',
-  }),
-]
+const rollupPlugins: rollup.Plugin[] = [nodeResolve(), json(), typescript()]
 
 const uglifyOptions = {
   compress: {
@@ -75,10 +69,11 @@ const builds = buildEntries.flatMap((entry) =>
         external: ['vue'],
       },
       output: {
+        // sourcemap: true,
         file: pathResolve(`../dist/${entry}.${format}.js`),
         format,
         name: format === 'umd' ? entry : undefined,
-        exports: 'auto',
+        exports: 'auto' as 'auto',
         banner: buildConf.banner,
         globals: { vue: 'Vue' },
       },
@@ -91,17 +86,31 @@ const builds = buildEntries.flatMap((entry) =>
   })),
 )
 
-build(builds)
+build(builds as any)
 
 /**
  * Main Build Process
  */
-async function build(builds) {
+interface RollupConfig {
+  input: rollup.InputOptions
+  output: rollup.OutputOptions
+}
+
+interface BuildConfig {
+  rollup: RollupConfig
+  build: {
+    unminified: boolean
+    minified: boolean
+    minExt: boolean
+  }
+}
+
+async function build(builds: BuildConfig[]): Promise<void> {
   try {
     for (const config of builds) {
       await buildEntry(config)
     }
-  } catch (error) {
+  } catch (error: Error | any) {
     buildUtils.logError(error)
     process.exit(1)
   }
@@ -110,14 +119,20 @@ async function build(builds) {
 /**
  * Generates the build output for a single entry.
  */
-async function buildEntry(config) {
+interface Output {
+  code: string
+}
+
+async function buildEntry(config: BuildConfig): Promise<void> {
   try {
     const bundle = await rollup.rollup(config.rollup.input)
     const { output } = await bundle.generate(config.rollup.output)
     const code =
-      config.rollup.output.format === 'umd' ? injectVueRequirement(output[0].code) : output[0].code
+      config.rollup.output.format === 'umd'
+        ? injectVueRequirement((output[0] as Output).code)
+        : (output[0] as Output).code
 
-    if (config.build.unminified) {
+    if (config.build.unminified && config.rollup.output.file) {
       await buildUtils.writeFile(config.rollup.output.file, code)
     }
 
@@ -129,10 +144,10 @@ async function buildEntry(config) {
       }
 
       const minifiedFile = config.build.minExt
-        ? addFileExtension(config.rollup.output.file, 'min')
+        ? addFileExtension(config.rollup.output.file as string, 'min')
         : config.rollup.output.file
 
-      await buildUtils.writeFile(minifiedFile, buildConf.banner + minified.code, true)
+      await buildUtils.writeFile(minifiedFile as string, buildConf.banner + minified.code, true)
     }
   } catch (error) {
     console.error(`Error building ${config.rollup.output.file}:`, error)
@@ -143,7 +158,7 @@ async function buildEntry(config) {
 /**
  * Adds or replaces an extension in a file path.
  */
-function addFileExtension(filename, ext = 'min') {
+function addFileExtension(filename: string, ext = 'min'): string {
   const index = filename.lastIndexOf('.')
   return `${filename.slice(0, index)}.${ext}${filename.slice(index)}`
 }
@@ -151,7 +166,7 @@ function addFileExtension(filename, ext = 'min') {
 /**
  * Injects a Vue dependency check into UMD builds.
  */
-function injectVueRequirement(code) {
+function injectVueRequirement(code: string): string {
   const dependencyCheck = `if (Vue === void 0) {
     console.error('[ QCalendar ] Vue is required to run. Please add a script tag for it before loading QCalendar.');
     return;

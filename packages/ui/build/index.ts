@@ -1,6 +1,6 @@
 /*global console process */
 import { cpus } from 'node:os'
-import { createFolder } from './build.utils.js'
+import { createFolder } from './build.utils'
 import { green, blue } from 'kolorist'
 // import { fileURLToPath } from 'url'
 // import path from 'path'
@@ -16,16 +16,16 @@ const parallel = cpus().length > 1
 console.log()
 
 async function buildApi() {
-  // const api = await import('./build.api.js').then(({ generate }) => generate({ compact: true }))
+  // const api = await import('./build.api').then(({ generate }) => generate({ compact: true }))
   // console.log('API generation completed successfully.', api)
-  import('./build.api.js').then(({ generate }) => generate())
+  import('./build.api').then(({ generate }) => generate())
 }
 
 // Dynamic imports to maintain order
-import('./script.app-ext.js').then(({ syncAppExt }) => {
+import('./script.app-ext').then(({ syncAppExt }) => {
   syncAppExt()
 
-  import('./script.clean.js').then(() => {
+  import('./script.clean').then(() => {
     console.log(
       ` 📦 Building ${green('v' + version)}...${parallel ? blue(' [multi-threaded]') : ''}\n`,
     )
@@ -35,10 +35,10 @@ import('./script.app-ext.js').then(({ syncAppExt }) => {
     createFolder('dist/types')
     createFolder('dist/api')
 
-    import('./script.version.js').then(() => {
-      import('./build.api.js').then(() => {
-        import('./script.javascript.js').then(() => {
-          import('./script.css.js').then(() => {
+    import('./script.version').then(() => {
+      import('./build.api').then(() => {
+        import('./script.javascript').then(() => {
+          import('./script.css').then(() => {
             buildApi()
           })
         })
@@ -47,5 +47,5 @@ import('./script.app-ext.js').then(({ syncAppExt }) => {
   })
 })
 
-// runJob(join(__dirname, './script.javascript.js'))
-// runJob(join(__dirname, './script.css.js'))
+// runJob(join(__dirname, './script.javascript'))
+// runJob(join(__dirname, './script.css'))

@@ -7,8 +7,8 @@ import rtl from 'rtlcss'
 import autoprefixer from 'autoprefixer'
 import { fileURLToPath } from 'node:url'
 
-import buildConf from './config.js'
-import * as buildUtils from './build.utils.js'
+import buildConf from './config'
+import * as buildUtils from './build.utils'
 
 // Convert __dirname for ES module compatibility
 const __filename = fileURLToPath(import.meta.url)
@@ -56,22 +56,22 @@ const styles = [
 /**
  * Resolve file paths relative to the project root.
  */
-function resolve(_path) {
+function resolve(_path: string): string {
   return path.resolve(__dirname, '..', _path)
 }
 
 /**
  * Generate CSS files for a given source and destination.
  */
-async function generate(src, dest) {
+async function generate(src: string, dest: string): Promise<void> {
   const resolvedSrc = resolve(src)
   const resolvedDest = resolve(dest)
 
   try {
     const result = await compileAsync(resolvedSrc, { loadPaths: ['node_modules'] })
-    let code = buildConf.banner + result.css
+    let banner = buildConf.banner + result.css
 
-    code = await processCss(postCssCompiler, code)
+    const code = await processCss(postCssCompiler, banner)
 
     await Promise.all([
       writeAndMinifyCss(resolvedDest, code.css),
@@ -88,7 +88,16 @@ async function generate(src, dest) {
 /**
  * Process CSS using a PostCSS compiler.
  */
-async function processCss(compiler, css) {
+interface Compiler {
+  process(css: string, options: { from: undefined }): Promise<PostCssResult>
+}
+
+interface PostCssResult {
+  css: string
+  warnings(): { toString(): string }[]
+}
+
+async function processCss(compiler: Compiler, css: string): Promise<PostCssResult> {
   const result = await compiler.process(css, { from: undefined })
   result.warnings().forEach((warn) => {
     console.warn(warn.toString())
@@ -99,7 +108,7 @@ async function processCss(compiler, css) {
 /**
  * Write the CSS file and its minified version.
  */
-async function writeAndMinifyCss(dest, css, ext = '') {
+async function writeAndMinifyCss(dest: string, css: string, ext = '') {
   const filePath = `${dest}${ext}.css`
   await buildUtils.writeFile(filePath, css, true)
 

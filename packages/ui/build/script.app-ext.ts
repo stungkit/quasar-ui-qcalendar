@@ -7,9 +7,16 @@ import { fileURLToPath } from 'node:url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '../..')
-const resolvePath = (file) => path.resolve(root, file)
+const resolvePath = (file: string) => path.resolve(root, file)
 
-const writeJson = (file, json) => {
+interface PackageJson {
+  name: string
+  version: string
+  dependencies?: Record<string, string>
+  devDependencies?: Record<string, string>
+}
+
+const writeJson = (file: string, json: PackageJson) => {
   fs.writeFileSync(file, JSON.stringify(json, null, 2) + '\n', 'utf-8')
 }
 
@@ -53,14 +60,22 @@ export function syncAppExt(syncVersion = true) {
 /**
  * Read JSON from file
  */
-function readJson(file) {
+function readJson(file: string) {
   return JSON.parse(fs.readFileSync(file, 'utf-8'))
 }
 
 /**
  * Update a dependency to the correct version if it exists.
  */
-function updateDependency(dependencies, name, version) {
+interface Dependencies {
+  [key: string]: string
+}
+
+function updateDependency(
+  dependencies: Dependencies | undefined,
+  name: string,
+  version: string,
+): boolean {
   if (dependencies?.[name]) {
     dependencies[name] = `^${version}`
     return true
